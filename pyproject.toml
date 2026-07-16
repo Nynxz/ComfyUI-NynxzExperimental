@@ -1,0 +1,24 @@
+[project]
+name = "comfyui-nynxz-experimental"
+version = "0.0.4"
+description = "A collection of experimental custom nodes for ComfyUI made by Nynxz."
+authors = [{ name = "Nynxz", email = "contact@nynxz.com" }]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+classifiers = []
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/nynxz-dev/ComfyUI-NynxzExperimental"
+BugTracker = "https://github.com/nynxz-dev/ComfyUI-NynxzExperimental/issues"
+Documentation = "https://github.com/nynxz-dev/ComfyUI-NynxzExperimental/wiki"
+
+
+[tool.comfy]
+PublisherId = "nynxz"
+DisplayName = "Nynxz's Custom Nodes"
+Icon = "https://avatars.githubusercontent.com/u/60878743?v=4"
+Tags = []
+Repository = "https://github.com/nynxz-dev/ComfyUI-NynxzExperimental"
+includes = ["web"]

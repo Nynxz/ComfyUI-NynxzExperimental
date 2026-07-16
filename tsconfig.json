@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@zenkit/ui/comfy-bridge.css": ["../ZenKit/packages/ui/src/comfy-bridge.css"],
+      "@zenkit/ui": ["../ZenKit/packages/ui/src/index.ts"]
+    },
+    "typeRoots": ["src/types", "node_modules/@types"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.vue"],
+  "exclude": ["node_modules", "dist", "web"]
+}

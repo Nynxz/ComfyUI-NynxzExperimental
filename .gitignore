@@ -1,0 +1,5 @@
+__pycache__
+temp
+
+node_modules/
+# web/ is the built frontend — committed on version bumps (per project convention)

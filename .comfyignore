@@ -1,0 +1,6 @@
+.github/
+doc/
+src/
+temp/
+node_modules/
+.venv/
