@@ -30,6 +30,7 @@ import folder_paths
 from comfy_api.latest import io
 
 from .._base import NynxzNode
+from ._fusion import REFERENCE_FIT
 from ._io_types import NynxzFusionGridType, NynxzFusionInputData
 
 try:
@@ -38,9 +39,6 @@ except ImportError:  # pragma: no cover - outside ComfyUI
     node_helpers = None
 
 FOLDER_TYPES = ("input", "temp", "output")
-
-# Reference images are fitted whole into the visual grid, never cropped or squashed.
-FIT = "contain"
 
 
 def _pillow(fn, *args):
@@ -144,6 +142,6 @@ class FusionInput(NynxzNode):
             if image is None:
                 continue
             sources.append({"image": image, "strength": _row_strength(row),
-                            "fit": FIT, "label": str(row.get("ref"))})
+                            "fit": REFERENCE_FIT, "label": str(row.get("ref"))})
 
         return io.NodeOutput(sources)

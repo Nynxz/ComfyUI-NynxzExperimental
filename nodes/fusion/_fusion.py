@@ -52,7 +52,12 @@ except ImportError:
 
 FUSION_METHODS = ["spatial-checkerboard", "spatial-block-interleave", "spatial-dither-random"]
 CONTENT_MODES = ["none", "saliency", "energy", "cross-attention"]
+STYLE_MODES = ["none", "gist", "whiten"]
 FIT_MODES = ["cover", "contain", "stretch"]
+
+# Reference images go into the grid whole. A reference is there to be looked at, so cropping it
+# away ("cover") or distorting it ("stretch") would throw out conditioning the user asked for.
+REFERENCE_FIT = "contain"
 
 # Explicit aspect choices for the visual grid; "auto" takes it from the first source.
 ASPECTS = {"1:1": 1.0, "4:3": 4 / 3, "3:4": 3 / 4, "16:9": 16 / 9, "9:16": 9 / 16, "3:2": 3 / 2, "2:3": 2 / 3}
@@ -76,6 +81,8 @@ class FusionSettings:
     content_mode: str = "none"
     content_strength: float = 0.0
     content_temperature: float = 1.0
+    style_mode: str = "none"
+    style_strength: float = 0.0
     seed: int = 0
     visual_aspect: str = "auto"
     visual_size: int = 384
@@ -92,10 +99,15 @@ def _spatial_fusion_mask(height, width, num_sources, method, block_size, dither_
     elif method == "spatial-block-interleave":
         mask = (rows // block_size + columns // block_size) % num_sources
     elif method == "spatial-dither-random":
-        generator = torch.Generator().manual_seed(seed)
-        random = torch.rand((height, width), generator=generator)
-        other_sources = 1 + ((rows + columns) % (num_sources - 1))
-        mask = torch.where(random < dither_ratio, 0, other_sources)
+        if num_sources < 2:
+            # `% (num_sources - 1)` would divide by zero, and with one source every cell is
+            # source 0 anyway.
+            mask = torch.zeros((height, width), dtype=torch.long)
+        else:
+            generator = torch.Generator().manual_seed(seed)
+            random = torch.rand((height, width), generator=generator)
+            other_sources = 1 + ((rows + columns) % (num_sources - 1))
+            mask = torch.where(random < dither_ratio, 0, other_sources)
     else:
         raise ValueError(f"Unsupported visual fusion method: {method}")
     return mask.flatten().to(device)
@@ -150,6 +162,43 @@ def _blend(visuals, weights, preserve_norm=True):
         scale = target / fused.norm(dim=-1).clamp_min(1e-6)
         fused = fused * scale.unsqueeze(-1)
     return fused
+
+
+def _style_release(visual, mode, strength):
+    """Loosen the visual tokens' grip on *style*, keeping their spatial structure.
+
+    For the anime->photoreal case: the style is supposed to come from the prompt and a LoRA,
+    but the reference image's own visual tokens keep voting for the look it already has, and
+    they are strong. Rather than weaken the whole block (which costs structure too), both
+    modes leave each token's position in the block alone and attack only the block-wide
+    signature — the part that says "this is anime" rather than "there is an eye here".
+
+    This is the AdaIN split (per-channel token statistics = style, normalized per-token
+    residual = content) pointed at the block itself instead of at a style reference.
+
+    visual: [batch, tokens, dim] -> same shape. `strength` 0 or mode "none" is an exact no-op,
+    so every existing workflow is untouched.
+    """
+    if mode == "none" or strength <= 0.0:
+        return visual
+
+    x = visual.float()
+    if mode == "gist":
+        # The mean visual token is the block's overall "what this looks like"; the per-token
+        # deviations are "what is where". Fade the former, keep the latter.
+        out = x - strength * x.mean(dim=1, keepdim=True)
+    elif mode == "whiten":
+        # Per-channel mean/std across tokens is the image's stylistic fingerprint. Flatten it
+        # toward the block's own scalar average rather than to 0/1 — the tokens stay in a
+        # magnitude the encoder actually emits instead of going out of distribution.
+        mean = x.mean(dim=1, keepdim=True)                                  # [B, 1, D]
+        std = x.std(dim=1, unbiased=False, keepdim=True).clamp_min(1e-6)    # [B, 1, D]
+        target_mean = torch.lerp(mean, mean.mean(dim=-1, keepdim=True).expand_as(mean), strength)
+        target_std = torch.lerp(std, std.mean(dim=-1, keepdim=True).expand_as(std), strength)
+        out = (x - mean) / std * target_std + target_mean
+    else:
+        raise ValueError(f"Unsupported style mode: {mode}")
+    return out.to(visual.dtype)
 
 
 def _content_weights(visuals, mode, temperature):
@@ -263,6 +312,9 @@ def _fuse_conditionings(conditionings, tokens, visual_height, visual_width, sett
         # Strength goes last: it re-weights whatever geometry + content settled on.
         weights = _strength_weights(weights, strengths)
         blended_visual = _blend(visuals, weights.to(visuals.dtype), settings.preserve_norm)
+        # Style release is about the fused block as a whole, so it runs after the blend —
+        # it changes the tokens, never who contributed them.
+        blended_visual = _style_release(blended_visual, settings.style_mode, settings.style_strength)
 
         blended = source_conds[0].clone()
         blended[:, start:end] = blended_visual
@@ -347,21 +399,11 @@ PROMPT_TEMPLATE = (
 )
 
 
-def encode_fusion(clip, prompt, sources, settings, strengths=None, fits=None, vae=None):
-    """Encode each source through the Qwen3-VL encoder and fuse their visual tokens.
+def _prepare_sources(sources, settings, fits=None):
+    """Fit every source into the shared grid and report the token grid the encoder will make.
 
-    sources:   list of [1, H, W, C] IMAGE tensors (at least two).
-    strengths: per-source prevalence, or None for an even blend.
-    fits:      per-source fit mode into the shared grid, or None for all-"cover"
-               (what the original node did with its center crop).
+    The grid comes from the encoder's own sizing rule, so callers never have to re-derive it.
     """
-    if len(sources) < 2:
-        raise ValueError("Visual fusion requires at least two images.")
-    if strengths is not None and len(strengths) != len(sources):
-        raise ValueError("Visual fusion got a strength list that doesn't match the sources.")
-    if fits is not None and len(fits) != len(sources):
-        raise ValueError("Visual fusion got a fit list that doesn't match the sources.")
-
     width, height = _visual_grid(sources[0], settings.visual_aspect, settings.visual_size)
     processed = [fit_image(source, width, height, (fits[i] if fits else "cover"))
                  for i, source in enumerate(sources)]
@@ -370,7 +412,30 @@ def encode_fusion(clip, prompt, sources, settings, strengths=None, fits=None, va
     # it also clamps to its min/max pixel budget, and a grid that disagrees with the encoder's
     # would slice the wrong span out of the conditioning.
     grid_height, grid_width = qwen2vl_image_size(height, width, patch_size=16, merge_size=2)
-    visual_height, visual_width = grid_height // 32, grid_width // 32
+    return processed, grid_height // 32, grid_width // 32
+
+
+def _check_sources(sources, strengths, fits):
+    # One source is legal: the blend is then a no-op passthrough, which is exactly what you
+    # want when the node is being used for style release or as a plain single-reference encode.
+    if len(sources) < 1:
+        raise ValueError("Visual fusion requires at least one image.")
+    if strengths is not None and len(strengths) != len(sources):
+        raise ValueError("Visual fusion got a strength list that doesn't match the sources.")
+    if fits is not None and len(fits) != len(sources):
+        raise ValueError("Visual fusion got a fit list that doesn't match the sources.")
+
+
+def encode_fusion(clip, prompt, sources, settings, strengths=None, fits=None, vae=None):
+    """Encode each source through the Qwen3-VL encoder and fuse their visual tokens.
+
+    sources:   list of [1, H, W, C] IMAGE tensors (at least two).
+    strengths: per-source prevalence, or None for an even blend.
+    fits:      per-source fit mode into the shared grid, or None for all-"cover"
+               (what the original node did with its center crop).
+    """
+    _check_sources(sources, strengths, fits)
+    processed, visual_height, visual_width = _prepare_sources(sources, settings, fits)
 
     full_prompt = PROMPT_TEMPLATE.format(prompt=prompt)
     tokens = [clip.tokenize(full_prompt, images=[image]) for image in processed]
@@ -388,45 +453,71 @@ def encode_fusion(clip, prompt, sources, settings, strengths=None, fits=None, va
     return conditioning
 
 
+def style_inputs() -> list[io.Input]:
+    """Style-release knobs. Separate from `tuning_inputs` so the original autogrow node keeps
+    the widget layout its docstring promises — only the newer nodes opt in."""
+    return [
+        io.Combo.Input(
+            "style_mode", options=STYLE_MODES, default="none", advanced=True,
+            tooltip="EXPERIMENTAL. Loosen the reference's grip on style so the prompt/LoRA can set the look "
+                    "(e.g. an anime reference + a 2real LoRA). Spatial structure is kept either way. "
+                    "gist = fade the block's mean token (its overall look); "
+                    "whiten = flatten the per-channel token statistics (the AdaIN view of style). "
+                    "Needs style_strength above 0.",
+        ),
+        io.Float.Input(
+            "style_strength", default=0.0, min=0.0, max=1.0, step=0.01, advanced=True,
+            tooltip="How far to push style_mode. 0 = off, an exact no-op (the default). 1 = the block's "
+                    "style signature is fully flattened. Start around 0.3-0.5 — high values push the "
+                    "tokens out of the distribution the encoder normally produces.",
+        ),
+    ]
+
+
 def tuning_inputs() -> list[io.Input]:
     """The fusion tuning knobs every fusion node exposes — same ids, defaults and tooltips.
 
     Kept in declaration order so the original node's widget layout is unchanged.
     """
-    return [
-        io.Combo.Input("fusion_method", options=FUSION_METHODS, default="spatial-checkerboard"),
-        io.Int.Input("block_size", default=2, min=1, max=8, step=1, advanced=True),
-        io.Float.Input(
+    inputs = {
+        "fusion_method": io.Combo.Input("fusion_method", options=FUSION_METHODS, default="spatial-checkerboard"),
+        "block_size": io.Int.Input("block_size", default=2, min=1, max=8, step=1, advanced=True),
+        "dither_ratio": io.Float.Input(
             "dither_ratio", default=0.5, min=0.0, max=1.0, step=0.01, advanced=True,
             tooltip="Probability of selecting the first source. Remaining sources are selected with a checkerboard pattern.",
         ),
-        io.Float.Input(
+        "blend_strength": io.Float.Input(
             "blend_strength", default=0.5, min=0.0, max=1.0, step=0.01, advanced=True,
             tooltip="0.0 = hard per-cell mosaic (original behavior); 1.0 = fully feathered soft blend.",
         ),
-        io.Float.Input(
+        "feather": io.Float.Input(
             "feather", default=1.0, min=0.0, max=6.0, step=0.1, advanced=True,
-            tooltip="Gaussian smoothing (in visual-grid cells) applied to each source's territory. Higher = softer transitions.",
+            tooltip="Gaussian smoothing (in visual-grid cells) applied to each source's territory. Higher = softer "
+                    "transitions. NOTE: the checkerboard sits at the grid's Nyquist frequency, so past ~1.3 every "
+                    "source contributes 1/N everywhere and the pattern washes out to a flat average.",
         ),
-        io.Boolean.Input(
+        "preserve_norm": io.Boolean.Input(
             "preserve_norm", default=True, advanced=True,
             tooltip="Rescale blended tokens to preserve embedding magnitude, avoiding washed-out conditioning.",
         ),
-        io.Combo.Input(
+        "content_mode": io.Combo.Input(
             "content_mode", options=CONTENT_MODES, default="none", advanced=True,
             tooltip="Derive blend weights from token content instead of geometry alone. "
                     "saliency = foreground wins; energy = strongest signal wins; "
-                    "cross-attention = agreement with the per-cell consensus (smoother).",
+                    "cross-attention = agreement with the per-cell consensus (smoother). "
+                    "Needs content_strength above 0 to do anything.",
         ),
-        io.Float.Input(
+        "content_strength": io.Float.Input(
             "content_strength", default=0.0, min=0.0, max=1.0, step=0.01, advanced=True,
-            tooltip="How much content weighting overrides the geometric pattern. 0 = geometry only; 1 = content only.",
+            tooltip="How much content weighting overrides the geometric pattern. 0 = geometry only (the default, "
+                    "which makes content_mode inert); 1 = content only.",
         ),
-        io.Float.Input(
+        "content_temperature": io.Float.Input(
             "content_temperature", default=1.0, min=0.05, max=5.0, step=0.05, advanced=True,
             tooltip="Softmax temperature for content weights. Lower = sharper (winner-take-all); higher = softer mix.",
         ),
-    ]
+    }
+    return list(inputs.values())
 
 
 def seed_input() -> io.Input:

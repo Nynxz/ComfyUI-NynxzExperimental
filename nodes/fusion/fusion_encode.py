@@ -14,7 +14,7 @@ whichever image happened to be first.
 from comfy_api.latest import io
 
 from .._base import NynxzNode
-from ._fusion import ASPECT_OPTIONS, FusionSettings, encode_fusion, seed_input, tuning_inputs
+from ._fusion import ASPECT_OPTIONS, FusionSettings, encode_fusion, seed_input, style_inputs, tuning_inputs
 from ._io_types import NynxzFusionInputData
 
 
@@ -43,6 +43,7 @@ class QwenFusionEncode(NynxzNode):
                             "tokens = finer fusion detail, at more compute. 384 = the original node.",
                 ),
                 *tuning_inputs(),
+                *style_inputs(),
                 seed_input(),
                 io.Vae.Input("vae", optional=True),
             ],
@@ -54,19 +55,23 @@ class QwenFusionEncode(NynxzNode):
                 visual_size=384, fusion_method="spatial-checkerboard", block_size=2,
                 dither_ratio=0.5, blend_strength=0.5, feather=1.0, preserve_norm=True,
                 content_mode="none", content_strength=0.0, content_temperature=1.0,
+                style_mode="none", style_strength=0.0,
                 vae=None, seed=0) -> io.NodeOutput:
+        # One image is fine: the blend is a passthrough, which is what you want when this node
+        # is doing style release or standing in for a plain single-reference encode.
         entries = list(fusion_input or [])
-        if len(entries) < 2:
+        if not entries:
             raise ValueError(
-                "Visual fusion requires at least two images — add more to the Fusion Input grid "
-                f"(got {len(entries)}). Muted rows and missing files don't count."
+                "Visual fusion needs at least one image — add one to the Fusion Input grid or "
+                "wire a Fusion Reference. Muted rows and missing files don't count."
             )
 
         settings = FusionSettings(
             fusion_method=fusion_method, block_size=block_size, dither_ratio=dither_ratio,
             blend_strength=blend_strength, feather=feather, preserve_norm=preserve_norm,
             content_mode=content_mode, content_strength=content_strength,
-            content_temperature=content_temperature, seed=seed,
+            content_temperature=content_temperature, style_mode=style_mode,
+            style_strength=style_strength, seed=seed,
             visual_aspect=visual_aspect, visual_size=visual_size,
         )
         conditioning = encode_fusion(

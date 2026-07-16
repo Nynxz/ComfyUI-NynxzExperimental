@@ -91,13 +91,14 @@
       <div v-else class="fg-empty">
         <i class="mdi mdi-image-multiple-outline" />
         <span>Drop images here</span>
-        <small>Fusion needs at least two</small>
+        <small>One is enough — more will blend</small>
       </div>
     </ZenScroll>
 
-    <div v-if="rows.length && enabledCount < 2" class="fg-warn">
+    <!-- one image is a legal fusion (the blend is a passthrough), so this only fires on zero -->
+    <div v-if="rows.length && !enabledCount" class="fg-warn">
       <i class="mdi mdi-alert-outline" />
-      <span>{{ enabledCount }} active — fusion needs at least 2</span>
+      <span>Every image is muted — fusion needs at least one</span>
     </div>
 
     <div class="fg-bar">
@@ -269,6 +270,9 @@ function isTyping(el: Element | null): boolean {
 function armScroll() {
   const el = scroller()
   if (!el) return
+  // Nothing to scroll: stay unarmed so wheeling over a short grid still zooms the canvas
+  // rather than being swallowed. Re-evaluated on every enter, so it tracks the row count.
+  if (el.scrollHeight <= el.clientHeight) return
   const active = document.activeElement as HTMLElement | null
   if (el.contains(active)) return // already armed, or a control inside owns focus
   if (isTyping(active)) return // never yank focus out of a field mid-keystroke
