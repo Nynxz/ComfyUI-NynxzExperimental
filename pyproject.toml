@@ -1,6 +1,6 @@
 [project]
 name = "comfyui-nynxz-experimental"
-version = "0.1.0"
+version = "0.1.1"
 description = "A collection of experimental custom nodes for ComfyUI made by Nynxz."
 authors = [{ name = "Nynxz", email = "contact@nynxz.com" }]
 readme = "README.md"
@@ -10,15 +10,15 @@ classifiers = []
 dependencies = []
 
 [project.urls]
-Repository = "https://github.com/nynxz-dev/ComfyUI-NynxzExperimental"
-BugTracker = "https://github.com/nynxz-dev/ComfyUI-NynxzExperimental/issues"
-Documentation = "https://github.com/nynxz-dev/ComfyUI-NynxzExperimental/wiki"
+Repository = "https://github.com/Nynxz/ComfyUI-NynxzExperimental"
+BugTracker = "https://github.com/Nynxz/ComfyUI-NynxzExperimental/issues"
+Documentation = "https://github.com/Nynxz/ComfyUI-NynxzExperimental/wiki"
 
 
 [tool.comfy]
 PublisherId = "nynxz"
-DisplayName = "Nynxz's Custom Nodes"
+DisplayName = "Nynxz's Experimental Custom Nodes"
 Icon = "https://avatars.githubusercontent.com/u/60878743?v=4"
 Tags = []
-Repository = "https://github.com/nynxz-dev/ComfyUI-NynxzExperimental"
+Repository = "https://github.com/Nynxz/ComfyUI-NynxzExperimental"
 includes = ["web"]
