@@ -23,7 +23,7 @@ import torch
 from comfy_api.latest import io
 
 from .._base import NynxzNode
-from ._fusion import REFERENCE_FIT
+from ._fusion import DEFAULT_FIT, FIT_MODES
 from ._io_types import NynxzFusionInputData
 
 
@@ -44,6 +44,12 @@ class FusionReference(NynxzNode):
                     tooltip="Relative prevalence in the blend, not an absolute gain — doubling every "
                             "reference changes nothing. 0 mutes this one. Matches the grid's strength.",
                 ),
+                io.Combo.Input(
+                    "fit", options=FIT_MODES, default=DEFAULT_FIT,
+                    tooltip="How this image is framed into the shared grid. contain = whole image, "
+                            "letterboxed; cover = center-crop to fill; stretch = distort to fill. The "
+                            "encode node's fit override can force one mode for every source.",
+                ),
                 NynxzFusionInputData.Input(
                     "fusion_input", optional=True,
                     tooltip="Optional upstream Fusion Reference or Fusion Input — its images come "
@@ -54,7 +60,7 @@ class FusionReference(NynxzNode):
         )
 
     @classmethod
-    def execute(cls, image, strength=1.0, fusion_input=None) -> io.NodeOutput:
+    def execute(cls, image, strength=1.0, fit=DEFAULT_FIT, fusion_input=None) -> io.NodeOutput:
         # Never mutate the upstream list: ComfyUI hands the same object to every consumer, so
         # appending in place would make a fan-out silently accumulate references.
         sources: list[dict] = list(fusion_input or [])
@@ -66,11 +72,12 @@ class FusionReference(NynxzNode):
             frames = frames.unsqueeze(0)
 
         weight = max(0.0, float(strength))
+        fit = fit if fit in FIT_MODES else DEFAULT_FIT
         for i in range(frames.shape[0]):
             sources.append({
                 "image": frames[i:i + 1].clone(),
                 "strength": weight,
-                "fit": REFERENCE_FIT,
+                "fit": fit,
                 "label": f"reference {len(sources) + 1}",
             })
         return io.NodeOutput(sources)

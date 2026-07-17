@@ -34,11 +34,12 @@
         >
           <!-- only the thumb starts a reorder: a draggable card would swallow slider drags -->
           <div class="fg-thumb" draggable="true" @dragstart="startReorder(i, $event)">
-            <!-- object-fit: contain, on black — the card shows exactly the letterboxed
-                 frame the encoder is handed, bars and all -->
+            <!-- object-fit mirrors the row's fit, on black — the card shows exactly the frame
+                 the encoder is handed (letterbox bars, crop or squash, per this image's fit) -->
             <img
               v-if="!missing.has(row.ref)"
               :src="thumbUrl(row.ref, row.type)"
+              :style="{ objectFit: fitCss(row.fit) }"
               loading="lazy"
               @error="onImgError(row)"
             />
@@ -47,6 +48,9 @@
             <span class="fg-idx" :title="`Source ${i + 1} — drag to reorder`">{{ i + 1 }}</span>
 
             <div class="fg-acts">
+              <button class="fg-act" :title="FIT_META[row.fit].label + ' (click to change)'" @click.stop="cycleFit(i)">
+                <i class="mdi" :class="FIT_META[row.fit].icon" />
+              </button>
               <button class="fg-act" :title="row.on ? 'Mute this image' : 'Unmute this image'" @click.stop="toggleOn(i)">
                 <i class="mdi" :class="row.on ? 'mdi-eye-outline' : 'mdi-eye-off-outline'" />
               </button>
@@ -158,14 +162,20 @@ import { computed, ref, type ComponentPublicInstance } from 'vue'
 import { ZenSlider, ZenNumber, ZenIconButton, ZenButton, ZenModal, ZenInput, ZenToggleGroup, ZenScroll } from '@zenkit/ui'
 import { listImages, thumbUrl, uploadImage, shortName, type ImageItem, type SourceType } from '@/fusion/api'
 
+type FitMode = 'cover' | 'contain' | 'stretch'
+const FITS: FitMode[] = ['contain', 'cover', 'stretch']
+const DEFAULT_FIT: FitMode = 'contain'
+
 /** One image in the fusion grid, referencing a file under a ComfyUI image folder.
- *  No fit here — every source is fitted "contain" (see fusion_input.py). */
+ *  `fit` is how it's framed into the shared grid — the thumbnail mirrors it, so the card
+ *  shows exactly what the encoder gets. The encode node can override it for every source. */
 interface FusionRow {
   id: string
   ref: string
   type: SourceType
   on: boolean
   strength: number
+  fit: FitMode
 }
 
 interface DOMWidget { value: unknown; callback?: (v: unknown) => void }
@@ -213,6 +223,7 @@ function parseRows(v: unknown): FusionRow[] {
       type: (TYPES.includes(r.type) ? r.type : 'input') as SourceType,
       on: r.on !== false,
       strength: Math.max(0, num(r.strength, 1)),
+      fit: (FITS.includes(r.fit) ? r.fit : DEFAULT_FIT) as FitMode,
     }))
 }
 
@@ -247,6 +258,22 @@ function setStrength(i: number, v: number) {
 }
 function toggleOn(i: number) { const r = rows.value[i]; if (r) { r.on = !r.on; commit() } }
 function removeRow(i: number) { rows.value.splice(i, 1); commit() }
+
+// per-image fit: the thumbnail's object-fit mirrors this, so the card shows what the encoder
+// gets. contain -> cover -> stretch -> contain.
+const FIT_META: Record<FitMode, { icon: string; label: string }> = {
+  contain: { icon: 'mdi-fit-to-page-outline', label: 'Contain — whole image, letterboxed' },
+  cover: { icon: 'mdi-crop', label: 'Cover — center-crop to fill' },
+  stretch: { icon: 'mdi-arrow-expand-all', label: 'Stretch — distort to fill' },
+}
+/** CSS object-fit that matches the encoder's framing (stretch == fill). */
+function fitCss(fit: FitMode): 'fill' | 'cover' | 'contain' { return fit === 'stretch' ? 'fill' : fit }
+function cycleFit(i: number) {
+  const r = rows.value[i]
+  if (!r) return
+  r.fit = FITS[(FITS.indexOf(r.fit) + 1) % FITS.length]
+  commit()
+}
 function balance() { for (const r of rows.value) r.strength = 1; commit() }
 function clearAll() { rows.value = []; commit() }
 
@@ -296,7 +323,7 @@ async function onUpload(e: Event) {
   input.value = '' // let the same file be picked again
 }
 function addRef(ref: string, type: SourceType = 'input') {
-  rows.value.push({ id: nextId(), ref, type, on: true, strength: 1 })
+  rows.value.push({ id: nextId(), ref, type, on: true, strength: 1, fit: DEFAULT_FIT })
 }
 async function addFiles(files: File[]) {
   const imgs = files.filter((f) => f.type.startsWith('image/'))

@@ -9,9 +9,9 @@ than wired in, so every card in the grid can show a real thumbnail and every sou
 visible weight. To fuse something generated upstream, send it through a Preview or Save
 node first and pick it out of temp/ or output/ in the browse dialog.
 
-Every source is fitted "contain": the whole image goes into the visual grid, letterboxed.
-A reference image is here to be looked at, so cropping it away (cover) or distorting it
-(stretch) would throw out conditioning the user explicitly asked for.
+Each card carries its own fit into the visual grid, defaulting to "contain" (the whole image,
+letterboxed) since a reference is usually there to be looked at whole. Set a card to "cover"
+(center-crop) or "stretch" per image, or force one mode for every source on the encode node.
 
 Output is a NYNXZ_FUSION_INPUT list of `{image, strength, fit, label}` for a fusion node.
 Chain several of these into one encode when you want to group sources.
@@ -30,7 +30,7 @@ import folder_paths
 from comfy_api.latest import io
 
 from .._base import NynxzNode
-from ._fusion import REFERENCE_FIT
+from ._fusion import DEFAULT_FIT, FIT_MODES
 from ._io_types import NynxzFusionGridType, NynxzFusionInputData
 
 try:
@@ -141,7 +141,9 @@ class FusionInput(NynxzNode):
             image = _load_image(path)
             if image is None:
                 continue
+            fit = row.get("fit")
             sources.append({"image": image, "strength": _row_strength(row),
-                            "fit": REFERENCE_FIT, "label": str(row.get("ref"))})
+                            "fit": fit if fit in FIT_MODES else DEFAULT_FIT,
+                            "label": str(row.get("ref"))})
 
         return io.NodeOutput(sources)
