@@ -443,17 +443,21 @@ async function addFiles(files: File[]) {
   if (!imgs.length) return
   busy.value = true
   try {
-    // A file that's already in input/ is referenced, never re-uploaded — dropping the same
-    // image twice shouldn't spawn `foo (1).png` copies in the user's input folder. Identity is
-    // name + exact byte size (both from the folder listing's os.stat); a genuinely different
-    // image with a colliding name has a different size, so it still uploads.
+    // If a dropped/picked file is already somewhere in input/ — root OR any subfolder — reference
+    // that copy instead of uploading a duplicate into the root. Browsers only give us the
+    // basename, so match on basename + exact byte size against the whole input listing (which
+    // includes subfolders). A root copy wins when the same name exists in several places.
     const existing = await listImages('input', true)
-    const already = new Map(existing.map((it) => [`${it.name} ${it.size ?? ''}`, it.name]))
+    const already = new Map<string, string>()
+    for (const it of existing) {
+      const key = `${shortName(it.name)} ${it.size ?? ''}`
+      if (!already.has(key) || shortName(it.name) === it.name) already.set(key, it.name)
+    }
     for (const file of imgs) {
       const key = `${file.name} ${file.size}`
       const hit = already.get(key)
       if (hit) {
-        addRef(hit, 'input')
+        addRef(hit, 'input') // reference where it lives — subfolder path and all
         continue
       }
       const up = await uploadImage(file)
