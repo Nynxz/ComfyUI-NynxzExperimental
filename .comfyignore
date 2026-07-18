@@ -5,3 +5,11 @@ temp/
 node_modules/
 .venv/
 favorites.json
+.prettierignore
+.prettierrc.json
+eslint.config.js
+package.json
+pnpm-lock.yaml
+pnpm-workspace.yaml
+tsconfig.json
+vite.config.mts
