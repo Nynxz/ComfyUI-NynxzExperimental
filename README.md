@@ -139,4 +139,4 @@ src/fusion/
 
 ## Credits
 
-Base spatial token interleave from [silveroxides/ComfyUI-UtilsCollection](https://github.com/silveroxides/ComfyUI-UtilsCollection) (MIT)
+Third-party code and licenses: [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md).
