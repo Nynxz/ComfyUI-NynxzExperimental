@@ -98,6 +98,7 @@ class QwenFusionEncode(NynxzNode):
         style_strength=0.0,
         strength_roll=0.0,
         pattern_jitter=0.0,
+        jitter_mode="reassign",
         vae=None,
         seed=0,
     ) -> io.NodeOutput:
@@ -123,6 +124,7 @@ class QwenFusionEncode(NynxzNode):
             style_mode=style_mode,
             style_strength=style_strength,
             pattern_jitter=pattern_jitter,
+            jitter_mode=jitter_mode,
             strength_roll=strength_roll,
             seed=seed,
             visual_aspect=visual_aspect,

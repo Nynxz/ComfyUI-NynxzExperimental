@@ -111,6 +111,7 @@ class FusionSettings:
     style_mode: str = "none"
     style_strength: float = 0.0
     pattern_jitter: float = 0.0
+    jitter_mode: str = "reassign"
     strength_roll: float = 0.0
     seed: int = 0
     visual_aspect: str = "auto"
@@ -118,7 +119,16 @@ class FusionSettings:
 
 
 def _spatial_fusion_mask(
-    height, width, num_sources, method, block_size, dither_ratio, device, seed=0, pattern_jitter=0.0
+    height,
+    width,
+    num_sources,
+    method,
+    block_size,
+    dither_ratio,
+    device,
+    seed=0,
+    pattern_jitter=0.0,
+    jitter_mode="reassign",
 ):
     # Built on the CPU and moved, so a seed picks the same pattern regardless of the device
     # the encoder ran on — CUDA and CPU generators don't agree on a stream for a given seed.
@@ -142,7 +152,10 @@ def _spatial_fusion_mask(
     else:
         raise ValueError(f"Unsupported visual fusion method: {method}")
 
-    mask = _jitter_mask(mask, num_sources, pattern_jitter, seed)
+    if jitter_mode == "shuffle":
+        mask = _shuffle_mask(mask, num_sources, pattern_jitter, seed)
+    else:
+        mask = _jitter_mask(mask, num_sources, pattern_jitter, seed)
     return mask.flatten().to(device)
 
 
@@ -168,6 +181,31 @@ def _jitter_mask(mask, num_sources, pattern_jitter, seed):
     return torch.where(roll < pattern_jitter, (mask + shift) % num_sources, mask)
 
 
+def _shuffle_mask(mask, num_sources, amount, seed):
+    """Swap the source labels of a random `amount` fraction of cells, seeded.
+
+    Unlike `_jitter_mask` (which *reassigns* cells to a new source, so each image's share of the
+    grid drifts), this permutes labels among the picked cells — the multiset of labels is
+    unchanged, so every source keeps its exact token count while only the spatial arrangement
+    moves. Use it to break up a rigid checkerboard/block pattern without touching the blend ratio.
+
+    `amount` 0.0 is an exact no-op, and its seed stream is decorrelated from `_jitter_mask`'s.
+    """
+    if amount <= 0.0 or num_sources < 2:
+        return mask
+    flat = mask.flatten()
+    count = flat.numel()
+    picked_count = int(count * amount)
+    if picked_count < 2:
+        return mask
+    generator = torch.Generator().manual_seed((int(seed) ^ 0x2545F491) & 0x7FFFFFFFFFFFFFFF)
+    picked = torch.randperm(count, generator=generator)[:picked_count]
+    permuted = picked[torch.randperm(picked_count, generator=generator)]
+    out = flat.clone()
+    out[picked] = flat[permuted]
+    return out.reshape(mask.shape)
+
+
 def _gaussian_blur2d(x, sigma, radius):
     """Separable gaussian blur over the spatial grid. x: [sources, 1, H, W]."""
     coords = torch.arange(-radius, radius + 1, device=x.device, dtype=x.dtype)
@@ -191,6 +229,7 @@ def _fusion_weights(
     device,
     seed=0,
     pattern_jitter=0.0,
+    jitter_mode="reassign",
 ):
     """Per-source blend weights over the visual grid: [num_sources, tokens], columns sum to 1.
 
@@ -201,7 +240,16 @@ def _fusion_weights(
     """
     tokens = height * width
     assignment = _spatial_fusion_mask(
-        height, width, num_sources, method, block_size, dither_ratio, device, seed, pattern_jitter
+        height,
+        width,
+        num_sources,
+        method,
+        block_size,
+        dither_ratio,
+        device,
+        seed,
+        pattern_jitter,
+        jitter_mode,
     )
     onehot = torch.zeros(num_sources, tokens, device=device, dtype=torch.float32)
     onehot.scatter_(0, assignment.unsqueeze(0).to(torch.int64), 1.0)
@@ -417,6 +465,7 @@ def _fuse_conditionings(
             visuals.device,
             settings.seed,
             settings.pattern_jitter,
+            settings.jitter_mode,
         )
         if settings.content_mode != "none" and settings.content_strength > 0.0:
             content = _content_weights(visuals, settings.content_mode, settings.content_temperature)
@@ -796,5 +845,15 @@ def variation_inputs() -> list[io.Input]:
             tooltip="Randomly reassign this fraction of grid cells to a different image, driven by the seed. "
             "0 = the clean geometric pattern (exact default behaviour). Subtler than strength_roll — it "
             "rearranges the same tokens rather than re-weighting them. Works on any fusion_method.",
+        ),
+        io.Combo.Input(
+            "jitter_mode",
+            options=["reassign", "shuffle"],
+            default="reassign",
+            advanced=True,
+            tooltip="How pattern_jitter perturbs the grid. 'reassign' hands each jittered cell to a "
+            "different image (each image's share of the grid drifts). 'shuffle' instead swaps cell "
+            "positions, so every image keeps its exact token count and only the arrangement moves — "
+            "break up the pattern without changing the blend ratio.",
         ),
     ]
