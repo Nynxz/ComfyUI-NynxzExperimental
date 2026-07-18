@@ -21,9 +21,7 @@ interface ZenKitLike {
 
 function getZenKit(): ZenKitLike | null {
   return (
-    (typeof window !== "undefined" &&
-      (window as unknown as { ZenKit?: ZenKitLike }).ZenKit) ||
-    null
+    (typeof window !== 'undefined' && (window as unknown as { ZenKit?: ZenKitLike }).ZenKit) || null
   )
 }
 
@@ -33,16 +31,16 @@ function getZenKit(): ZenKitLike | null {
 function whenZenKit(timeout = 6000): Promise<ZenKitLike | null> {
   const now = getZenKit()
   if (now) return now.ready ?? Promise.resolve(now)
-  if (typeof window === "undefined") return Promise.resolve(null)
+  if (typeof window === 'undefined') return Promise.resolve(null)
   return new Promise((resolve) => {
     let done = false
     const finish = () => {
       if (done) return
       done = true
-      window.removeEventListener("zen:ready", finish)
+      window.removeEventListener('zen:ready', finish)
       resolve(getZenKit())
     }
-    window.addEventListener("zen:ready", finish)
+    window.addEventListener('zen:ready', finish)
     window.setTimeout(finish, timeout)
   })
 }

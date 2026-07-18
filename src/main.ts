@@ -7,8 +7,9 @@
 // defineNode). registerNodes turns them into a single ComfyUI extension: DOM widgets, node
 // sizing, and — when ZenKit is installed — middle-click slot composition. Add a node = add
 // one file + one line here.
-import { registerNodes } from "@/lib/registerNodes"
-import fusionNode from "@/fusion/node"
-import "@zenkit/ui/comfy-bridge.css"
+import { registerNodes } from '@/lib/registerNodes'
+import fusionNode from '@/fusion/node'
+import loraNode from '@/lora/node'
+import '@zenkit/ui/comfy-bridge.css'
 
-registerNodes("nynxz.experimental", [fusionNode])
+registerNodes('nynxz.experimental', [fusionNode, loraNode])

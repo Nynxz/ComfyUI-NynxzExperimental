@@ -1,8 +1,10 @@
 // Backend routes for the Fusion Input grid (same-origin fetch).
 //
 // Listing comes from this pack's own route so it stands alone; thumbnails and uploads use
-// ComfyUI's core /view and /upload/image endpoints (the latter hash-compares same-named
-// files, so dropping the same image twice doesn't duplicate it in the input dir).
+// ComfyUI's core /view and /upload/image endpoints. /upload/image only skips a rewrite when
+// the SAME name already holds byte-identical content — a same-name/different-content file is
+// saved as `foo (1).png`. So the caller (see addFiles in FusionGrid.vue) dedups against the
+// input listing first and only uploads files that aren't already there.
 
 export type SourceType = 'input' | 'temp' | 'output'
 

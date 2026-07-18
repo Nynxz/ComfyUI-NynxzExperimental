@@ -4,10 +4,10 @@
 // applies sizing / hideOutputImages / the preview mapper, and slot-links wire up (gracefully
 // no-op'ing without ZenKit).
 
-import { app } from "@comfy/app"
-import { mountWidget } from "@/lib/mountWidget"
-import { registerSlotLink } from "@/lib/zenGraph"
-import type { NodeDef } from "@/lib/defineNode"
+import { app } from '@comfy/app'
+import { mountWidget } from '@/lib/mountWidget'
+import { registerSlotLink } from '@/lib/zenGraph'
+import type { NodeDef } from '@/lib/defineNode'
 
 // The bits of a litegraph node we touch on create.
 type LGNode = {
@@ -55,9 +55,10 @@ export function registerNodes(name: string, defs: NodeDef[]): void {
     },
     nodeCreated(node: unknown) {
       const lg = node as LGNode
-      const def = byClass.get(lg.constructor?.comfyClass ?? "")
+      const def = byClass.get(lg.constructor?.comfyClass ?? '')
       if (!def) return
-      if (def.minSize) lg.setSize([Math.max(lg.size[0], def.minSize[0]), Math.max(lg.size[1], def.minSize[1])])
+      if (def.minSize)
+        lg.setSize([Math.max(lg.size[0], def.minSize[0]), Math.max(lg.size[1], def.minSize[1])])
       if (def.hideOutputImages) lg.hideOutputImages = true
       if (def.output) {
         const { widget, from } = def.output
@@ -85,7 +86,10 @@ export function registerNodes(name: string, defs: NodeDef[]): void {
     for (const sl of def.slotLinks ?? [])
       for (const cls of asArray(def.is))
         registerSlotLink({
-          on: sl.input != null ? { node: cls, input: sl.input } : { node: cls, output: sl.output as string },
+          on:
+            sl.input != null
+              ? { node: cls, input: sl.input }
+              : { node: cls, output: sl.output as string },
           spawn: sl.spawn,
         })
 }

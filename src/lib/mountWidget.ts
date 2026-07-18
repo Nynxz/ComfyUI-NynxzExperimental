@@ -27,7 +27,12 @@ interface NodeLike {
   setSize?: (s: [number, number]) => void
   computeSize?: () => [number, number]
   graph?: { setDirtyCanvas?: (a: boolean, b: boolean) => void }
-  addDOMWidget: (name: string, type: string, el: HTMLElement, options?: Record<string, unknown>) => DOMWidget
+  addDOMWidget: (
+    name: string,
+    type: string,
+    el: HTMLElement,
+    options?: Record<string, unknown>,
+  ) => DOMWidget
 }
 
 export interface MountOptions {
@@ -68,7 +73,14 @@ export function mountWidget(node: NodeLike, opts: MountOptions): { widget: DOMWi
   // in fill mode it stretches to the node body instead.
   const inner = document.createElement('div')
   inner.style.width = '100%'
-  if (fill) Object.assign(inner.style, { height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxSizing: 'border-box' })
+  if (fill)
+    Object.assign(inner.style, {
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden',
+      boxSizing: 'border-box',
+    })
   container.appendChild(inner)
 
   const floor = opts.minHeight ?? 40
@@ -81,7 +93,9 @@ export function mountWidget(node: NodeLike, opts: MountOptions): { widget: DOMWi
     hideOnZoom: false,
     serialize,
     getValue: () => stored,
-    setValue: (v: unknown) => { stored = v },
+    setValue: (v: unknown) => {
+      stored = v
+    },
   })
   if (serialize) widget.serializeValue = () => stored
 
@@ -92,7 +106,9 @@ export function mountWidget(node: NodeLike, opts: MountOptions): { widget: DOMWi
         const sz = node.computeSize()
         node.setSize([node.size?.[0] ?? sz[0], sz[1]])
       }
-    } catch { /* layout not ready */ }
+    } catch {
+      /* layout not ready */
+    }
     node.graph?.setDirtyCanvas?.(true, true)
   }
 
@@ -112,7 +128,10 @@ export function mountWidget(node: NodeLike, opts: MountOptions): { widget: DOMWi
       // events (Vue-nodes' WidgetDOM has its own @pointerdown.stop). Neutralize that wrapper
       // too so a press on the body reaches the node. Retry until the renderer parents us.
       if (opts.dragThrough) {
-        const transp = () => { const h = container.parentElement as HTMLElement | null; if (h) h.style.pointerEvents = 'none' }
+        const transp = () => {
+          const h = container.parentElement as HTMLElement | null
+          if (h) h.style.pointerEvents = 'none'
+        }
         transp()
         ;[60, 200, 600, 1500].forEach((t) => window.setTimeout(transp, t))
       }
@@ -125,11 +144,19 @@ export function mountWidget(node: NodeLike, opts: MountOptions): { widget: DOMWi
   widget.onRemove = () => {
     try {
       const l = live.get(widget)
-      if (l) { l.ro?.disconnect(); l.app.unmount(); live.delete(widget) }
+      if (l) {
+        l.ro?.disconnect()
+        l.app.unmount()
+        live.delete(widget)
+      }
     } catch (err) {
       console.error('[Nynxz] widget unmount error', err)
     }
-    try { prevOnRemove?.call(widget) } catch (err) { console.error('[Nynxz] chained onRemove error', err) }
+    try {
+      prevOnRemove?.call(widget)
+    } catch (err) {
+      console.error('[Nynxz] chained onRemove error', err)
+    }
   }
 
   return { widget }

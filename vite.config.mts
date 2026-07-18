@@ -24,7 +24,9 @@ function inlineCssPlugin(): Plugin {
         }
       }
       if (!css) return
-      const jsFile = Object.keys(bundle).find((f) => f === 'main.js' || (f.endsWith('.js') && f.startsWith('main')))
+      const jsFile = Object.keys(bundle).find(
+        (f) => f === 'main.js' || (f.endsWith('.js') && f.startsWith('main')),
+      )
       if (!jsFile) return
       const jsAsset = bundle[jsFile]
       if (!jsAsset || jsAsset.type !== 'chunk') return
@@ -49,7 +51,9 @@ export default defineConfig({
       // pack has no runtime dependency on ZenKit being installed.
       // NOTE: the subpath alias MUST come first — @zenkit/ui also matches @zenkit/ui/… , so
       // first-match ordering keeps the CSS from resolving into index.ts/comfy-bridge.css.
-      '@zenkit/ui/comfy-bridge.css': fileURLToPath(new URL('../ZenKit/packages/ui/src/comfy-bridge.css', import.meta.url)),
+      '@zenkit/ui/comfy-bridge.css': fileURLToPath(
+        new URL('../ZenKit/packages/ui/src/comfy-bridge.css', import.meta.url),
+      ),
       '@zenkit/ui': fileURLToPath(new URL('../ZenKit/packages/ui/src/index.ts', import.meta.url)),
     },
   },

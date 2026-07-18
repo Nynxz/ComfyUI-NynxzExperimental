@@ -3,7 +3,7 @@
 // in getCustomWidgets, an `if (cls === …)` branch in nodeCreated, and a bottom-of-file
 // registerSlotLink call) with a single object that owns everything about a node's frontend.
 
-import type { Component } from "vue"
+import type { Component } from 'vue'
 
 /** A DOM widget mounted in a node body (one Vue component per custom io type). */
 export interface NodeWidgetDef {

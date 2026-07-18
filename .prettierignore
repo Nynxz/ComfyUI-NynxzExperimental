@@ -1,0 +1,6 @@
+# Not ours to format
+node_modules
+web            # built frontend bundle
+temp
+dist
+pnpm-lock.yaml
