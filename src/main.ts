@@ -10,6 +10,8 @@
 import { registerNodes } from '@/lib/registerNodes'
 import fusionNode from '@/fusion/node'
 import loraNode from '@/lora/node'
+import { registerBackground } from '@/background/register'
 import '@zenkit/ui/comfy-bridge.css'
 
 registerNodes('nynxz.experimental', [fusionNode, loraNode])
+registerBackground()
