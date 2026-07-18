@@ -1,5 +1,7 @@
 __pycache__
 temp
+.ruff_cache/
+favorites.json
 
 node_modules/
 # web/ is the built frontend — committed on version bumps (per project convention)

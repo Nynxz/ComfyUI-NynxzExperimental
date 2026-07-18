@@ -1,4 +1,4 @@
-(function(){var s=document.createElement('style');s.setAttribute('data-extension','comfyui-nynxz-experimental');s.textContent="/* Reusable themed scrollbar. Add class=\"zen-scroll\" to ANY scroll container — including\n * teleported popovers/menus that live outside #zenkit-host — for a consistent, slim\n * scrollbar: neutral at rest (blends into the surface), accent/primary on hover.\n *\n * IMPORTANT: only the ::-webkit-scrollbar pseudo-elements are used for the look, because\n * Chromium DISABLES them the moment `scrollbar-color`/`scrollbar-width` is set (it then\n * draws the standard scrollbar, whose default hover lightens the thumb ~white). So the\n * standard props are gated to non-webkit engines (Firefox) via @supports.\n * Override --zen-scrollbar (rest) / --zen-scrollbar-hover (hover) to retint. */\n.zen-scroll::-webkit-scrollbar { width: 10px; height: 10px; }\n.zen-scroll::-webkit-scrollbar-track { background: transparent; }\n.zen-scroll::-webkit-scrollbar-thumb {\n  background: var(--zen-scrollbar, color-mix(in srgb, var(--zen-text, #9aa0aa) 22%, transparent));\n  border: 2px solid transparent;\n  border-radius: var(--zen-radius, 8px);\n  background-clip: padding-box;\n}\n.zen-scroll::-webkit-scrollbar-thumb:hover {\n  background: var(--zen-scrollbar-hover, var(--zen-accent, #6366f1));\n  background-clip: padding-box;\n}\n.zen-scroll::-webkit-scrollbar-corner { background: transparent; }\n\n@supports not selector(::-webkit-scrollbar) {\n  .zen-scroll {\n    scrollbar-width: thin;\n    scrollbar-color: var(--zen-scrollbar, color-mix(in srgb, var(--zen-text, #9aa0aa) 26%, transparent)) transparent;\n  }\n}\n\n/* layout only — scrollbar styling lives in scrollbar.css (.zen-scroll, global) */\n.zen-scroll[data-v-2eaaf1dd] { height: 100%; min-height: 0; overflow-y: auto; overflow-x: hidden;\n}\n.zen-scroll.x[data-v-2eaaf1dd] { overflow-x: auto; overflow-y: hidden;\n}\n\n.zen-btn[data-v-ca361f6f] {\n  display: inline-flex; align-items: center; justify-content: center; gap: 7px; cursor: pointer;\n  font-family: inherit; font-size: 12px; font-weight: 600; padding: 7px 12px; border-radius: var(--zen-radius, 8px);\n  border: 1px solid var(--zen-border, #3a3a44); background: var(--zen-surface, #202026); color: var(--zen-text, #e5e5ea);\n  transition: border-color .12s ease, background .12s ease, color .12s ease, filter .12s ease;\n}\n.zen-btn[data-v-ca361f6f]:hover:not(:disabled) { border-color: var(--zen-accent, #3b82f6);\n}\n.zen-btn[data-v-ca361f6f]:disabled { opacity: .5; cursor: default;\n}\n.zen-btn .mdi[data-v-ca361f6f] { font-size: 15px;\n}\n.zen-btn.block[data-v-ca361f6f] { width: 100%;\n}\n.zen-btn.sm[data-v-ca361f6f] { padding: 5px 9px; font-size: 11px;\n}\n.zen-btn.primary[data-v-ca361f6f] { background: var(--zen-accent, #3b82f6); border-color: var(--zen-accent, #3b82f6); color: var(--zen-accent-text, #fff);\n}\n.zen-btn.primary[data-v-ca361f6f]:hover:not(:disabled) { filter: brightness(1.08);\n}\n.zen-btn.ghost[data-v-ca361f6f] { background: transparent; border-color: transparent;\n}\n.zen-btn.ghost[data-v-ca361f6f]:hover:not(:disabled) { background: color-mix(in srgb, var(--zen-text, #fff) 10%, transparent); border-color: transparent;\n}\n.zen-btn.danger[data-v-ca361f6f]:hover:not(:disabled) { background: #b91c1c; border-color: #b91c1c; color: #fff;\n}\n\n.zen-iconbtn[data-v-e73501c0] {\n  display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px;\n  border: 1px solid transparent; border-radius: var(--zen-radius, 6px); background: none; color: var(--zen-muted, #9aa0aa);\n  cursor: pointer; transition: background .1s ease, color .1s ease;\n}\n.zen-iconbtn[data-v-e73501c0]:hover:not(:disabled) { background: color-mix(in srgb, var(--zen-text, #fff) 12%, transparent); color: var(--zen-text, #e5e5ea);\n}\n.zen-iconbtn.active[data-v-e73501c0] { color: var(--zen-accent, #3b82f6);\n}\n.zen-iconbtn.danger[data-v-e73501c0]:hover:not(:disabled) { background: #b91c1c; color: #fff;\n}\n.zen-iconbtn[data-v-e73501c0]:disabled { opacity: .4; cursor: default;\n}\n.zen-iconbtn .mdi[data-v-e73501c0] { font-size: 16px;\n}\n\n.zen-input[data-v-ec969410] {\n  /* line-height: normal decouples from ComfyUI's inherited (small) line-height; the\n     asymmetric padding (1px more top than bottom) optically centres the glyphs, which\n     otherwise sit a touch high inside the field (line-height alone can't fix that). */\n  width: 100%; box-sizing: border-box; font: inherit; font-size: 12px; line-height: normal;\n  background: var(--zen-input, #1b1b20); color: var(--zen-text, #e5e5ea);\n  border: 1px solid var(--zen-border, #34343c); border-radius: var(--zen-radius, 7px);\n  padding: 8px 9px 6px; transition: border-color .12s ease;\n}\n.zen-input[data-v-ec969410]::placeholder { color: var(--zen-muted, #9aa0aa);\n}\n.zen-input[data-v-ec969410]:focus { outline: none; border-color: var(--zen-accent, #6366f1);\n}\n.zen-input[data-v-ec969410]:disabled { opacity: .5; cursor: default;\n}\n.zen-input.sm[data-v-ec969410] { padding: 6px 8px 4px; font-size: 11px;\n}\n.zen-input.area[data-v-ec969410] { resize: vertical; min-height: 64px; line-height: 1.45;\n}\n\n.zen-num[data-v-45cda24e] { display: inline-flex; align-items: stretch; height: 28px; box-sizing: border-box; border: 1px solid var(--zen-border, #34343c); border-radius: var(--zen-radius, 6px); background: var(--zen-input, #1b1b20); overflow: hidden; user-select: none;\n}\n.zen-num[data-v-45cda24e]:focus-within { border-color: var(--zen-accent, #6366f1);\n}\n.zen-num.disabled[data-v-45cda24e] { opacity: .5; pointer-events: none;\n}\n.zn-step[data-v-45cda24e] { flex: none; width: 21px; border: none; background: none; color: var(--zen-muted, #9aa0aa); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;\n}\n.zn-step.hot[data-v-45cda24e] { color: var(--zen-text, #e5e5ea); background: color-mix(in srgb, var(--zen-text, #fff) 9%, transparent);\n}\n.zn-step .mdi[data-v-45cda24e] { font-size: 13px;\n}\n.zn-val[data-v-45cda24e] { flex: 1; min-width: 40px; display: flex; align-items: center; justify-content: center; cursor: ew-resize; border-left: 1px solid var(--zen-border, #34343c); border-right: 1px solid var(--zen-border, #34343c); padding: 0 2px;\n}\n/* bare: no ±steppers — just a scrub/type value box (for tight inline use, e.g. ZenDimensions) */\n.zen-num.bare .zn-val[data-v-45cda24e] { border-left: none; border-right: none;\n}\n/* The input IS the value display: pointer-events off while blurred so the wrapper handles\n   drag-scrub; on when focused so the caret/selection work. line-height:normal decouples\n   from ComfyUI's inherited (small) line-height. */\n.zn-input[data-v-45cda24e] { width: 100%; background: none; border: none; outline: none; color: var(--zen-text, #e5e5ea); font: inherit; font-size: 11px; line-height: normal; text-align: center; font-variant-numeric: tabular-nums; pointer-events: none; cursor: ew-resize;\n}\n.zn-input.live[data-v-45cda24e] { pointer-events: auto; cursor: text;\n}\n.zn-input[data-v-45cda24e]:disabled { color: var(--zen-muted, #9aa0aa);\n}\n\n/* Teleported menu — NOT scoped (lives at <body>); reads the same --zen-* tokens. */\n.zen-combo-menu {\n  position: fixed; z-index: 11000; display: flex; flex-direction: column; max-height: 360px;\n  background: var(--zen-surface, #202026); border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 8px); box-shadow: 0 12px 34px rgba(0, 0, 0, .5); overflow: hidden;\n  font-family: var(--p-font-family, system-ui, sans-serif); color: var(--zen-text, #e5e5ea);\n}\n.zen-combo-menu .zc-search { display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-bottom: 1px solid var(--zen-border, #34343c);\n}\n.zen-combo-menu .zc-search > .mdi { color: var(--zen-muted, #9aa0aa); font-size: 16px;\n}\n.zen-combo-menu .zc-search input { flex: 1; min-width: 0; background: none; border: none; outline: none; color: inherit; font: inherit; font-size: 12px;\n}\n.zen-combo-menu .zc-clear { border: none; background: none; color: var(--zen-muted, #9aa0aa); cursor: pointer; padding: 0 2px;\n}\n.zen-combo-menu .zc-search-actions { flex: none; display: inline-flex; align-items: center;\n}\n.zen-combo-menu .zc-list { overflow-y: auto; padding: 4px; min-height: 0;\n}\n.zen-combo-menu .zc-virt { position: relative; width: 100%;\n}\n.zen-combo-menu .zc-win { position: absolute; top: 0; left: 0; right: 0;\n}\n.zen-combo-menu .zc-opt { display: flex; align-items: center; gap: 9px; padding: 6px 8px; border-radius: var(--zen-radius, 6px); cursor: pointer; font-size: 12px; box-sizing: border-box; overflow: hidden;\n}\n.zen-combo-menu .zc-opt.active { background: color-mix(in srgb, var(--zen-text, #fff) 10%, transparent);\n}\n.zen-combo-menu .zc-opt.sel { color: var(--zen-accent, #6366f1);\n}\n.zen-combo-menu .zc-opt-lbl { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;\n}\n.zen-combo-menu .zc-sep { height: 1px; margin: 4px 6px; background: var(--zen-border, #34343c);\n}\n.zen-combo-menu .zc-empty { padding: 16px; text-align: center; font-size: 12px; color: var(--zen-muted, #9aa0aa);\n}\n.zen-combo-menu .zc-footer { border-top: 1px solid var(--zen-border, #34343c); padding: 6px;\n}\n/* grid mode: options become responsive cards (e.g. an image picker) */\n.zen-combo-menu.grid .zc-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--zc-grid-min, 92px), 1fr)); gap: 6px; align-content: start;\n}\n.zen-combo-menu.grid .zc-opt { flex-direction: column; align-items: stretch; height: auto; gap: 4px; padding: 4px;\n}\n.zen-combo-menu.grid .zc-empty { grid-column: 1 / -1;\n}\n\n.zen-tg[data-v-30ea6574] { display: inline-flex; border: 1px solid var(--zen-border, #3a3a44); border-radius: var(--zen-radius, 7px); overflow: hidden; background: var(--zen-surface, #202026);\n}\n.zen-tg-b[data-v-30ea6574] { display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 4px 9px; border: none; background: none; color: var(--zen-muted, #9aa0aa); font-size: 11px; font-weight: 600; font-family: inherit; cursor: pointer; transition: background .1s ease, color .1s ease;\n}\n.zen-tg-b + .zen-tg-b[data-v-30ea6574] { border-left: 1px solid var(--zen-border, #3a3a44);\n}\n.zen-tg-b[data-v-30ea6574]:hover { color: var(--zen-text, #e5e5ea);\n}\n.zen-tg-b.on[data-v-30ea6574] { background: color-mix(in srgb, var(--zen-accent, #3b82f6) 20%, transparent); color: var(--zen-accent, #3b82f6);\n}\n.zen-tg-b .mdi[data-v-30ea6574] { font-size: 14px;\n}\n\n.zen-slider[data-v-a2688f55] { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: var(--zen-radius, 999px); background: var(--zen-border, #34343c); outline: none; cursor: pointer;\n}\n.zen-slider[data-v-a2688f55]:disabled { opacity: .5; cursor: default;\n}\n.zen-slider[data-v-a2688f55]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: var(--zen-radius, 50%); background: var(--zen-accent, #6366f1); border: 2px solid var(--zen-bg, #1a1a1f); cursor: pointer; box-shadow: 0 1px 3px rgba(0, 0, 0, .4);\n}\n.zen-slider[data-v-a2688f55]::-moz-range-thumb { width: 14px; height: 14px; border: 2px solid var(--zen-bg, #1a1a1f); border-radius: var(--zen-radius, 50%); background: var(--zen-accent, #6366f1); cursor: pointer;\n}\n.zen-slider[data-v-a2688f55]::-moz-range-track { height: 4px; border-radius: var(--zen-radius, 999px); background: var(--zen-border, #34343c);\n}\n.zen-slider[data-v-a2688f55]:focus-visible { box-shadow: 0 0 0 2px color-mix(in srgb, var(--zen-accent, #6366f1) 50%, transparent);\n}\n\n/* Not scoped — teleported to <body>; reads --zen-* tokens. */\n.zen-modal-back {\n  position: fixed; inset: 0; z-index: 12000; display: flex; align-items: center; justify-content: center;\n  background: rgba(0, 0, 0, .55); backdrop-filter: blur(2px);\n}\n.zen-modal {\n  display: flex; flex-direction: column; max-width: 94vw; max-height: 90vh; overflow: hidden;\n  background: var(--zen-surface, #202026); color: var(--zen-text, #e5e5ea);\n  border: 1px solid var(--zen-border, #34343c); border-radius: calc(var(--zen-radius, 8px) + 2px);\n  box-shadow: 0 24px 70px rgba(0, 0, 0, .6); font-family: var(--p-font-family, system-ui, sans-serif);\n}\n.zen-modal .zm-head { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-bottom: 1px solid var(--zen-border, #34343c); flex: none;\n}\n.zen-modal .zm-title { flex: none; font-size: 13px; font-weight: 600; white-space: nowrap;\n}\n.zen-modal .zm-head-mid { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px;\n}\n.zen-modal .zm-x { border: none; background: none; color: var(--zen-muted, #9aa0aa); cursor: pointer; font-size: 18px; display: inline-flex;\n}\n.zen-modal .zm-x:hover { color: var(--zen-text, #e5e5ea);\n}\n.zen-modal .zm-body { flex: 1; min-height: 0; overflow: auto; padding: 14px;\n}\n.zen-modal .zm-foot { flex: none; border-top: 1px solid var(--zen-border, #34343c); padding: 10px 14px;\n}\n\n/* Fill layout (see mountWidget's `fill`): the widget takes the node body, the image grid\n   takes whatever height is left and scrolls, and the toolbar is pinned under it. Resizing\n   the node therefore shows more images, never more padding. */\n.fg[data-v-ae720eb3] { position: relative; display: flex; flex-direction: column; gap: 7px; height: 100%; min-height: 0; padding: 2px; box-sizing: border-box; font-size: 12px; color: var(--zen-text, #e5e5ea);\n}\n\n/* flex-basis 0 (not auto) so the grid's content can't push the toolbar off the node */\n/* focused programmatically on hover (see armScroll) — never show a ring for it */\n.fg-scroll[data-v-ae720eb3] { flex: 1 1 0; min-height: 0; outline: none;\n}\n.fg-grid[data-v-ae720eb3] { display: grid; grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); gap: 6px; align-items: start; padding-right: 2px;\n}\n.fg-card[data-v-ae720eb3] { display: flex; flex-direction: column; gap: 3px; padding: 4px; border: 1px solid var(--zen-border, #34343c); border-radius: var(--zen-radius, 9px); background: var(--zen-input, #1b1b20); transition: border-color .12s ease, opacity .12s ease;\n}\n.fg-card.off[data-v-ae720eb3] { opacity: .5;\n}\n.fg-card.dragging[data-v-ae720eb3] { opacity: .35;\n}\n.fg-card.over[data-v-ae720eb3] { border-color: var(--zen-accent, #6366f1); box-shadow: 0 0 0 1px var(--zen-accent, #6366f1) inset;\n}\n.fg-thumb[data-v-ae720eb3] { position: relative; width: 100%; aspect-ratio: 1; border-radius: var(--zen-radius, 6px); background: var(--zen-surface, #202026); overflow: hidden; cursor: grab; display: flex; align-items: center; justify-content: center;\n}\n.fg-thumb[data-v-ae720eb3]:active { cursor: grabbing;\n}\n/* contain on black: the encoder letterboxes with real black pixels, so the card shows the\n   actual frame it gets rather than flattering it with a themed backdrop */\n.fg-thumb img[data-v-ae720eb3] { width: 100%; height: 100%; display: block; object-fit: contain; background: #000;\n}\n.fg-ph[data-v-ae720eb3] { font-size: 30px; color: var(--zen-muted, #9aa0aa);\n}\n.fg-ph.warn[data-v-ae720eb3] { color: #e0a33a;\n}\n.fg-idx[data-v-ae720eb3] { position: absolute; top: 4px; left: 4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: var(--zen-radius, 5px); background: rgba(0, 0, 0, .62); color: #fff; font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;\n}\n.fg-acts[data-v-ae720eb3] { position: absolute; top: 4px; right: 4px; display: flex; gap: 3px; opacity: 0; transition: opacity .12s ease;\n}\n.fg-card:hover .fg-acts[data-v-ae720eb3] { opacity: 1;\n}\n.fg-act[data-v-ae720eb3] { width: 19px; height: 19px; padding: 0; border: none; border-radius: var(--zen-radius, 5px); background: rgba(0, 0, 0, .62); color: #fff; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;\n}\n.fg-act[data-v-ae720eb3]:hover { background: var(--zen-accent, #6366f1);\n}\n.fg-act.danger[data-v-ae720eb3]:hover { background: #d9534f;\n}\n.fg-mutemark[data-v-ae720eb3] { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, .45); color: #fff; font-size: 22px; pointer-events: none;\n}\n\n/* name + share ride in the thumb's bottom strip rather than costing the card its own rows */\n.fg-meta[data-v-ae720eb3] { position: absolute; left: 0; right: 0; bottom: 3px; display: flex; align-items: flex-end; gap: 4px; padding: 10px 5px 1px; background: linear-gradient(transparent, rgba(0, 0, 0, .78)); pointer-events: none;\n}\n.fg-name[data-v-ae720eb3] { flex: 1; min-width: 0; font-size: 9.5px; color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, .9); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;\n}\n.fg-pct[data-v-ae720eb3] { flex: none; font-size: 9.5px; font-weight: 700; line-height: 1.25; color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, .9);\n}\n.fg-pct.dim[data-v-ae720eb3] { font-weight: 500; color: var(--zen-muted, #9aa0aa);\n}\n/* the live share of the blend this source claims */\n.fg-share[data-v-ae720eb3] { position: absolute; left: 0; bottom: 0; height: 3px; background: var(--zen-accent, #6366f1); transition: width .12s ease; pointer-events: none;\n}\n.fg-foot[data-v-ae720eb3] { display: flex; align-items: center; gap: 5px;\n}\n.fg-slider[data-v-ae720eb3] { flex: 1; min-width: 0;\n}\n.fg-num[data-v-ae720eb3] { flex: none; width: 46px;\n}\n\n/* fills the scroll area so the empty node reads as one big drop target */\n.fg-empty[data-v-ae720eb3] { height: 100%; min-height: 96px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 18px 8px; text-align: center; color: var(--zen-muted, #9aa0aa); border: 1px dashed var(--zen-border, #34343c); border-radius: var(--zen-radius, 8px); background: color-mix(in srgb, var(--zen-text, #fff) 3%, transparent);\n}\n.fg-empty > .mdi[data-v-ae720eb3] { font-size: 26px; opacity: .8;\n}\n.fg-empty > span[data-v-ae720eb3] { font-size: 11px;\n}\n.fg-empty > small[data-v-ae720eb3] { font-size: 10px; opacity: .7;\n}\n.fg-warn[data-v-ae720eb3] { flex: none; display: flex; align-items: center; gap: 5px; padding: 5px 8px; border-radius: var(--zen-radius, 7px); background: color-mix(in srgb, #e0a33a 14%, transparent); color: #e0a33a; font-size: 10.5px;\n}\n.fg-bar[data-v-ae720eb3] { flex: none; display: flex; align-items: center; gap: 6px;\n}\n.fg-add[data-v-ae720eb3] { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 7px; border: 1px dashed var(--zen-border, #34343c); border-radius: var(--zen-radius, 7px); background: transparent; color: var(--zen-muted, #9aa0aa); font: inherit; font-size: 11px; font-weight: 600; cursor: pointer; transition: border-color .12s ease, color .12s ease, background .12s ease;\n}\n.fg-add[data-v-ae720eb3]:hover:not(:disabled) { border-color: var(--zen-accent, #6366f1); color: var(--zen-text, #e5e5ea); background: color-mix(in srgb, var(--zen-accent, #6366f1) 8%, transparent);\n}\n.fg-add[data-v-ae720eb3]:disabled { opacity: .6; cursor: default;\n}\n.fg-add .mdi[data-v-ae720eb3] { font-size: 15px;\n}\n.fg-add-n[data-v-ae720eb3] { margin-left: 2px; padding: 0 5px; border-radius: var(--zen-radius, 8px); background: color-mix(in srgb, var(--zen-accent, #6366f1) 22%, transparent); color: var(--zen-text, #e5e5ea); font-size: 10px; font-weight: 700;\n}\n.fg-dropmask[data-v-ae720eb3] { position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; border: 2px dashed var(--zen-accent, #6366f1); border-radius: var(--zen-radius, 9px); background: color-mix(in srgb, var(--zen-accent, #6366f1) 16%, rgba(0, 0, 0, .55)); color: var(--zen-text, #e5e5ea); font-size: 11px; font-weight: 600; pointer-events: none;\n}\n.fg-dropmask .mdi[data-v-ae720eb3] { font-size: 28px;\n}\n\n/* browse dialog */\n.fg-search[data-v-ae720eb3] { flex: 1; min-width: 0; max-width: 320px; display: flex;\n}\n.fg-bgrid[data-v-ae720eb3] { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; align-items: start;\n}\n.fg-bcard[data-v-ae720eb3] { display: flex; flex-direction: column; height: 170px; padding: 0; border: 1px solid var(--zen-border, #34343c); border-radius: var(--zen-radius, 9px); background: var(--zen-input, #1b1b20); cursor: pointer; overflow: hidden; text-align: left; color: inherit; font: inherit;\n}\n.fg-bcard[data-v-ae720eb3]:hover { border-color: var(--zen-accent, #6366f1);\n}\n.fg-bcard.sel[data-v-ae720eb3] { border-color: var(--zen-accent, #6366f1); box-shadow: 0 0 0 1px var(--zen-accent, #6366f1) inset;\n}\n.fg-bcard-img[data-v-ae720eb3] { position: relative; flex: 1 1 0; min-height: 0; width: 100%; display: flex; align-items: center; justify-content: center; background: var(--zen-surface, #202026); overflow: hidden;\n}\n.fg-bcard-img img[data-v-ae720eb3] { width: 100%; height: 100%; object-fit: contain; display: block;\n}\n.fg-bcard-tick[data-v-ae720eb3] { position: absolute; top: 5px; right: 5px; width: 22px; height: 22px; border-radius: 50%; background: var(--zen-accent, #6366f1); color: var(--zen-accent-text, #fff); display: inline-flex; align-items: center; justify-content: center; font-size: 14px;\n}\n.fg-bcard-meta[data-v-ae720eb3] { flex: none; height: 38px; box-sizing: border-box; padding: 5px 8px; display: flex; flex-direction: column; justify-content: center; gap: 1px; border-top: 1px solid var(--zen-border, #34343c);\n}\n.fg-bcard-name[data-v-ae720eb3] { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px;\n}\n.fg-bcard-dir[data-v-ae720eb3] { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; color: var(--zen-muted, #9aa0aa);\n}\n.fg-bgrid-empty[data-v-ae720eb3] { grid-column: 1 / -1; text-align: center; color: var(--zen-muted, #9aa0aa); padding: 30px;\n}\n/* ZenKit ↔ ComfyUI theme bridge — the runtime-free way to theme @zenkit/ui.\n *\n * @zenkit/ui components read --zen-* tokens. WITH the ZenKit runtime installed,\n * @zenkit/core sets those from the active theme pack (the derivation in @zenkit/theme's\n * zen.ts → zenAliases). Consumers that use @zenkit/ui WITHOUT the runtime import this file\n * instead: it maps the same --zen-* set straight onto ComfyUI's native theme variables, so\n * the components follow the user's selected ComfyUI theme with zero JS.\n *\n * Declared at :root so teleported overlays (ZenPopover / ZenCombo menus, ZenModal) — which\n * mount outside any component subtree — pick the tokens up too. The right-hand fallbacks keep\n * every token sane if ComfyUI renames or drops a variable. Kept in lockstep with zen.ts: the\n * same 10 tokens, sourced from the host instead of a pack. (The other --zen-* tokens the\n * components use — glass, mono, scrollbar, switch-radius — resolve through inline fallbacks\n * that chain back to these, so this set is sufficient on its own.)\n *\n * Import once, near your extension entry:  import '@zenkit/ui/comfy-bridge.css'\n */\n:root {\n  --zen-bg: var(--comfy-menu-bg, #1a1a1f);\n  --zen-surface: var(--comfy-menu-secondary-bg, #202026);\n  --zen-surface-2: var(--comfy-menu-secondary-bg, #26262d);\n  --zen-input: var(--comfy-input-bg, #1b1b20);\n  --zen-border: var(--border-color, #34343c);\n  --zen-text: var(--input-text, var(--fg-color, #e5e5ea));\n  --zen-muted: var(--descrip-text, #9aa0aa);\n  --zen-accent: var(--p-primary-color, #6366f1);\n  --zen-accent-text: var(--p-button-text-primary-color, #fff);\n  --zen-radius: var(--border-radius-base, 7px);\n}\n";document.head.appendChild(s);})();import { app } from "../../../scripts/app.js";
+(function(){var s=document.createElement('style');s.setAttribute('data-extension','comfyui-nynxz-experimental');s.textContent="/* Reusable themed scrollbar. Add class=\"zen-scroll\" to ANY scroll container — including\n * teleported popovers/menus that live outside #zenkit-host — for a consistent, slim\n * scrollbar: neutral at rest (blends into the surface), accent/primary on hover.\n *\n * IMPORTANT: only the ::-webkit-scrollbar pseudo-elements are used for the look, because\n * Chromium DISABLES them the moment `scrollbar-color`/`scrollbar-width` is set (it then\n * draws the standard scrollbar, whose default hover lightens the thumb ~white). So the\n * standard props are gated to non-webkit engines (Firefox) via @supports.\n * Override --zen-scrollbar (rest) / --zen-scrollbar-hover (hover) to retint. */\n.zen-scroll::-webkit-scrollbar { width: 10px; height: 10px; }\n.zen-scroll::-webkit-scrollbar-track { background: transparent; }\n.zen-scroll::-webkit-scrollbar-thumb {\n  background: var(--zen-scrollbar, color-mix(in srgb, var(--zen-text, #9aa0aa) 22%, transparent));\n  border: 2px solid transparent;\n  border-radius: var(--zen-radius, 8px);\n  background-clip: padding-box;\n}\n.zen-scroll::-webkit-scrollbar-thumb:hover {\n  background: var(--zen-scrollbar-hover, var(--zen-accent, #6366f1));\n  background-clip: padding-box;\n}\n.zen-scroll::-webkit-scrollbar-corner { background: transparent; }\n\n@supports not selector(::-webkit-scrollbar) {\n  .zen-scroll {\n    scrollbar-width: thin;\n    scrollbar-color: var(--zen-scrollbar, color-mix(in srgb, var(--zen-text, #9aa0aa) 26%, transparent)) transparent;\n  }\n}\n\n/* layout only — scrollbar styling lives in scrollbar.css (.zen-scroll, global) */\n.zen-scroll[data-v-2eaaf1dd] { height: 100%; min-height: 0; overflow-y: auto; overflow-x: hidden;\n}\n.zen-scroll.x[data-v-2eaaf1dd] { overflow-x: auto; overflow-y: hidden;\n}\n\n.zen-btn[data-v-ca361f6f] {\n  display: inline-flex; align-items: center; justify-content: center; gap: 7px; cursor: pointer;\n  font-family: inherit; font-size: 12px; font-weight: 600; padding: 7px 12px; border-radius: var(--zen-radius, 8px);\n  border: 1px solid var(--zen-border, #3a3a44); background: var(--zen-surface, #202026); color: var(--zen-text, #e5e5ea);\n  transition: border-color .12s ease, background .12s ease, color .12s ease, filter .12s ease;\n}\n.zen-btn[data-v-ca361f6f]:hover:not(:disabled) { border-color: var(--zen-accent, #3b82f6);\n}\n.zen-btn[data-v-ca361f6f]:disabled { opacity: .5; cursor: default;\n}\n.zen-btn .mdi[data-v-ca361f6f] { font-size: 15px;\n}\n.zen-btn.block[data-v-ca361f6f] { width: 100%;\n}\n.zen-btn.sm[data-v-ca361f6f] { padding: 5px 9px; font-size: 11px;\n}\n.zen-btn.primary[data-v-ca361f6f] { background: var(--zen-accent, #3b82f6); border-color: var(--zen-accent, #3b82f6); color: var(--zen-accent-text, #fff);\n}\n.zen-btn.primary[data-v-ca361f6f]:hover:not(:disabled) { filter: brightness(1.08);\n}\n.zen-btn.ghost[data-v-ca361f6f] { background: transparent; border-color: transparent;\n}\n.zen-btn.ghost[data-v-ca361f6f]:hover:not(:disabled) { background: color-mix(in srgb, var(--zen-text, #fff) 10%, transparent); border-color: transparent;\n}\n.zen-btn.danger[data-v-ca361f6f]:hover:not(:disabled) { background: #b91c1c; border-color: #b91c1c; color: #fff;\n}\n\n.zen-iconbtn[data-v-e73501c0] {\n  display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px;\n  border: 1px solid transparent; border-radius: var(--zen-radius, 6px); background: none; color: var(--zen-muted, #9aa0aa);\n  cursor: pointer; transition: background .1s ease, color .1s ease;\n}\n.zen-iconbtn[data-v-e73501c0]:hover:not(:disabled) { background: color-mix(in srgb, var(--zen-text, #fff) 12%, transparent); color: var(--zen-text, #e5e5ea);\n}\n.zen-iconbtn.active[data-v-e73501c0] { color: var(--zen-accent, #3b82f6);\n}\n.zen-iconbtn.danger[data-v-e73501c0]:hover:not(:disabled) { background: #b91c1c; color: #fff;\n}\n.zen-iconbtn[data-v-e73501c0]:disabled { opacity: .4; cursor: default;\n}\n.zen-iconbtn .mdi[data-v-e73501c0] { font-size: 16px;\n}\n\n.zen-input[data-v-ec969410] {\n  /* line-height: normal decouples from ComfyUI's inherited (small) line-height; the\n     asymmetric padding (1px more top than bottom) optically centres the glyphs, which\n     otherwise sit a touch high inside the field (line-height alone can't fix that). */\n  width: 100%; box-sizing: border-box; font: inherit; font-size: 12px; line-height: normal;\n  background: var(--zen-input, #1b1b20); color: var(--zen-text, #e5e5ea);\n  border: 1px solid var(--zen-border, #34343c); border-radius: var(--zen-radius, 7px);\n  padding: 8px 9px 6px; transition: border-color .12s ease;\n}\n.zen-input[data-v-ec969410]::placeholder { color: var(--zen-muted, #9aa0aa);\n}\n.zen-input[data-v-ec969410]:focus { outline: none; border-color: var(--zen-accent, #6366f1);\n}\n.zen-input[data-v-ec969410]:disabled { opacity: .5; cursor: default;\n}\n.zen-input.sm[data-v-ec969410] { padding: 6px 8px 4px; font-size: 11px;\n}\n.zen-input.area[data-v-ec969410] { resize: vertical; min-height: 64px; line-height: 1.45;\n}\n\n.zen-num[data-v-45cda24e] { display: inline-flex; align-items: stretch; height: 28px; box-sizing: border-box; border: 1px solid var(--zen-border, #34343c); border-radius: var(--zen-radius, 6px); background: var(--zen-input, #1b1b20); overflow: hidden; user-select: none;\n}\n.zen-num[data-v-45cda24e]:focus-within { border-color: var(--zen-accent, #6366f1);\n}\n.zen-num.disabled[data-v-45cda24e] { opacity: .5; pointer-events: none;\n}\n.zn-step[data-v-45cda24e] { flex: none; width: 21px; border: none; background: none; color: var(--zen-muted, #9aa0aa); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;\n}\n.zn-step.hot[data-v-45cda24e] { color: var(--zen-text, #e5e5ea); background: color-mix(in srgb, var(--zen-text, #fff) 9%, transparent);\n}\n.zn-step .mdi[data-v-45cda24e] { font-size: 13px;\n}\n.zn-val[data-v-45cda24e] { flex: 1; min-width: 40px; display: flex; align-items: center; justify-content: center; cursor: ew-resize; border-left: 1px solid var(--zen-border, #34343c); border-right: 1px solid var(--zen-border, #34343c); padding: 0 2px;\n}\n/* bare: no ±steppers — just a scrub/type value box (for tight inline use, e.g. ZenDimensions) */\n.zen-num.bare .zn-val[data-v-45cda24e] { border-left: none; border-right: none;\n}\n/* The input IS the value display: pointer-events off while blurred so the wrapper handles\n   drag-scrub; on when focused so the caret/selection work. line-height:normal decouples\n   from ComfyUI's inherited (small) line-height. */\n.zn-input[data-v-45cda24e] { width: 100%; background: none; border: none; outline: none; color: var(--zen-text, #e5e5ea); font: inherit; font-size: 11px; line-height: normal; text-align: center; font-variant-numeric: tabular-nums; pointer-events: none; cursor: ew-resize;\n}\n.zn-input.live[data-v-45cda24e] { pointer-events: auto; cursor: text;\n}\n.zn-input[data-v-45cda24e]:disabled { color: var(--zen-muted, #9aa0aa);\n}\n\n.zen-combo[data-v-1c65dbd1] { position: relative; width: 100%;\n}\n.zc-trigger[data-v-1c65dbd1] {\n  display: flex; align-items: center; gap: 6px; width: 100%; box-sizing: border-box; min-height: 28px;\n  background: var(--zen-input, #1b1b20); color: var(--zen-text, #e5e5ea);\n  border: 1px solid var(--zen-border, #34343c); border-radius: var(--zen-radius, 7px);\n  padding: 4px 8px; font: inherit; font-size: 12px; cursor: pointer; text-align: left;\n  transition: border-color .12s ease;\n}\n.zc-trigger[data-v-1c65dbd1]:hover:not(:disabled) { border-color: var(--zen-accent, #6366f1);\n}\n.zc-trigger[data-v-1c65dbd1]:disabled { opacity: .5; cursor: default;\n}\n.zen-combo.open .zc-trigger[data-v-1c65dbd1] { border-color: var(--zen-accent, #6366f1);\n}\n.zc-current[data-v-1c65dbd1] { flex: 1; min-width: 0; overflow: hidden;\n}\n.zc-caret[data-v-1c65dbd1] { flex: none; color: var(--zen-muted, #9aa0aa); transition: transform .12s ease;\n}\n.zen-combo.open .zc-caret[data-v-1c65dbd1] { transform: rotate(180deg);\n}\n\n/* Teleported menu — NOT scoped (lives at <body>); reads the same --zen-* tokens. */\n.zen-combo-menu {\n  position: fixed; z-index: 11000; display: flex; flex-direction: column; max-height: 360px;\n  background: var(--zen-surface, #202026); border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 8px); box-shadow: 0 12px 34px rgba(0, 0, 0, .5); overflow: hidden;\n  font-family: var(--p-font-family, system-ui, sans-serif); color: var(--zen-text, #e5e5ea);\n}\n.zen-combo-menu .zc-search { display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-bottom: 1px solid var(--zen-border, #34343c);\n}\n.zen-combo-menu .zc-search > .mdi { color: var(--zen-muted, #9aa0aa); font-size: 16px;\n}\n.zen-combo-menu .zc-search input { flex: 1; min-width: 0; background: none; border: none; outline: none; color: inherit; font: inherit; font-size: 12px;\n}\n.zen-combo-menu .zc-clear { border: none; background: none; color: var(--zen-muted, #9aa0aa); cursor: pointer; padding: 0 2px;\n}\n.zen-combo-menu .zc-search-actions { flex: none; display: inline-flex; align-items: center;\n}\n.zen-combo-menu .zc-list { overflow-y: auto; padding: 4px; min-height: 0;\n}\n.zen-combo-menu .zc-virt { position: relative; width: 100%;\n}\n.zen-combo-menu .zc-win { position: absolute; top: 0; left: 0; right: 0;\n}\n.zen-combo-menu .zc-opt { display: flex; align-items: center; gap: 9px; padding: 6px 8px; border-radius: var(--zen-radius, 6px); cursor: pointer; font-size: 12px; box-sizing: border-box; overflow: hidden;\n}\n.zen-combo-menu .zc-opt.active { background: color-mix(in srgb, var(--zen-text, #fff) 10%, transparent);\n}\n.zen-combo-menu .zc-opt.sel { color: var(--zen-accent, #6366f1);\n}\n.zen-combo-menu .zc-opt-lbl { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;\n}\n.zen-combo-menu .zc-sep { height: 1px; margin: 4px 6px; background: var(--zen-border, #34343c);\n}\n.zen-combo-menu .zc-empty { padding: 16px; text-align: center; font-size: 12px; color: var(--zen-muted, #9aa0aa);\n}\n.zen-combo-menu .zc-footer { border-top: 1px solid var(--zen-border, #34343c); padding: 6px;\n}\n/* grid mode: options become responsive cards (e.g. an image picker) */\n.zen-combo-menu.grid .zc-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--zc-grid-min, 92px), 1fr)); gap: 6px; align-content: start;\n}\n.zen-combo-menu.grid .zc-opt { flex-direction: column; align-items: stretch; height: auto; gap: 4px; padding: 4px;\n}\n.zen-combo-menu.grid .zc-empty { grid-column: 1 / -1;\n}\n\n/* radius follows the theme's rounding token (--zen-radius, bridged from --radius), so\n   square/straight-edge themes like Mecha get a square toggle. Falls back to a pill +\n   round knob; override just the switch with --zen-switch-radius if needed. */\n.zen-switch[data-v-0bd24040] { position: relative; flex: 0 0 auto; width: 42px; height: 23px; padding: 0; border: 1px solid var(--zen-border, #3a3a44); border-radius: var(--zen-switch-radius, var(--zen-radius, 999px)); background: var(--zen-surface, #202026); cursor: pointer; transition: background .15s ease, border-color .15s ease;\n}\n.zen-switch.on[data-v-0bd24040] { background: var(--zen-accent, #3b82f6); border-color: var(--zen-accent, #3b82f6);\n}\n.zen-switch[data-v-0bd24040]:disabled { opacity: .5; cursor: default;\n}\n.zen-switch .knob[data-v-0bd24040] { position: absolute; top: 1px; left: 1px; width: 19px; height: 19px; border-radius: var(--zen-switch-radius, var(--zen-radius, 50%)); background: #fff; display: flex; align-items: center; justify-content: center; transition: transform .15s ease; box-shadow: 0 1px 2px rgba(0, 0, 0, .35);\n}\n.zen-switch.on .knob[data-v-0bd24040] { transform: translateX(19px);\n}\n.zen-switch .knob .mdi[data-v-0bd24040] { font-size: 12px; color: var(--zen-muted, #9aa0aa);\n}\n.zen-switch.on .knob .mdi[data-v-0bd24040] { color: var(--zen-accent, #3b82f6);\n}\n\n.zen-tg[data-v-30ea6574] { display: inline-flex; border: 1px solid var(--zen-border, #3a3a44); border-radius: var(--zen-radius, 7px); overflow: hidden; background: var(--zen-surface, #202026);\n}\n.zen-tg-b[data-v-30ea6574] { display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 4px 9px; border: none; background: none; color: var(--zen-muted, #9aa0aa); font-size: 11px; font-weight: 600; font-family: inherit; cursor: pointer; transition: background .1s ease, color .1s ease;\n}\n.zen-tg-b + .zen-tg-b[data-v-30ea6574] { border-left: 1px solid var(--zen-border, #3a3a44);\n}\n.zen-tg-b[data-v-30ea6574]:hover { color: var(--zen-text, #e5e5ea);\n}\n.zen-tg-b.on[data-v-30ea6574] { background: color-mix(in srgb, var(--zen-accent, #3b82f6) 20%, transparent); color: var(--zen-accent, #3b82f6);\n}\n.zen-tg-b .mdi[data-v-30ea6574] { font-size: 14px;\n}\n\n.zen-slider[data-v-a2688f55] { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: var(--zen-radius, 999px); background: var(--zen-border, #34343c); outline: none; cursor: pointer;\n}\n.zen-slider[data-v-a2688f55]:disabled { opacity: .5; cursor: default;\n}\n.zen-slider[data-v-a2688f55]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: var(--zen-radius, 50%); background: var(--zen-accent, #6366f1); border: 2px solid var(--zen-bg, #1a1a1f); cursor: pointer; box-shadow: 0 1px 3px rgba(0, 0, 0, .4);\n}\n.zen-slider[data-v-a2688f55]::-moz-range-thumb { width: 14px; height: 14px; border: 2px solid var(--zen-bg, #1a1a1f); border-radius: var(--zen-radius, 50%); background: var(--zen-accent, #6366f1); cursor: pointer;\n}\n.zen-slider[data-v-a2688f55]::-moz-range-track { height: 4px; border-radius: var(--zen-radius, 999px); background: var(--zen-border, #34343c);\n}\n.zen-slider[data-v-a2688f55]:focus-visible { box-shadow: 0 0 0 2px color-mix(in srgb, var(--zen-accent, #6366f1) 50%, transparent);\n}\n\n/* Not scoped — teleported to <body>; reads --zen-* tokens. */\n.zen-modal-back {\n  position: fixed; inset: 0; z-index: 12000; display: flex; align-items: center; justify-content: center;\n  background: rgba(0, 0, 0, .55); backdrop-filter: blur(2px);\n}\n.zen-modal {\n  display: flex; flex-direction: column; max-width: 94vw; max-height: 90vh; overflow: hidden;\n  background: var(--zen-surface, #202026); color: var(--zen-text, #e5e5ea);\n  border: 1px solid var(--zen-border, #34343c); border-radius: calc(var(--zen-radius, 8px) + 2px);\n  box-shadow: 0 24px 70px rgba(0, 0, 0, .6); font-family: var(--p-font-family, system-ui, sans-serif);\n}\n.zen-modal .zm-head { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-bottom: 1px solid var(--zen-border, #34343c); flex: none;\n}\n.zen-modal .zm-title { flex: none; font-size: 13px; font-weight: 600; white-space: nowrap;\n}\n.zen-modal .zm-head-mid { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px;\n}\n.zen-modal .zm-x { border: none; background: none; color: var(--zen-muted, #9aa0aa); cursor: pointer; font-size: 18px; display: inline-flex;\n}\n.zen-modal .zm-x:hover { color: var(--zen-text, #e5e5ea);\n}\n.zen-modal .zm-body { flex: 1; min-height: 0; overflow: auto; padding: 14px;\n}\n.zen-modal .zm-foot { flex: none; border-top: 1px solid var(--zen-border, #34343c); padding: 10px 14px;\n}\n\n/* Fill layout (see mountWidget's `fill`): the widget takes the node body, the image grid\n   takes whatever height is left and scrolls, and the toolbar is pinned under it. Resizing\n   the node therefore shows more images, never more padding. */\n.fg[data-v-4524946b] {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  gap: 7px;\n  height: 100%;\n  min-height: 0;\n  padding: 2px;\n  box-sizing: border-box;\n  font-size: 12px;\n  color: var(--zen-text, #e5e5ea);\n}\n\n/* flex-basis 0 (not auto) so the grid's content can't push the toolbar off the node */\n/* focused programmatically on hover (see armScroll) — never show a ring for it */\n.fg-scroll[data-v-4524946b] {\n  flex: 1 1 0;\n  min-height: 0;\n  outline: none;\n}\n.fg-grid[data-v-4524946b] {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));\n  gap: 6px;\n  align-items: start;\n  padding-right: 2px;\n}\n.fg-card[data-v-4524946b] {\n  display: flex;\n  flex-direction: column;\n  gap: 3px;\n  padding: 4px;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 9px);\n  background: var(--zen-input, #1b1b20);\n  transition:\n    border-color 0.12s ease,\n    opacity 0.12s ease;\n}\n.fg-card.off[data-v-4524946b] {\n  opacity: 0.5;\n}\n.fg-card.dragging[data-v-4524946b] {\n  opacity: 0.35;\n}\n.fg-card.over[data-v-4524946b] {\n  border-color: var(--zen-accent, #6366f1);\n  box-shadow: 0 0 0 1px var(--zen-accent, #6366f1) inset;\n}\n.fg-thumb[data-v-4524946b] {\n  position: relative;\n  width: 100%;\n  aspect-ratio: 1;\n  border-radius: var(--zen-radius, 6px);\n  background: var(--zen-surface, #202026);\n  overflow: hidden;\n  cursor: grab;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.fg-thumb[data-v-4524946b]:active {\n  cursor: grabbing;\n}\n/* contain on black: the encoder letterboxes with real black pixels, so the card shows the\n   actual frame it gets rather than flattering it with a themed backdrop */\n.fg-thumb img[data-v-4524946b] {\n  width: 100%;\n  height: 100%;\n  display: block;\n  object-fit: contain;\n  background: #000;\n}\n.fg-ph[data-v-4524946b] {\n  font-size: 30px;\n  color: var(--zen-muted, #9aa0aa);\n}\n.fg-ph.warn[data-v-4524946b] {\n  color: #e0a33a;\n}\n.fg-idx[data-v-4524946b] {\n  position: absolute;\n  top: 4px;\n  left: 4px;\n  min-width: 16px;\n  height: 16px;\n  padding: 0 4px;\n  border-radius: var(--zen-radius, 5px);\n  background: rgba(0, 0, 0, 0.62);\n  color: #fff;\n  font-size: 10px;\n  font-weight: 700;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n}\n.fg-acts[data-v-4524946b] {\n  position: absolute;\n  top: 4px;\n  right: 4px;\n  display: flex;\n  gap: 3px;\n  opacity: 0;\n  transition: opacity 0.12s ease;\n}\n.fg-card:hover .fg-acts[data-v-4524946b] {\n  opacity: 1;\n}\n.fg-act[data-v-4524946b] {\n  width: 19px;\n  height: 19px;\n  padding: 0;\n  border: none;\n  border-radius: var(--zen-radius, 5px);\n  background: rgba(0, 0, 0, 0.62);\n  color: #fff;\n  font-size: 12px;\n  cursor: pointer;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n}\n.fg-act[data-v-4524946b]:hover {\n  background: var(--zen-accent, #6366f1);\n}\n.fg-act.danger[data-v-4524946b]:hover {\n  background: #d9534f;\n}\n.fg-mutemark[data-v-4524946b] {\n  position: absolute;\n  inset: 0;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background: rgba(0, 0, 0, 0.45);\n  color: #fff;\n  font-size: 22px;\n  pointer-events: none;\n}\n\n/* name + share ride in the thumb's bottom strip rather than costing the card its own rows */\n.fg-meta[data-v-4524946b] {\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 3px;\n  display: flex;\n  align-items: flex-end;\n  gap: 4px;\n  padding: 10px 5px 1px;\n  background: linear-gradient(transparent, rgba(0, 0, 0, 0.78));\n  pointer-events: none;\n}\n.fg-name[data-v-4524946b] {\n  flex: 1;\n  min-width: 0;\n  font-size: 9.5px;\n  color: #fff;\n  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.fg-pct[data-v-4524946b] {\n  flex: none;\n  font-size: 9.5px;\n  font-weight: 700;\n  line-height: 1.25;\n  color: #fff;\n  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);\n}\n.fg-pct.dim[data-v-4524946b] {\n  font-weight: 500;\n  color: var(--zen-muted, #9aa0aa);\n}\n/* the live share of the blend this source claims */\n.fg-share[data-v-4524946b] {\n  position: absolute;\n  left: 0;\n  bottom: 0;\n  height: 3px;\n  background: var(--zen-accent, #6366f1);\n  transition: width 0.12s ease;\n  pointer-events: none;\n}\n.fg-foot[data-v-4524946b] {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n}\n.fg-slider[data-v-4524946b] {\n  flex: 1;\n  min-width: 0;\n}\n.fg-num[data-v-4524946b] {\n  flex: none;\n  width: 46px;\n}\n\n/* fills the scroll area so the empty node reads as one big drop target */\n.fg-empty[data-v-4524946b] {\n  height: 100%;\n  min-height: 96px;\n  box-sizing: border-box;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 4px;\n  padding: 18px 8px;\n  text-align: center;\n  color: var(--zen-muted, #9aa0aa);\n  border: 1px dashed var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 8px);\n  background: color-mix(in srgb, var(--zen-text, #fff) 3%, transparent);\n}\n.fg-empty > .mdi[data-v-4524946b] {\n  font-size: 26px;\n  opacity: 0.8;\n}\n.fg-empty > span[data-v-4524946b] {\n  font-size: 11px;\n}\n.fg-empty > small[data-v-4524946b] {\n  font-size: 10px;\n  opacity: 0.7;\n}\n.fg-warn[data-v-4524946b] {\n  flex: none;\n  display: flex;\n  align-items: center;\n  gap: 5px;\n  padding: 5px 8px;\n  border-radius: var(--zen-radius, 7px);\n  background: color-mix(in srgb, #e0a33a 14%, transparent);\n  color: #e0a33a;\n  font-size: 10.5px;\n}\n.fg-bar[data-v-4524946b] {\n  flex: none;\n  display: flex;\n  align-items: center;\n  gap: 6px;\n}\n.fg-add[data-v-4524946b] {\n  flex: 1;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  padding: 7px;\n  border: 1px dashed var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 7px);\n  background: transparent;\n  color: var(--zen-muted, #9aa0aa);\n  font: inherit;\n  font-size: 11px;\n  font-weight: 600;\n  cursor: pointer;\n  transition:\n    border-color 0.12s ease,\n    color 0.12s ease,\n    background 0.12s ease;\n}\n.fg-add[data-v-4524946b]:hover:not(:disabled) {\n  border-color: var(--zen-accent, #6366f1);\n  color: var(--zen-text, #e5e5ea);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 8%, transparent);\n}\n.fg-add[data-v-4524946b]:disabled {\n  opacity: 0.6;\n  cursor: default;\n}\n.fg-add .mdi[data-v-4524946b] {\n  font-size: 15px;\n}\n.fg-add-n[data-v-4524946b] {\n  margin-left: 2px;\n  padding: 0 5px;\n  border-radius: var(--zen-radius, 8px);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 22%, transparent);\n  color: var(--zen-text, #e5e5ea);\n  font-size: 10px;\n  font-weight: 700;\n}\n.fg-dropmask[data-v-4524946b] {\n  position: absolute;\n  inset: 0;\n  z-index: 5;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  border: 2px dashed var(--zen-accent, #6366f1);\n  border-radius: var(--zen-radius, 9px);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 16%, rgba(0, 0, 0, 0.55));\n  color: var(--zen-text, #e5e5ea);\n  font-size: 11px;\n  font-weight: 600;\n  pointer-events: none;\n}\n.fg-dropmask .mdi[data-v-4524946b] {\n  font-size: 28px;\n}\n\n/* browse dialog */\n.fg-search[data-v-4524946b] {\n  flex: 1;\n  min-width: 0;\n  max-width: 320px;\n  display: flex;\n}\n.fg-bgrid[data-v-4524946b] {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));\n  gap: 12px;\n  align-items: start;\n}\n.fg-bcard[data-v-4524946b] {\n  display: flex;\n  flex-direction: column;\n  height: 170px;\n  padding: 0;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 9px);\n  background: var(--zen-input, #1b1b20);\n  cursor: pointer;\n  overflow: hidden;\n  text-align: left;\n  color: inherit;\n  font: inherit;\n}\n.fg-bcard[data-v-4524946b]:hover {\n  border-color: var(--zen-accent, #6366f1);\n}\n.fg-bcard.sel[data-v-4524946b] {\n  border-color: var(--zen-accent, #6366f1);\n  box-shadow: 0 0 0 1px var(--zen-accent, #6366f1) inset;\n}\n.fg-bcard-img[data-v-4524946b] {\n  position: relative;\n  flex: 1 1 0;\n  min-height: 0;\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background: var(--zen-surface, #202026);\n  overflow: hidden;\n}\n.fg-bcard-img img[data-v-4524946b] {\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n  display: block;\n}\n.fg-bcard-tick[data-v-4524946b] {\n  position: absolute;\n  top: 5px;\n  right: 5px;\n  width: 22px;\n  height: 22px;\n  border-radius: 50%;\n  background: var(--zen-accent, #6366f1);\n  color: var(--zen-accent-text, #fff);\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 14px;\n}\n.fg-bcard-meta[data-v-4524946b] {\n  flex: none;\n  height: 38px;\n  box-sizing: border-box;\n  padding: 5px 8px;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  gap: 1px;\n  border-top: 1px solid var(--zen-border, #34343c);\n}\n.fg-bcard-name[data-v-4524946b] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12px;\n}\n.fg-bcard-dir[data-v-4524946b] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 10px;\n  color: var(--zen-muted, #9aa0aa);\n}\n.fg-bgrid-empty[data-v-4524946b] {\n  grid-column: 1 / -1;\n  text-align: center;\n  color: var(--zen-muted, #9aa0aa);\n  padding: 30px;\n}\n\n/* natural content flow — the node auto-grows to fit (see mountWidget), so rows are never\n   scrolled and the Add button simply follows the last row. */\n.ls[data-v-da184183] {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  padding: 2px;\n  box-sizing: border-box;\n  font-size: 12px;\n  color: var(--zen-text, #e5e5ea);\n}\n.ls-mid[data-v-da184183] {\n  display: flex;\n  flex-direction: column;\n}\n.ls-rows[data-v-da184183] {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n.ls-empty[data-v-da184183] {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 5px;\n  padding: 14px 8px;\n  text-align: center;\n  color: var(--zen-muted, #9aa0aa);\n  border: 1px dashed var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 8px);\n  background: color-mix(in srgb, var(--zen-text, #fff) 3%, transparent);\n}\n.ls-empty > .mdi[data-v-da184183] {\n  font-size: 24px;\n  opacity: 0.8;\n}\n.ls-empty > span[data-v-da184183] {\n  font-size: 11px;\n}\n.ls-row[data-v-da184183] {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n}\n.ls-row.off[data-v-da184183] {\n  opacity: 0.5;\n}\n.ls-pick[data-v-da184183] {\n  flex: 1;\n  min-width: 0;\n}\n/* fixed width so every row's combo lines up regardless of the strength digits */\n.ls-str[data-v-da184183] {\n  flex: none;\n  width: 84px;\n}\n.ls-foot[data-v-da184183] {\n  flex: none;\n  display: flex;\n  align-items: center;\n  gap: 6px;\n}\n.ls-add[data-v-da184183] {\n  flex: 1;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  padding: 7px;\n  border: 1px dashed var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 7px);\n  background: transparent;\n  color: var(--zen-muted, #9aa0aa);\n  font: inherit;\n  font-size: 11px;\n  font-weight: 600;\n  cursor: pointer;\n  transition:\n    border-color 0.12s ease,\n    color 0.12s ease,\n    background 0.12s ease;\n}\n.ls-add[data-v-da184183]:hover {\n  border-color: var(--zen-accent, #6366f1);\n  color: var(--zen-text, #e5e5ea);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 8%, transparent);\n}\n.ls-add .mdi[data-v-da184183] {\n  font-size: 15px;\n}\n.ls-add-n[data-v-da184183] {\n  margin-left: 4px;\n  padding: 0 5px;\n  border-radius: var(--zen-radius, 8px);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 22%, transparent);\n  color: var(--zen-text, #e5e5ea);\n  font-size: 10px;\n  font-weight: 700;\n}\n\n/* browse-modal folder navigation */\n.ls-crumbs[data-v-da184183] {\n  display: flex;\n  align-items: center;\n  flex-wrap: wrap;\n  gap: 2px;\n  padding-bottom: 10px;\n}\n.ls-crumb[data-v-da184183] {\n  background: none;\n  border: none;\n  cursor: pointer;\n  font: inherit;\n  font-size: 12px;\n  padding: 2px 6px;\n  border-radius: var(--zen-radius, 5px);\n  color: var(--zen-muted, #9aa0aa);\n}\n.ls-crumb[data-v-da184183]:hover {\n  color: var(--zen-text, #e5e5ea);\n  background: color-mix(in srgb, var(--zen-text, #fff) 6%, transparent);\n}\n.ls-crumb.on[data-v-da184183] {\n  color: var(--zen-text, #e5e5ea);\n  font-weight: 600;\n}\n.ls-crumbs .mdi[data-v-da184183] {\n  color: var(--zen-muted, #9aa0aa);\n  font-size: 14px;\n}\n.ls-folder .ls-card-img[data-v-da184183] {\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 8%, var(--zen-surface, #202026));\n}\n.ls-folder .ls-card-img > .mdi[data-v-da184183] {\n  font-size: 40px;\n  color: var(--zen-accent, #6366f1);\n}\n.ls-sel[data-v-da184183] {\n  display: flex;\n  align-items: center;\n  gap: 7px;\n  min-width: 0;\n}\n.ls-sel-name[data-v-da184183] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.ls-thumb[data-v-da184183] {\n  flex: none;\n  box-sizing: border-box;\n  width: 40px;\n  height: 40px;\n  object-fit: contain;\n  border-radius: var(--zen-radius, 6px);\n  background: var(--zen-input, #1b1b20);\n  border: 1px solid var(--zen-border, #34343c);\n}\n.ls-thumb.sm[data-v-da184183] {\n  width: 18px;\n  height: 18px;\n  border-radius: var(--zen-radius, 5px);\n}\n.ls-thumb.ph[data-v-da184183] {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--zen-muted, #9aa0aa);\n  font-size: 20px;\n}\n.ls-thumb.sm.ph[data-v-da184183] {\n  font-size: 11px;\n}\n.ls-opt-txt[data-v-da184183] {\n  flex: 1;\n  min-width: 0;\n  display: flex;\n  flex-direction: column;\n  gap: 1px;\n  line-height: 1.25;\n}\n.ls-opt-name[data-v-da184183] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12.5px;\n}\n.ls-opt-dir[data-v-da184183] {\n  font-size: 10px;\n  color: var(--zen-muted, #9aa0aa);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.ls-star[data-v-da184183] {\n  flex: none;\n  border: none;\n  background: none;\n  cursor: pointer;\n  color: var(--zen-muted, #9aa0aa);\n  font-size: 15px;\n  padding: 2px;\n  display: inline-flex;\n}\n.ls-star.on[data-v-da184183],\n.ls-star[data-v-da184183]:hover {\n  color: #f5b301;\n}\n\n/* browser dialog */\n.ls-search[data-v-da184183] {\n  flex: 1;\n  min-width: 0;\n  max-width: 320px;\n  display: flex;\n}\n.ls-grid[data-v-da184183] {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));\n  gap: 12px;\n  align-items: start;\n}\n/* every card is a fixed size: fixed-height image + fixed-height meta, so neither the\n   image dimensions nor the text length can change a card's footprint. */\n.ls-card[data-v-da184183] {\n  display: flex;\n  flex-direction: column;\n  height: 170px;\n  padding: 0;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 9px);\n  background: var(--zen-input, #1b1b20);\n  cursor: pointer;\n  overflow: hidden;\n  text-align: left;\n  color: inherit;\n  font: inherit;\n}\n.ls-card[data-v-da184183]:hover {\n  border-color: var(--zen-accent, #6366f1);\n}\n.ls-card.sel[data-v-da184183] {\n  border-color: var(--zen-accent, #6366f1);\n  box-shadow: 0 0 0 1px var(--zen-accent, #6366f1) inset;\n}\n.ls-card-img[data-v-da184183] {\n  position: relative;\n  flex: 1 1 0;\n  min-height: 0;\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background: var(--zen-surface, #202026);\n  overflow: hidden;\n}\n.ls-card-img img[data-v-da184183] {\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n  display: block;\n}\n.ls-card-img > .mdi[data-v-da184183] {\n  font-size: 32px;\n  color: var(--zen-muted, #9aa0aa);\n}\n.ls-card-star[data-v-da184183] {\n  position: absolute;\n  top: 5px;\n  right: 5px;\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n  background: rgba(0, 0, 0, 0.5);\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  color: #fff;\n  font-size: 14px;\n}\n.ls-card-star.on[data-v-da184183] {\n  color: #f5b301;\n}\n/* fixed-height meta so every card is identical regardless of folder/name length */\n.ls-card-meta[data-v-da184183] {\n  flex: none;\n  height: 38px;\n  box-sizing: border-box;\n  padding: 5px 8px;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  gap: 1px;\n  border-top: 1px solid var(--zen-border, #34343c);\n}\n.ls-card-name[data-v-da184183] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12px;\n}\n.ls-card-dir[data-v-da184183] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 10px;\n  color: var(--zen-muted, #9aa0aa);\n}\n.ls-grid-empty[data-v-da184183] {\n  grid-column: 1 / -1;\n  text-align: center;\n  color: var(--zen-muted, #9aa0aa);\n  padding: 30px;\n}\n/* ZenKit ↔ ComfyUI theme bridge — the runtime-free way to theme @zenkit/ui.\n *\n * @zenkit/ui components read --zen-* tokens. WITH the ZenKit runtime installed,\n * @zenkit/core sets those from the active theme pack (the derivation in @zenkit/theme's\n * zen.ts → zenAliases). Consumers that use @zenkit/ui WITHOUT the runtime import this file\n * instead: it maps the same --zen-* set straight onto ComfyUI's native theme variables, so\n * the components follow the user's selected ComfyUI theme with zero JS.\n *\n * Declared at :root so teleported overlays (ZenPopover / ZenCombo menus, ZenModal) — which\n * mount outside any component subtree — pick the tokens up too. The right-hand fallbacks keep\n * every token sane if ComfyUI renames or drops a variable. Kept in lockstep with zen.ts: the\n * same 10 tokens, sourced from the host instead of a pack. (The other --zen-* tokens the\n * components use — glass, mono, scrollbar, switch-radius — resolve through inline fallbacks\n * that chain back to these, so this set is sufficient on its own.)\n *\n * Import once, near your extension entry:  import '@zenkit/ui/comfy-bridge.css'\n */\n:root {\n  --zen-bg: var(--comfy-menu-bg, #1a1a1f);\n  --zen-surface: var(--comfy-menu-secondary-bg, #202026);\n  --zen-surface-2: var(--comfy-menu-secondary-bg, #26262d);\n  --zen-input: var(--comfy-input-bg, #1b1b20);\n  --zen-border: var(--border-color, #34343c);\n  --zen-text: var(--input-text, var(--fg-color, #e5e5ea));\n  --zen-muted: var(--descrip-text, #9aa0aa);\n  --zen-accent: var(--p-primary-color, #6366f1);\n  --zen-accent-text: var(--p-button-text-primary-color, #fff);\n  --zen-radius: var(--border-radius-base, 7px);\n}\n";document.head.appendChild(s);})();import { app } from "../../../scripts/app.js";
 /**
 * @vue/shared v3.5.39
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
@@ -2149,6 +2149,36 @@ function withCtx(fn, ctx = currentRenderingInstance, isNonScopedSlot) {
   renderFnWithContext._d = true;
   return renderFnWithContext;
 }
+function withDirectives(vnode, directives) {
+  if (currentRenderingInstance === null) {
+    return vnode;
+  }
+  const instance = getComponentPublicInstance(currentRenderingInstance);
+  const bindings = vnode.dirs || (vnode.dirs = []);
+  for (let i = 0; i < directives.length; i++) {
+    let [dir, value, arg, modifiers = EMPTY_OBJ] = directives[i];
+    if (dir) {
+      if (isFunction(dir)) {
+        dir = {
+          mounted: dir,
+          updated: dir
+        };
+      }
+      if (dir.deep) {
+        traverse(value);
+      }
+      bindings.push({
+        dir,
+        instance,
+        value,
+        oldValue: void 0,
+        arg,
+        modifiers
+      });
+    }
+  }
+  return vnode;
+}
 function invokeDirectiveHook(vnode, prevVNode, instance, name) {
   const bindings = vnode.dirs;
   const oldBindings = prevVNode && prevVNode.dirs;
@@ -2922,7 +2952,7 @@ function renderSlot(slots, name, props = {}, fallback, noSlotted) {
     return openBlock(), createBlock(
       Fragment,
       null,
-      [createVNode("slot", props, fallback)],
+      [createVNode("slot", props, fallback && fallback())],
       hasProps ? -2 : 64
     );
   }
@@ -2941,7 +2971,7 @@ function renderSlot(slots, name, props = {}, fallback, noSlotted) {
       key: (slotKey && !isSymbol(slotKey) ? slotKey : `_${name}`) + // #7256 force differentiate fallback content from actual content
       (!validSlotContent && fallback ? "_fb" : "")
     },
-    validSlotContent || [],
+    validSlotContent || (fallback ? fallback() : []),
     validSlotContent && slots._ === 1 ? 64 : -2
   );
   if (!noSlotted && rendered.scopeId) {
@@ -3084,6 +3114,13 @@ const PublicInstanceProxyHandlers = {
     return Reflect.defineProperty(target, key, descriptor);
   }
 };
+function useSlots() {
+  return getContext().slots;
+}
+function getContext(calledFunctionName) {
+  const i = getCurrentInstance();
+  return i.setupContext || (i.setupContext = createSetupContext(i));
+}
 function normalizePropsOrEmits(props) {
   return isArray(props) ? props.reduce(
     (normalized, p2) => (normalized[p2] = null, normalized),
@@ -6696,6 +6733,69 @@ function shouldSetAsPropForVueCE(el, key) {
   const camelKey = camelize(key);
   return Array.isArray(props) ? props.some((prop) => camelize(prop) === camelKey) : Object.keys(props).some((prop) => camelize(prop) === camelKey);
 }
+const getModelAssigner = (vnode) => {
+  const fn = vnode.props["onUpdate:modelValue"] || false;
+  return isArray(fn) ? (value) => invokeArrayFns(fn, value) : fn;
+};
+function onCompositionStart(e) {
+  e.target.composing = true;
+}
+function onCompositionEnd(e) {
+  const target = e.target;
+  if (target.composing) {
+    target.composing = false;
+    target.dispatchEvent(new Event("input"));
+  }
+}
+const assignKey = /* @__PURE__ */ Symbol("_assign");
+function castValue(value, trim, number) {
+  if (trim) value = value.trim();
+  if (number) value = looseToNumber(value);
+  return value;
+}
+const vModelText = {
+  created(el, { modifiers: { lazy, trim, number } }, vnode) {
+    el[assignKey] = getModelAssigner(vnode);
+    const castToNumber = number || vnode.props && vnode.props.type === "number";
+    addEventListener(el, lazy ? "change" : "input", (e) => {
+      if (e.target.composing) return;
+      el[assignKey](castValue(el.value, trim, castToNumber));
+    });
+    if (trim || castToNumber) {
+      addEventListener(el, "change", () => {
+        el.value = castValue(el.value, trim, castToNumber);
+      });
+    }
+    if (!lazy) {
+      addEventListener(el, "compositionstart", onCompositionStart);
+      addEventListener(el, "compositionend", onCompositionEnd);
+      addEventListener(el, "change", onCompositionEnd);
+    }
+  },
+  // set value on mounted so it's after min/max for type="range"
+  mounted(el, { value }) {
+    el.value = value == null ? "" : value;
+  },
+  beforeUpdate(el, { value, oldValue, modifiers: { lazy, trim, number } }, vnode) {
+    el[assignKey] = getModelAssigner(vnode);
+    if (el.composing) return;
+    const elValue = (number || el.type === "number") && !/^0\d/.test(el.value) ? looseToNumber(el.value) : el.value;
+    const newValue = value == null ? "" : value;
+    if (elValue === newValue) {
+      return;
+    }
+    const rootNode = el.getRootNode();
+    if ((rootNode instanceof Document || rootNode instanceof ShadowRoot) && rootNode.activeElement === el && el.type !== "range") {
+      if (lazy && value === oldValue) {
+        return;
+      }
+      if (trim && el.value.trim() === newValue) {
+        return;
+      }
+    }
+    el.value = newValue;
+  }
+};
 const systemModifiers = ["ctrl", "shift", "alt", "meta"];
 const modifierGuards = {
   stop: (e) => e.stopPropagation(),
@@ -6801,7 +6901,14 @@ function mountWidget(node, opts) {
   });
   const inner = document.createElement("div");
   inner.style.width = "100%";
-  if (fill) Object.assign(inner.style, { height: "100%", display: "flex", flexDirection: "column", overflow: "hidden", boxSizing: "border-box" });
+  if (fill)
+    Object.assign(inner.style, {
+      height: "100%",
+      display: "flex",
+      flexDirection: "column",
+      overflow: "hidden",
+      boxSizing: "border-box"
+    });
   container.appendChild(inner);
   const floor = opts.minHeight ?? 40;
   const serialize = opts.serialize !== false;
@@ -6928,7 +7035,8 @@ function registerNodes(name, defs) {
       const lg = node;
       const def2 = byClass.get(lg.constructor?.comfyClass ?? "");
       if (!def2) return;
-      if (def2.minSize) lg.setSize([Math.max(lg.size[0], def2.minSize[0]), Math.max(lg.size[1], def2.minSize[1])]);
+      if (def2.minSize)
+        lg.setSize([Math.max(lg.size[0], def2.minSize[0]), Math.max(lg.size[1], def2.minSize[1])]);
       if (def2.hideOutputImages) lg.hideOutputImages = true;
       if (def2.output) {
         const { widget, from } = def2.output;
@@ -6958,7 +7066,7 @@ function registerNodes(name, defs) {
 function defineNode(def2) {
   return def2;
 }
-const _sfc_main$8 = /* @__PURE__ */ defineComponent({
+const _sfc_main$b = /* @__PURE__ */ defineComponent({
   __name: "ZenScroll",
   props: {
     horizontal: { type: Boolean, default: false }
@@ -6980,13 +7088,13 @@ const _export_sfc = (sfc, props) => {
   }
   return target;
 };
-const ZenScroll = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["__scopeId", "data-v-2eaaf1dd"]]);
-const _hoisted_1$7 = ["disabled"];
-const _hoisted_2$5 = {
+const ZenScroll = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["__scopeId", "data-v-2eaaf1dd"]]);
+const _hoisted_1$a = ["disabled"];
+const _hoisted_2$8 = {
   key: 1,
   class: "lbl"
 };
-const _sfc_main$7 = /* @__PURE__ */ defineComponent({
+const _sfc_main$a = /* @__PURE__ */ defineComponent({
   __name: "ZenButton",
   props: {
     variant: { default: "default" },
@@ -7005,16 +7113,16 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
           key: 0,
           class: normalizeClass(__props.icon)
         }, null, 2)) : createCommentVNode("", true),
-        _ctx.$slots.default ? (openBlock(), createElementBlock("span", _hoisted_2$5, [
+        _ctx.$slots.default ? (openBlock(), createElementBlock("span", _hoisted_2$8, [
           renderSlot(_ctx.$slots, "default", {}, void 0, true)
         ])) : createCommentVNode("", true)
-      ], 10, _hoisted_1$7);
+      ], 10, _hoisted_1$a);
     };
   }
 });
-const ZenButton = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["__scopeId", "data-v-ca361f6f"]]);
-const _hoisted_1$6 = ["disabled"];
-const _sfc_main$6 = /* @__PURE__ */ defineComponent({
+const ZenButton = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["__scopeId", "data-v-ca361f6f"]]);
+const _hoisted_1$9 = ["disabled"];
+const _sfc_main$9 = /* @__PURE__ */ defineComponent({
   __name: "ZenIconButton",
   props: {
     icon: {},
@@ -7031,14 +7139,14 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
         createBaseVNode("i", {
           class: normalizeClass(__props.icon)
         }, null, 2)
-      ], 10, _hoisted_1$6);
+      ], 10, _hoisted_1$9);
     };
   }
 });
-const ZenIconButton = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["__scopeId", "data-v-e73501c0"]]);
-const _hoisted_1$5 = ["rows", "placeholder", "disabled", "value"];
-const _hoisted_2$4 = ["type", "placeholder", "disabled", "min", "max", "step", "value"];
-const _sfc_main$5 = /* @__PURE__ */ defineComponent({
+const ZenIconButton = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["__scopeId", "data-v-e73501c0"]]);
+const _hoisted_1$8 = ["rows", "placeholder", "disabled", "value"];
+const _hoisted_2$7 = ["type", "placeholder", "disabled", "min", "max", "step", "value"];
+const _sfc_main$8 = /* @__PURE__ */ defineComponent({
   __name: "ZenInput",
   props: {
     modelValue: {},
@@ -7073,7 +7181,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineComponent({
         disabled: __props.disabled,
         value: __props.modelValue,
         onInput
-      }, null, 42, _hoisted_1$5)) : (openBlock(), createElementBlock("input", {
+      }, null, 42, _hoisted_1$8)) : (openBlock(), createElementBlock("input", {
         key: 1,
         class: normalizeClass(["zen-input", { sm: __props.sm }]),
         type: __props.type,
@@ -7084,15 +7192,15 @@ const _sfc_main$5 = /* @__PURE__ */ defineComponent({
         step: __props.step,
         value: __props.modelValue,
         onInput
-      }, null, 42, _hoisted_2$4));
+      }, null, 42, _hoisted_2$7));
     };
   }
 });
-const ZenInput = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["__scopeId", "data-v-ec969410"]]);
-const _hoisted_1$4 = ["aria-disabled"];
-const _hoisted_2$3 = ["value", "disabled", "onKeydown"];
-const _hoisted_3$3 = ["aria-disabled"];
-const _sfc_main$4 = /* @__PURE__ */ defineComponent({
+const ZenInput = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["__scopeId", "data-v-ec969410"]]);
+const _hoisted_1$7 = ["aria-disabled"];
+const _hoisted_2$6 = ["value", "disabled", "onKeydown"];
+const _hoisted_3$5 = ["aria-disabled"];
+const _sfc_main$7 = /* @__PURE__ */ defineComponent({
   __name: "ZenNumber",
   props: {
     modelValue: {},
@@ -7197,7 +7305,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
             class: "mdi mdi-minus",
             "aria-hidden": "true"
           }, null, -1)
-        ])], 42, _hoisted_1$4)) : createCommentVNode("", true),
+        ])], 42, _hoisted_1$7)) : createCommentVNode("", true),
         createBaseVNode("div", {
           class: "zn-val",
           onPointerdown: onDown,
@@ -7221,7 +7329,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
               _cache2[6] || (_cache2[6] = withKeys(withModifiers(($event) => el.value?.blur(), ["prevent"]), ["enter"])),
               withKeys(withModifiers(revert, ["prevent"]), ["esc"])
             ]
-          }, null, 42, _hoisted_2$3)
+          }, null, 42, _hoisted_2$6)
         ], 32),
         !__props.bare ? (openBlock(), createElementBlock("span", {
           key: 1,
@@ -7240,19 +7348,361 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
             class: "mdi mdi-plus",
             "aria-hidden": "true"
           }, null, -1)
-        ])], 42, _hoisted_3$3)) : createCommentVNode("", true)
+        ])], 42, _hoisted_3$5)) : createCommentVNode("", true)
       ], 34);
     };
   }
 });
-const ZenNumber = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["__scopeId", "data-v-45cda24e"]]);
-const _hoisted_1$3 = {
+const ZenNumber = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["__scopeId", "data-v-45cda24e"]]);
+const _hoisted_1$6 = ["disabled"];
+const _hoisted_2$5 = { class: "zc-current" };
+const _hoisted_3$4 = {
+  key: 0,
+  class: "zc-search"
+};
+const _hoisted_4$3 = {
+  key: 1,
+  class: "zc-search-actions"
+};
+const _hoisted_5$3 = ["onMouseenter", "onClick"];
+const _hoisted_6$2 = { class: "zc-opt-lbl" };
+const _hoisted_7$2 = {
+  key: 0,
+  class: "zc-sep"
+};
+const _hoisted_8$2 = ["onMouseenter", "onClick"];
+const _hoisted_9$2 = { class: "zc-opt-lbl" };
+const _hoisted_10$2 = {
+  key: 2,
+  class: "zc-empty"
+};
+const _hoisted_11$2 = {
+  key: 1,
+  class: "zc-footer"
+};
+const OVERSCAN = 4;
+const _sfc_main$6 = /* @__PURE__ */ defineComponent({
+  __name: "ZenCombo",
+  props: {
+    modelValue: {},
+    items: {},
+    placeholder: { default: "Select…" },
+    searchable: { type: Boolean, default: true },
+    pinned: {},
+    emptyText: { default: "No matches" },
+    disabled: { type: Boolean, default: false },
+    menuWidth: {},
+    itemHeight: {},
+    grid: { type: Boolean, default: false },
+    gridMin: {}
+  },
+  emits: ["update:modelValue", "open"],
+  setup(__props, { emit: __emit }) {
+    const props = __props;
+    const emit2 = __emit;
+    const slots = useSlots();
+    const open = /* @__PURE__ */ ref(false);
+    const query = /* @__PURE__ */ ref("");
+    const active = /* @__PURE__ */ ref(0);
+    const scrollTop = /* @__PURE__ */ ref(0);
+    const viewportH = /* @__PURE__ */ ref(240);
+    const listMaxH = /* @__PURE__ */ ref(240);
+    const root = /* @__PURE__ */ ref(null);
+    const menuRef = /* @__PURE__ */ ref(null);
+    const listRef = /* @__PURE__ */ ref(null);
+    const searchRef = /* @__PURE__ */ ref(null);
+    const menuStyle = /* @__PURE__ */ ref({});
+    const virtual = computed(() => !props.grid && !!props.itemHeight && props.itemHeight > 0);
+    const pinnedSet = computed(() => new Set(props.pinned ?? []));
+    const current = computed(() => props.items.find((i) => i.value === props.modelValue));
+    const labelOf = (i) => i.label ?? String(i.value);
+    const filtered = computed(() => {
+      const q = query.value.trim().toLowerCase();
+      let list = props.items;
+      if (q) {
+        const terms = q.split(/\s+/);
+        list = list.filter((i) => {
+          const hay = (labelOf(i) + " " + String(i.value) + " " + (i.keywords ?? "")).toLowerCase();
+          return terms.every((t) => hay.includes(t));
+        });
+      }
+      const pin = pinnedSet.value;
+      return [...list].sort((a, b) => {
+        const pa = pin.has(a.value) ? 0 : 1;
+        const pb = pin.has(b.value) ? 0 : 1;
+        if (pa !== pb) return pa - pb;
+        return labelOf(a).localeCompare(labelOf(b));
+      });
+    });
+    const firstUnpinnedIndex = computed(() => filtered.value.findIndex((i) => !pinnedSet.value.has(i.value)));
+    const startIndex = computed(() => {
+      if (!virtual.value) return 0;
+      return Math.max(0, Math.floor(scrollTop.value / props.itemHeight) - OVERSCAN);
+    });
+    const windowItems = computed(() => {
+      if (!virtual.value) return [];
+      const count = Math.ceil(viewportH.value / props.itemHeight) + OVERSCAN * 2;
+      const end = Math.min(filtered.value.length, startIndex.value + count);
+      const out = [];
+      for (let i = startIndex.value; i < end; i++) out.push({ item: filtered.value[i], index: i });
+      return out;
+    });
+    function onDoc(e) {
+      const t = e.target;
+      if (root.value?.contains(t) || menuRef.value?.contains(t)) return;
+      close();
+    }
+    function place() {
+      const trig = root.value?.querySelector(".zc-trigger");
+      if (!trig) return;
+      const r = trig.getBoundingClientRect();
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const want = props.menuWidth ?? Math.max(r.width, 240);
+      const width = Math.round(Math.min(want, vw - 16));
+      let left = r.left;
+      if (left + width > vw - 8) left = vw - width - 8;
+      if (left < 8) left = 8;
+      const rows = virtual.value ? filtered.value.length * props.itemHeight : filtered.value.length * 32;
+      const estH = Math.min(360, rows + (props.searchable ? 46 : 8) + 8);
+      const below = vh - r.bottom;
+      const above = r.top;
+      const flipUp = below < estH + 8 && above > below;
+      const maxHeight = Math.max(160, Math.round((flipUp ? above : below) - 12));
+      const reserved = (props.searchable ? 46 : 0) + (slots.footer ? 48 : 0) + 8;
+      listMaxH.value = Math.max(120, maxHeight - reserved);
+      menuStyle.value = {
+        left: left + "px",
+        width: width + "px",
+        maxHeight: maxHeight + "px",
+        ...flipUp ? { bottom: vh - r.top + 4 + "px" } : { top: r.bottom + 4 + "px" }
+      };
+    }
+    function measure() {
+      if (listRef.value) viewportH.value = listRef.value.clientHeight;
+    }
+    function onScroll(e) {
+      scrollTop.value = e.target.scrollTop;
+    }
+    function openMenu() {
+      if (props.disabled) return;
+      emit2("open");
+      query.value = "";
+      scrollTop.value = 0;
+      active.value = Math.max(0, filtered.value.findIndex((i) => i.value === props.modelValue));
+      place();
+      open.value = true;
+      nextTick(() => {
+        searchRef.value?.focus();
+        if (listRef.value) listRef.value.scrollTop = 0;
+        measure();
+        scrollToActive();
+        window.addEventListener("pointerdown", onDoc, true);
+      });
+    }
+    function close() {
+      if (!open.value) return;
+      open.value = false;
+      window.removeEventListener("pointerdown", onDoc, true);
+    }
+    function pick(v) {
+      emit2("update:modelValue", v);
+      close();
+    }
+    function scrollToActive() {
+      if (virtual.value) {
+        const ih = props.itemHeight;
+        const top = active.value * ih;
+        const el = listRef.value;
+        if (!el) return;
+        if (top < el.scrollTop) el.scrollTop = top;
+        else if (top + ih > el.scrollTop + el.clientHeight) el.scrollTop = top + ih - el.clientHeight;
+      } else {
+        nextTick(() => {
+          const el = menuRef.value?.querySelector(".zc-opt.active");
+          el?.scrollIntoView({ block: "nearest" });
+        });
+      }
+    }
+    function onKey(e) {
+      if (e.key === "Escape") return close();
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        active.value = Math.min(active.value + 1, filtered.value.length - 1);
+        scrollToActive();
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        active.value = Math.max(active.value - 1, 0);
+        scrollToActive();
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        const it = filtered.value[active.value];
+        if (it) pick(it.value);
+      }
+    }
+    watch(query, () => {
+      active.value = 0;
+      scrollTop.value = 0;
+      if (listRef.value) listRef.value.scrollTop = 0;
+    });
+    onBeforeUnmount(close);
+    return (_ctx, _cache2) => {
+      return openBlock(), createElementBlock("div", {
+        ref_key: "root",
+        ref: root,
+        class: normalizeClass(["zen-combo", { open: open.value, disabled: __props.disabled }])
+      }, [
+        createBaseVNode("button", {
+          type: "button",
+          class: "zc-trigger",
+          disabled: __props.disabled,
+          onClick: _cache2[0] || (_cache2[0] = ($event) => open.value ? close() : openMenu())
+        }, [
+          createBaseVNode("span", _hoisted_2$5, [
+            renderSlot(_ctx.$slots, "selected", { item: current.value }, () => [
+              createTextVNode(toDisplayString(current.value ? labelOf(current.value) : __props.placeholder), 1)
+            ], true)
+          ]),
+          _cache2[3] || (_cache2[3] = createBaseVNode("i", { class: "zc-caret mdi mdi-chevron-down" }, null, -1))
+        ], 8, _hoisted_1$6),
+        (openBlock(), createBlock(Teleport, { to: "body" }, [
+          open.value ? (openBlock(), createElementBlock("div", {
+            key: 0,
+            ref_key: "menuRef",
+            ref: menuRef,
+            class: normalizeClass(["zen-combo-menu", { grid: __props.grid }]),
+            style: normalizeStyle([menuStyle.value, __props.grid && __props.gridMin ? { "--zc-grid-min": __props.gridMin + "px" } : {}]),
+            onKeydown: onKey
+          }, [
+            __props.searchable ? (openBlock(), createElementBlock("div", _hoisted_3$4, [
+              _cache2[5] || (_cache2[5] = createBaseVNode("i", { class: "mdi mdi-magnify" }, null, -1)),
+              withDirectives(createBaseVNode("input", {
+                ref_key: "searchRef",
+                ref: searchRef,
+                "onUpdate:modelValue": _cache2[1] || (_cache2[1] = ($event) => query.value = $event),
+                type: "text",
+                placeholder: "Search…",
+                spellcheck: "false"
+              }, null, 512), [
+                [vModelText, query.value]
+              ]),
+              query.value ? (openBlock(), createElementBlock("button", {
+                key: 0,
+                class: "zc-clear",
+                title: "Clear",
+                onClick: _cache2[2] || (_cache2[2] = ($event) => query.value = "")
+              }, [..._cache2[4] || (_cache2[4] = [
+                createBaseVNode("i", { class: "mdi mdi-close" }, null, -1)
+              ])])) : createCommentVNode("", true),
+              _ctx.$slots.search ? (openBlock(), createElementBlock("span", _hoisted_4$3, [
+                renderSlot(_ctx.$slots, "search", {}, void 0, true)
+              ])) : createCommentVNode("", true)
+            ])) : createCommentVNode("", true),
+            createBaseVNode("div", {
+              ref_key: "listRef",
+              ref: listRef,
+              class: "zc-list zen-scroll",
+              style: normalizeStyle({ maxHeight: listMaxH.value + "px" }),
+              onScroll
+            }, [
+              virtual.value ? (openBlock(), createElementBlock("div", {
+                key: 0,
+                class: "zc-virt",
+                style: normalizeStyle({ height: filtered.value.length * __props.itemHeight + "px" })
+              }, [
+                createBaseVNode("div", {
+                  class: "zc-win",
+                  style: normalizeStyle({ transform: "translateY(" + startIndex.value * __props.itemHeight + "px)" })
+                }, [
+                  (openBlock(true), createElementBlock(Fragment, null, renderList(windowItems.value, (w) => {
+                    return openBlock(), createElementBlock("div", {
+                      key: String(w.item.value),
+                      class: normalizeClass(["zc-opt", { active: w.index === active.value, sel: w.item.value === __props.modelValue, pinned: pinnedSet.value.has(w.item.value) }]),
+                      style: normalizeStyle({ height: __props.itemHeight + "px" }),
+                      onMouseenter: ($event) => active.value = w.index,
+                      onClick: ($event) => pick(w.item.value)
+                    }, [
+                      renderSlot(_ctx.$slots, "option", {
+                        item: w.item,
+                        active: w.index === active.value,
+                        pinned: pinnedSet.value.has(w.item.value)
+                      }, () => [
+                        createBaseVNode("span", _hoisted_6$2, toDisplayString(labelOf(w.item)), 1)
+                      ], true)
+                    ], 46, _hoisted_5$3);
+                  }), 128))
+                ], 4)
+              ], 4)) : (openBlock(true), createElementBlock(Fragment, { key: 1 }, renderList(filtered.value, (it, i) => {
+                return openBlock(), createElementBlock(Fragment, {
+                  key: String(it.value)
+                }, [
+                  !query.value && firstUnpinnedIndex.value > 0 && i === firstUnpinnedIndex.value ? (openBlock(), createElementBlock("div", _hoisted_7$2)) : createCommentVNode("", true),
+                  createBaseVNode("div", {
+                    class: normalizeClass(["zc-opt", { active: i === active.value, sel: it.value === __props.modelValue, pinned: pinnedSet.value.has(it.value) }]),
+                    onMouseenter: ($event) => active.value = i,
+                    onClick: ($event) => pick(it.value)
+                  }, [
+                    renderSlot(_ctx.$slots, "option", {
+                      item: it,
+                      active: i === active.value,
+                      pinned: pinnedSet.value.has(it.value)
+                    }, () => [
+                      createBaseVNode("span", _hoisted_9$2, toDisplayString(labelOf(it)), 1)
+                    ], true)
+                  ], 42, _hoisted_8$2)
+                ], 64);
+              }), 128)),
+              !filtered.value.length ? (openBlock(), createElementBlock("div", _hoisted_10$2, toDisplayString(__props.emptyText), 1)) : createCommentVNode("", true)
+            ], 36),
+            _ctx.$slots.footer ? (openBlock(), createElementBlock("div", _hoisted_11$2, [
+              renderSlot(_ctx.$slots, "footer", { close }, void 0, true)
+            ])) : createCommentVNode("", true)
+          ], 38)) : createCommentVNode("", true)
+        ]))
+      ], 2);
+    };
+  }
+});
+const ZenCombo = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["__scopeId", "data-v-1c65dbd1"]]);
+const _hoisted_1$5 = ["aria-checked", "disabled"];
+const _hoisted_2$4 = { class: "knob" };
+const _sfc_main$5 = /* @__PURE__ */ defineComponent({
+  __name: "ZenSwitch",
+  props: {
+    modelValue: { type: Boolean },
+    onIcon: {},
+    offIcon: {},
+    disabled: { type: Boolean, default: false }
+  },
+  emits: ["update:modelValue"],
+  setup(__props, { emit: __emit }) {
+    const emit2 = __emit;
+    return (_ctx, _cache2) => {
+      return openBlock(), createElementBlock("button", {
+        class: normalizeClass(["zen-switch", { on: __props.modelValue }]),
+        role: "switch",
+        "aria-checked": __props.modelValue,
+        disabled: __props.disabled,
+        onClick: _cache2[0] || (_cache2[0] = ($event) => emit2("update:modelValue", !__props.modelValue))
+      }, [
+        createBaseVNode("span", _hoisted_2$4, [
+          __props.onIcon || __props.offIcon ? (openBlock(), createElementBlock("i", {
+            key: 0,
+            class: normalizeClass(__props.modelValue ? __props.onIcon : __props.offIcon)
+          }, null, 2)) : createCommentVNode("", true)
+        ])
+      ], 10, _hoisted_1$5);
+    };
+  }
+});
+const ZenSwitch = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["__scopeId", "data-v-0bd24040"]]);
+const _hoisted_1$4 = {
   class: "zen-tg",
   role: "tablist"
 };
-const _hoisted_2$2 = ["title", "aria-selected", "onClick"];
-const _hoisted_3$2 = { key: 1 };
-const _sfc_main$3 = /* @__PURE__ */ defineComponent({
+const _hoisted_2$3 = ["title", "aria-selected", "onClick"];
+const _hoisted_3$3 = { key: 1 };
+const _sfc_main$4 = /* @__PURE__ */ defineComponent({
   __name: "ZenToggleGroup",
   props: {
     modelValue: {},
@@ -7262,7 +7712,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
   setup(__props, { emit: __emit }) {
     const emit2 = __emit;
     return (_ctx, _cache2) => {
-      return openBlock(), createElementBlock("div", _hoisted_1$3, [
+      return openBlock(), createElementBlock("div", _hoisted_1$4, [
         (openBlock(true), createElementBlock(Fragment, null, renderList(__props.options, (o) => {
           return openBlock(), createElementBlock("button", {
             key: String(o.value),
@@ -7276,16 +7726,16 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
               key: 0,
               class: normalizeClass(o.icon)
             }, null, 2)) : createCommentVNode("", true),
-            o.label ? (openBlock(), createElementBlock("span", _hoisted_3$2, toDisplayString(o.label), 1)) : createCommentVNode("", true)
-          ], 10, _hoisted_2$2);
+            o.label ? (openBlock(), createElementBlock("span", _hoisted_3$3, toDisplayString(o.label), 1)) : createCommentVNode("", true)
+          ], 10, _hoisted_2$3);
         }), 128))
       ]);
     };
   }
 });
-const ZenToggleGroup = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["__scopeId", "data-v-30ea6574"]]);
-const _hoisted_1$2 = ["min", "max", "step", "value", "disabled"];
-const _sfc_main$2 = /* @__PURE__ */ defineComponent({
+const ZenToggleGroup = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["__scopeId", "data-v-30ea6574"]]);
+const _hoisted_1$3 = ["min", "max", "step", "value", "disabled"];
+const _sfc_main$3 = /* @__PURE__ */ defineComponent({
   __name: "ZenSlider",
   props: {
     modelValue: {},
@@ -7311,23 +7761,23 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
         value: __props.modelValue,
         disabled: __props.disabled,
         onInput
-      }, null, 40, _hoisted_1$2);
+      }, null, 40, _hoisted_1$3);
     };
   }
 });
-const ZenSlider = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["__scopeId", "data-v-a2688f55"]]);
-const _hoisted_1$1 = { class: "zm-head" };
-const _hoisted_2$1 = {
+const ZenSlider = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["__scopeId", "data-v-a2688f55"]]);
+const _hoisted_1$2 = { class: "zm-head" };
+const _hoisted_2$2 = {
   key: 0,
   class: "zm-title"
 };
-const _hoisted_3$1 = { class: "zm-head-mid" };
-const _hoisted_4$1 = { class: "zm-body zen-scroll" };
-const _hoisted_5$1 = {
+const _hoisted_3$2 = { class: "zm-head-mid" };
+const _hoisted_4$2 = { class: "zm-body zen-scroll" };
+const _hoisted_5$2 = {
   key: 0,
   class: "zm-foot"
 };
-const _sfc_main$1 = /* @__PURE__ */ defineComponent({
+const _sfc_main$2 = /* @__PURE__ */ defineComponent({
   __name: "ZenModal",
   props: {
     open: { type: Boolean },
@@ -7364,9 +7814,9 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
             class: "zen-modal",
             style: normalizeStyle({ width: __props.width, height: __props.height })
           }, [
-            createBaseVNode("div", _hoisted_1$1, [
-              __props.title ? (openBlock(), createElementBlock("span", _hoisted_2$1, toDisplayString(__props.title), 1)) : createCommentVNode("", true),
-              createBaseVNode("div", _hoisted_3$1, [
+            createBaseVNode("div", _hoisted_1$2, [
+              __props.title ? (openBlock(), createElementBlock("span", _hoisted_2$2, toDisplayString(__props.title), 1)) : createCommentVNode("", true),
+              createBaseVNode("div", _hoisted_3$2, [
                 renderSlot(_ctx.$slots, "header")
               ]),
               createBaseVNode("button", {
@@ -7377,10 +7827,10 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                 createBaseVNode("i", { class: "mdi mdi-close" }, null, -1)
               ])])
             ]),
-            createBaseVNode("div", _hoisted_4$1, [
+            createBaseVNode("div", _hoisted_4$2, [
               renderSlot(_ctx.$slots, "default")
             ]),
-            _ctx.$slots.footer ? (openBlock(), createElementBlock("div", _hoisted_5$1, [
+            _ctx.$slots.footer ? (openBlock(), createElementBlock("div", _hoisted_5$2, [
               renderSlot(_ctx.$slots, "footer")
             ])) : createCommentVNode("", true)
           ], 4)
@@ -7437,66 +7887,66 @@ async function uploadImage(file) {
 function shortName(ref2) {
   return ref2.split("/").pop() || ref2;
 }
-const _hoisted_1 = {
+const _hoisted_1$1 = {
   key: 0,
   class: "fg-dropmask"
 };
-const _hoisted_2 = {
+const _hoisted_2$1 = {
   key: 0,
   class: "fg-grid"
 };
-const _hoisted_3 = ["onDragover", "onDrop"];
-const _hoisted_4 = ["onDragstart"];
-const _hoisted_5 = ["src", "onError"];
-const _hoisted_6 = {
+const _hoisted_3$1 = ["onDragover", "onDrop"];
+const _hoisted_4$1 = ["onDragstart"];
+const _hoisted_5$1 = ["src", "onError"];
+const _hoisted_6$1 = {
   key: 1,
   class: "mdi mdi-image-broken-variant fg-ph warn",
   title: "This file is gone from the folder"
 };
-const _hoisted_7 = ["title"];
-const _hoisted_8 = { class: "fg-acts" };
-const _hoisted_9 = ["title", "onClick"];
-const _hoisted_10 = ["title", "onClick"];
-const _hoisted_11 = ["onClick"];
-const _hoisted_12 = {
+const _hoisted_7$1 = ["title"];
+const _hoisted_8$1 = { class: "fg-acts" };
+const _hoisted_9$1 = ["title", "onClick"];
+const _hoisted_10$1 = ["title", "onClick"];
+const _hoisted_11$1 = ["onClick"];
+const _hoisted_12$1 = {
   key: 2,
   class: "fg-mutemark"
 };
-const _hoisted_13 = { class: "fg-meta" };
-const _hoisted_14 = ["title"];
-const _hoisted_15 = { class: "fg-foot" };
-const _hoisted_16 = {
+const _hoisted_13$1 = { class: "fg-meta" };
+const _hoisted_14$1 = ["title"];
+const _hoisted_15$1 = { class: "fg-foot" };
+const _hoisted_16$1 = {
   key: 1,
   class: "fg-empty"
 };
-const _hoisted_17 = {
+const _hoisted_17$1 = {
   key: 1,
   class: "fg-warn"
 };
-const _hoisted_18 = { class: "fg-bar" };
-const _hoisted_19 = ["disabled"];
-const _hoisted_20 = {
+const _hoisted_18$1 = { class: "fg-bar" };
+const _hoisted_19$1 = ["disabled"];
+const _hoisted_20$1 = {
   key: 0,
   class: "fg-add-n"
 };
-const _hoisted_21 = { class: "fg-search" };
-const _hoisted_22 = { class: "fg-bgrid" };
-const _hoisted_23 = ["onClick"];
-const _hoisted_24 = { class: "fg-bcard-img" };
-const _hoisted_25 = ["src"];
-const _hoisted_26 = {
+const _hoisted_21$1 = { class: "fg-search" };
+const _hoisted_22$1 = { class: "fg-bgrid" };
+const _hoisted_23$1 = ["onClick"];
+const _hoisted_24$1 = { class: "fg-bcard-img" };
+const _hoisted_25$1 = ["src"];
+const _hoisted_26$1 = {
   key: 0,
   class: "fg-bcard-tick"
 };
-const _hoisted_27 = { class: "fg-bcard-meta" };
-const _hoisted_28 = ["title"];
-const _hoisted_29 = { class: "fg-bcard-dir" };
-const _hoisted_30 = {
+const _hoisted_27$1 = { class: "fg-bcard-meta" };
+const _hoisted_28$1 = ["title"];
+const _hoisted_29$1 = { class: "fg-bcard-dir" };
+const _hoisted_30$1 = {
   key: 0,
   class: "fg-bgrid-empty"
 };
 const DEFAULT_FIT = "contain";
-const _sfc_main = /* @__PURE__ */ defineComponent({
+const _sfc_main$1 = /* @__PURE__ */ defineComponent({
   __name: "FusionGrid",
   props: {
     widget: {},
@@ -7563,7 +8013,9 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       props.node?.graph?.setDirtyCanvas?.(true, true);
     }
     const enabledCount = computed(() => rows.value.filter((r) => r.on).length);
-    const totalStrength = computed(() => rows.value.reduce((sum, r) => r.on ? sum + r.strength : sum, 0));
+    const totalStrength = computed(
+      () => rows.value.reduce((sum, r) => r.on ? sum + r.strength : sum, 0)
+    );
     function share(row) {
       if (!row.on) return 0;
       const total = totalStrength.value;
@@ -7633,7 +8085,8 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     function disarmScroll() {
       const el = scroller();
       if (!el || document.activeElement !== el) return;
-      if (prevFocus && prevFocus !== document.body && document.contains(prevFocus)) prevFocus.focus({ preventScroll: true });
+      if (prevFocus && prevFocus !== document.body && document.contains(prevFocus))
+        prevFocus.focus({ preventScroll: true });
       else el.blur();
       prevFocus = null;
     }
@@ -7653,10 +8106,20 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       if (!imgs.length) return;
       busy.value = true;
       try {
+        const existing = await listImages("input", true);
+        const already = new Map(existing.map((it) => [`${it.name} ${it.size ?? ""}`, it.name]));
         for (const file of imgs) {
+          const key = `${file.name} ${file.size}`;
+          const hit = already.get(key);
+          if (hit) {
+            addRef(hit, "input");
+            continue;
+          }
           const up = await uploadImage(file);
-          if (up) addRef(up.ref, up.type);
-          else console.error("[Nynxz] fusion grid upload failed", file.name);
+          if (up) {
+            addRef(up.ref, up.type);
+            already.set(key, up.ref);
+          } else console.error("[Nynxz] fusion grid upload failed", file.name);
         }
         commit();
       } finally {
@@ -7744,7 +8207,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
         onDragleave: onDragLeave,
         onDrop: withModifiers(onDrop, ["prevent"])
       }, [
-        dragOver.value ? (openBlock(), createElementBlock("div", _hoisted_1, [..._cache2[3] || (_cache2[3] = [
+        dragOver.value ? (openBlock(), createElementBlock("div", _hoisted_1$1, [..._cache2[3] || (_cache2[3] = [
           createBaseVNode("i", { class: "mdi mdi-tray-arrow-down" }, null, -1),
           createBaseVNode("span", null, "Drop images to add", -1)
         ])])) : createCommentVNode("", true),
@@ -7758,11 +8221,15 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
           onPointerleave: disarmScroll
         }, {
           default: withCtx(() => [
-            rows.value.length ? (openBlock(), createElementBlock("div", _hoisted_2, [
+            rows.value.length ? (openBlock(), createElementBlock("div", _hoisted_2$1, [
               (openBlock(true), createElementBlock(Fragment, null, renderList(rows.value, (row, i) => {
                 return openBlock(), createElementBlock("div", {
                   key: row.id,
-                  class: normalizeClass(["fg-card", { off: !row.on, dragging: dragIndex.value === i, over: dropIndex.value === i && dragIndex.value !== i }]),
+                  class: normalizeClass(["fg-card", {
+                    off: !row.on,
+                    dragging: dragIndex.value === i,
+                    over: dropIndex.value === i && dragIndex.value !== i
+                  }]),
                   onDragover: withModifiers(($event) => onRowDragOver(i, $event), ["prevent"]),
                   onDrop: ($event) => onRowDrop(i, $event),
                   onDragend: endReorder
@@ -7778,12 +8245,12 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
                       style: normalizeStyle({ objectFit: fitCss(row.fit) }),
                       loading: "lazy",
                       onError: ($event) => onImgError(row)
-                    }, null, 44, _hoisted_5)) : (openBlock(), createElementBlock("i", _hoisted_6)),
+                    }, null, 44, _hoisted_5$1)) : (openBlock(), createElementBlock("i", _hoisted_6$1)),
                     createBaseVNode("span", {
                       class: "fg-idx",
                       title: `Source ${i + 1} — drag to reorder`
-                    }, toDisplayString(i + 1), 9, _hoisted_7),
-                    createBaseVNode("div", _hoisted_8, [
+                    }, toDisplayString(i + 1), 9, _hoisted_7$1),
+                    createBaseVNode("div", _hoisted_8$1, [
                       createBaseVNode("button", {
                         class: "fg-act",
                         title: FIT_META[row.fit].label + " (click to change)",
@@ -7792,7 +8259,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
                         createBaseVNode("i", {
                           class: normalizeClass(["mdi", FIT_META[row.fit].icon])
                         }, null, 2)
-                      ], 8, _hoisted_9),
+                      ], 8, _hoisted_9$1),
                       createBaseVNode("button", {
                         class: "fg-act",
                         title: row.on ? "Mute this image" : "Unmute this image",
@@ -7801,23 +8268,23 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
                         createBaseVNode("i", {
                           class: normalizeClass(["mdi", row.on ? "mdi-eye-outline" : "mdi-eye-off-outline"])
                         }, null, 2)
-                      ], 8, _hoisted_10),
+                      ], 8, _hoisted_10$1),
                       createBaseVNode("button", {
                         class: "fg-act danger",
                         title: "Remove",
                         onClick: withModifiers(($event) => removeRow(i), ["stop"])
                       }, [..._cache2[4] || (_cache2[4] = [
                         createBaseVNode("i", { class: "mdi mdi-close" }, null, -1)
-                      ])], 8, _hoisted_11)
+                      ])], 8, _hoisted_11$1)
                     ]),
-                    !row.on ? (openBlock(), createElementBlock("span", _hoisted_12, [..._cache2[5] || (_cache2[5] = [
+                    !row.on ? (openBlock(), createElementBlock("span", _hoisted_12$1, [..._cache2[5] || (_cache2[5] = [
                       createBaseVNode("i", { class: "mdi mdi-eye-off" }, null, -1)
                     ])])) : createCommentVNode("", true),
-                    createBaseVNode("div", _hoisted_13, [
+                    createBaseVNode("div", _hoisted_13$1, [
                       createBaseVNode("span", {
                         class: "fg-name",
                         title: row.ref
-                      }, toDisplayString(unref(shortName)(row.ref)), 9, _hoisted_14),
+                      }, toDisplayString(unref(shortName)(row.ref)), 9, _hoisted_14$1),
                       createBaseVNode("span", {
                         class: normalizeClass(["fg-pct", { dim: !row.on }])
                       }, toDisplayString(row.on ? Math.round(share(row)) + "%" : "muted"), 3)
@@ -7826,8 +8293,8 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
                       class: "fg-share",
                       style: normalizeStyle({ width: share(row) + "%" })
                     }, null, 4)
-                  ], 40, _hoisted_4),
-                  createBaseVNode("div", _hoisted_15, [
+                  ], 40, _hoisted_4$1),
+                  createBaseVNode("div", _hoisted_15$1, [
                     createVNode(unref(ZenSlider), {
                       class: "fg-slider",
                       "model-value": row.strength,
@@ -7848,9 +8315,9 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
                       "onUpdate:modelValue": ($event) => setStrength(i, $event)
                     }, null, 8, ["model-value", "disabled", "onUpdate:modelValue"])
                   ])
-                ], 42, _hoisted_3);
+                ], 42, _hoisted_3$1);
               }), 128))
-            ])) : (openBlock(), createElementBlock("div", _hoisted_16, [..._cache2[6] || (_cache2[6] = [
+            ])) : (openBlock(), createElementBlock("div", _hoisted_16$1, [..._cache2[6] || (_cache2[6] = [
               createBaseVNode("i", { class: "mdi mdi-image-multiple-outline" }, null, -1),
               createBaseVNode("span", null, "Drop images here", -1),
               createBaseVNode("small", null, "One is enough — more will blend", -1)
@@ -7858,11 +8325,11 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
           ]),
           _: 1
         }, 512),
-        rows.value.length && !enabledCount.value ? (openBlock(), createElementBlock("div", _hoisted_17, [..._cache2[7] || (_cache2[7] = [
+        rows.value.length && !enabledCount.value ? (openBlock(), createElementBlock("div", _hoisted_17$1, [..._cache2[7] || (_cache2[7] = [
           createBaseVNode("i", { class: "mdi mdi-alert-outline" }, null, -1),
           createBaseVNode("span", null, "Every image is muted — fusion needs at least one", -1)
         ])])) : createCommentVNode("", true),
-        createBaseVNode("div", _hoisted_18, [
+        createBaseVNode("div", _hoisted_18$1, [
           createBaseVNode("button", {
             class: "fg-add",
             disabled: busy.value,
@@ -7872,8 +8339,8 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
               class: normalizeClass(["mdi", busy.value ? "mdi-loading mdi-spin" : "mdi-plus"])
             }, null, 2),
             createTextVNode(" " + toDisplayString(busy.value ? "Uploading…" : "Add images") + " ", 1),
-            rows.value.length ? (openBlock(), createElementBlock("span", _hoisted_20, toDisplayString(rows.value.length), 1)) : createCommentVNode("", true)
-          ], 8, _hoisted_19),
+            rows.value.length ? (openBlock(), createElementBlock("span", _hoisted_20$1, toDisplayString(rows.value.length), 1)) : createCommentVNode("", true)
+          ], 8, _hoisted_19$1),
           createVNode(unref(ZenIconButton), {
             icon: "mdi mdi-view-grid-outline",
             title: "Browse images",
@@ -7902,7 +8369,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
           style: { "display": "none" },
           onChange: onUpload
         }, null, 544),
-        createVNode(unref(_sfc_main$1), {
+        createVNode(unref(_sfc_main$2), {
           open: browse.value,
           "onUpdate:open": _cache2[2] || (_cache2[2] = ($event) => browse.value = $event),
           title: `${srcType.value} images`,
@@ -7910,7 +8377,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
           height: "78vh"
         }, {
           header: withCtx(() => [
-            createBaseVNode("span", _hoisted_21, [
+            createBaseVNode("span", _hoisted_21$1, [
               createVNode(unref(ZenInput), {
                 modelValue: bq.value,
                 "onUpdate:modelValue": _cache2[0] || (_cache2[0] = ($event) => bq.value = $event),
@@ -7959,32 +8426,32 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
             }, 8, ["disabled"])
           ]),
           default: withCtx(() => [
-            createBaseVNode("div", _hoisted_22, [
+            createBaseVNode("div", _hoisted_22$1, [
               (openBlock(true), createElementBlock(Fragment, null, renderList(browseItems.value, (it) => {
                 return openBlock(), createElementBlock("button", {
                   key: it.type + ":" + it.name,
                   class: normalizeClass(["fg-bcard", { sel: picked.value.has(it.name) }]),
                   onClick: ($event) => togglePick(it.name)
                 }, [
-                  createBaseVNode("div", _hoisted_24, [
+                  createBaseVNode("div", _hoisted_24$1, [
                     createBaseVNode("img", {
                       src: unref(thumbUrl)(it.name, it.type),
                       loading: "lazy"
-                    }, null, 8, _hoisted_25),
-                    picked.value.has(it.name) ? (openBlock(), createElementBlock("span", _hoisted_26, [..._cache2[9] || (_cache2[9] = [
+                    }, null, 8, _hoisted_25$1),
+                    picked.value.has(it.name) ? (openBlock(), createElementBlock("span", _hoisted_26$1, [..._cache2[9] || (_cache2[9] = [
                       createBaseVNode("i", { class: "mdi mdi-check" }, null, -1)
                     ])])) : createCommentVNode("", true)
                   ]),
-                  createBaseVNode("div", _hoisted_27, [
+                  createBaseVNode("div", _hoisted_27$1, [
                     createBaseVNode("span", {
                       class: "fg-bcard-name",
                       title: it.name
-                    }, toDisplayString(unref(shortName)(it.name)), 9, _hoisted_28),
-                    createBaseVNode("span", _hoisted_29, toDisplayString(it.subfolder || "—"), 1)
+                    }, toDisplayString(unref(shortName)(it.name)), 9, _hoisted_28$1),
+                    createBaseVNode("span", _hoisted_29$1, toDisplayString(it.subfolder || "—"), 1)
                   ])
-                ], 10, _hoisted_23);
+                ], 10, _hoisted_23$1);
               }), 128)),
-              !browseItems.value.length ? (openBlock(), createElementBlock("p", _hoisted_30, "No images in " + toDisplayString(srcType.value) + "/.", 1)) : createCommentVNode("", true)
+              !browseItems.value.length ? (openBlock(), createElementBlock("p", _hoisted_30$1, "No images in " + toDisplayString(srcType.value) + "/.", 1)) : createCommentVNode("", true)
             ])
           ]),
           _: 1
@@ -7993,17 +8460,542 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const FusionGrid = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-ae720eb3"]]);
+const FusionGrid = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-4524946b"]]);
 const fusionNode = defineNode({
   is: "nynxz.experimental.FusionInput",
   minSize: [340, 340],
   widgets: [
     // fill: the body is the node's — the image grid scrolls inside it and the toolbar stays
     // pinned to the bottom, so resizing the node shows more images rather than more padding.
-    { name: "grid", type: "NYNXZ_FUSION_GRID", component: FusionGrid, minHeight: 200, fill: true, default: [] }
+    {
+      name: "grid",
+      type: "NYNXZ_FUSION_GRID",
+      component: FusionGrid,
+      minHeight: 200,
+      fill: true,
+      default: []
+    }
   ],
   // Middle-click the fusion_input output → spawn + wire the encoder. Lights up with ZenKit
   // installed, no-op otherwise.
   slotLinks: [{ output: "fusion_input", spawn: "nynxz.experimental.QwenFusionEncode" }]
 });
-registerNodes("nynxz.experimental", [fusionNode]);
+let _lorasCache = null;
+function listLoras(force = false) {
+  if (force || !_lorasCache) _lorasCache = fetchLoras();
+  return _lorasCache;
+}
+async function fetchLoras() {
+  try {
+    const d = await (await fetch("/nynxz/experimental/loras")).json();
+    const arr = Array.isArray(d.loras) ? d.loras : [];
+    return arr.map((l) => ({
+      name: String(l.name).replace(/\\/g, "/"),
+      has_preview: !!l.has_preview,
+      favorite: !!l.favorite
+    }));
+  } catch {
+    return [];
+  }
+}
+function previewUrl(name) {
+  return "/nynxz/experimental/lora/preview?name=" + encodeURIComponent(name);
+}
+let _favCache = null;
+function getFavorites(force = false) {
+  if (force || !_favCache) _favCache = fetchFavorites();
+  return _favCache;
+}
+async function fetchFavorites() {
+  try {
+    const d = await (await fetch("/nynxz/experimental/favorites")).json();
+    return Array.isArray(d.loras) ? d.loras.map(String) : [];
+  } catch {
+    return [];
+  }
+}
+async function setFavorite(name, pinned) {
+  try {
+    const d = await (await fetch("/nynxz/experimental/favorites", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, pinned })
+    })).json();
+    const next = Array.isArray(d.loras) ? d.loras.map(String) : [];
+    _favCache = Promise.resolve(next);
+    return next;
+  } catch {
+    return [];
+  }
+}
+const _hoisted_1 = { class: "ls" };
+const _hoisted_2 = { class: "ls-mid" };
+const _hoisted_3 = {
+  key: 0,
+  class: "ls-rows"
+};
+const _hoisted_4 = { class: "ls-sel" };
+const _hoisted_5 = ["src", "onError"];
+const _hoisted_6 = {
+  key: 1,
+  class: "mdi mdi-cube-outline ls-thumb sm ph"
+};
+const _hoisted_7 = { class: "ls-sel-name" };
+const _hoisted_8 = ["src"];
+const _hoisted_9 = {
+  key: 1,
+  class: "mdi mdi-cube-outline ls-thumb ph"
+};
+const _hoisted_10 = { class: "ls-opt-txt" };
+const _hoisted_11 = { class: "ls-opt-name" };
+const _hoisted_12 = {
+  key: 0,
+  class: "ls-opt-dir"
+};
+const _hoisted_13 = ["title", "onClick"];
+const _hoisted_14 = {
+  key: 1,
+  class: "ls-empty"
+};
+const _hoisted_15 = { class: "ls-foot" };
+const _hoisted_16 = {
+  key: 0,
+  class: "ls-add-n"
+};
+const _hoisted_17 = { class: "ls-search" };
+const _hoisted_18 = {
+  key: 0,
+  class: "ls-crumbs"
+};
+const _hoisted_19 = ["onClick"];
+const _hoisted_20 = { class: "ls-grid" };
+const _hoisted_21 = ["onClick"];
+const _hoisted_22 = { class: "ls-card-meta" };
+const _hoisted_23 = ["title"];
+const _hoisted_24 = ["onClick"];
+const _hoisted_25 = { class: "ls-card-img" };
+const _hoisted_26 = ["src"];
+const _hoisted_27 = {
+  key: 1,
+  class: "mdi mdi-cube-outline"
+};
+const _hoisted_28 = ["onClick"];
+const _hoisted_29 = { class: "ls-card-meta" };
+const _hoisted_30 = ["title"];
+const _hoisted_31 = { class: "ls-card-dir" };
+const _hoisted_32 = {
+  key: 0,
+  class: "ls-grid-empty"
+};
+const _sfc_main = /* @__PURE__ */ defineComponent({
+  __name: "LoraStack",
+  props: {
+    widget: {},
+    node: {}
+  },
+  setup(__props) {
+    const props = __props;
+    const loras = /* @__PURE__ */ ref([]);
+    const favorites = /* @__PURE__ */ ref([]);
+    const rows = /* @__PURE__ */ ref(parseRows(props.widget?.value));
+    const browse = /* @__PURE__ */ ref(false);
+    const browseTarget = /* @__PURE__ */ ref(-1);
+    const bq = /* @__PURE__ */ ref("");
+    const bfilter = /* @__PURE__ */ ref("all");
+    const FILTERS = [
+      { value: "all", label: "All" },
+      { value: "fav", label: "Bookmarked", icon: "mdi mdi-star" }
+    ];
+    const bmode = /* @__PURE__ */ ref("flat");
+    const bpath = /* @__PURE__ */ ref("");
+    const BMODES = [
+      { value: "flat", label: "Flat" },
+      { value: "folder", label: "Folders" }
+    ];
+    const previewable = /* @__PURE__ */ new Set();
+    function num(v, fallback) {
+      const n = +v;
+      return Number.isFinite(n) ? n : fallback;
+    }
+    function parseRows(v) {
+      let arr = v;
+      if (typeof arr === "string") {
+        try {
+          arr = JSON.parse(arr || "[]");
+        } catch {
+          arr = [];
+        }
+      }
+      if (!Array.isArray(arr)) return [];
+      return arr.filter((r) => r && typeof r === "object").map((r) => ({
+        on: r.on !== false,
+        name: String(r.name ?? ""),
+        strength: num(r.strength, 1)
+      }));
+    }
+    async function ensureLoras() {
+      const [ls, fs] = await Promise.all([listLoras(), getFavorites()]);
+      loras.value = ls;
+      favorites.value = fs;
+      for (const l of ls) if (l.has_preview) previewable.add(l.name);
+      listLoaded.value = true;
+    }
+    const items = computed(
+      () => loras.value.map((l) => ({ value: l.name, label: short(l.name), keywords: l.name }))
+    );
+    const favSet = computed(() => new Set(favorites.value));
+    const browseItems = computed(() => {
+      const q = bq.value.trim().toLowerCase();
+      return loras.value.filter((l) => {
+        if (bfilter.value === "fav" && !favSet.value.has(l.name)) return false;
+        return !q || l.name.toLowerCase().includes(q);
+      });
+    });
+    const folderActive = computed(() => bmode.value === "folder" && !bq.value.trim());
+    const crumbSegs = computed(() => bpath.value ? bpath.value.split("/") : []);
+    const folderView = computed(() => {
+      const prefix = bpath.value ? bpath.value + "/" : "";
+      const folders = /* @__PURE__ */ new Set();
+      const files = [];
+      for (const l of loras.value) {
+        if (bfilter.value === "fav" && !favSet.value.has(l.name)) continue;
+        if (prefix && !l.name.startsWith(prefix)) continue;
+        const rest = l.name.slice(prefix.length);
+        const slash = rest.indexOf("/");
+        if (slash === -1)
+          files.push(l);
+        else folders.add(rest.slice(0, slash));
+      }
+      return { folders: [...folders].sort(), files };
+    });
+    const gridFolders = computed(() => folderActive.value ? folderView.value.folders : []);
+    const gridFiles = computed(() => folderActive.value ? folderView.value.files : browseItems.value);
+    function short(name) {
+      const base = String(name).split("/").pop() || String(name);
+      return base.replace(/\.(safetensors|pt|ckpt|bin|lora)$/i, "");
+    }
+    function folder(name) {
+      const parts = String(name).split("/");
+      return parts.length > 1 ? parts.slice(0, -1).join("/") : "";
+    }
+    function hasPreview(name) {
+      return previewable.has(String(name));
+    }
+    function preview(name) {
+      return previewUrl(String(name));
+    }
+    const listLoaded = /* @__PURE__ */ ref(false);
+    const selFailed = /* @__PURE__ */ ref(/* @__PURE__ */ new Set());
+    function selThumb(name) {
+      const n = String(name);
+      if (!n || selFailed.value.has(n)) return false;
+      return listLoaded.value ? previewable.has(n) : true;
+    }
+    function onSelErr(name) {
+      selFailed.value = new Set(selFailed.value).add(String(name));
+    }
+    function isFav(name) {
+      return favSet.value.has(String(name));
+    }
+    function onImgErr(e) {
+      const img = e.target;
+      previewable.delete(decodeURIComponent(new URL(img.src).searchParams.get("name") || ""));
+      img.style.display = "none";
+    }
+    function commit() {
+      if (props.widget) {
+        const snapshot = rows.value.map((r) => ({ ...r }));
+        props.widget.value = snapshot;
+        try {
+          props.widget.callback?.(snapshot);
+        } catch {
+        }
+      }
+      props.node?.graph?.setDirtyCanvas?.(true, true);
+    }
+    function setOn(i, on) {
+      if (rows.value[i]) {
+        rows.value[i].on = on;
+        commit();
+      }
+    }
+    function setName(i, name) {
+      if (rows.value[i]) {
+        rows.value[i].name = name;
+        commit();
+      }
+    }
+    function setStrengthVal(i, v) {
+      if (rows.value[i]) {
+        rows.value[i].strength = v;
+        commit();
+      }
+    }
+    function addRow(name = "") {
+      rows.value.push({ on: true, name, strength: 1 });
+      commit();
+    }
+    function removeRow(i) {
+      rows.value.splice(i, 1);
+      commit();
+    }
+    function clearAll() {
+      rows.value = [];
+      commit();
+    }
+    function enterFolder(name) {
+      bpath.value = bpath.value ? bpath.value + "/" + name : name;
+    }
+    function openBrowse(target, closeMenu) {
+      closeMenu?.();
+      void ensureLoras();
+      browseTarget.value = target;
+      bpath.value = "";
+      browse.value = true;
+    }
+    function pickFromBrowse(name) {
+      if (browseTarget.value < 0) addRow(name);
+      else setName(browseTarget.value, name);
+      browse.value = false;
+    }
+    async function toggleFav(name) {
+      favorites.value = await setFavorite(String(name), !favSet.value.has(String(name)));
+    }
+    return (_ctx, _cache2) => {
+      return openBlock(), createElementBlock("div", _hoisted_1, [
+        createBaseVNode("div", _hoisted_2, [
+          rows.value.length ? (openBlock(), createElementBlock("div", _hoisted_3, [
+            (openBlock(true), createElementBlock(Fragment, null, renderList(rows.value, (row, i) => {
+              return openBlock(), createElementBlock("div", {
+                key: i,
+                class: normalizeClass(["ls-row", { off: !row.on }])
+              }, [
+                createVNode(unref(ZenSwitch), {
+                  "model-value": row.on,
+                  title: "Enable",
+                  "onUpdate:modelValue": ($event) => setOn(i, $event)
+                }, null, 8, ["model-value", "onUpdate:modelValue"]),
+                createVNode(unref(ZenCombo), {
+                  class: "ls-pick",
+                  "model-value": row.name,
+                  items: items.value,
+                  pinned: favorites.value,
+                  "menu-width": 400,
+                  "item-height": 54,
+                  placeholder: "Select a LoRA…",
+                  "empty-text": "No LoRAs found",
+                  "onUpdate:modelValue": ($event) => setName(i, String($event)),
+                  onOpen: ensureLoras
+                }, {
+                  selected: withCtx(() => [
+                    createBaseVNode("span", _hoisted_4, [
+                      row.name && selThumb(row.name) ? (openBlock(), createElementBlock("img", {
+                        key: 0,
+                        class: "ls-thumb sm",
+                        src: preview(row.name),
+                        onError: ($event) => onSelErr(row.name)
+                      }, null, 40, _hoisted_5)) : (openBlock(), createElementBlock("i", _hoisted_6)),
+                      createBaseVNode("span", _hoisted_7, toDisplayString(row.name ? short(row.name) : "Select a LoRA…"), 1)
+                    ])
+                  ]),
+                  option: withCtx(({ item }) => [
+                    hasPreview(item.value) ? (openBlock(), createElementBlock("img", {
+                      key: 0,
+                      class: "ls-thumb",
+                      src: preview(item.value),
+                      loading: "lazy",
+                      onError: onImgErr
+                    }, null, 40, _hoisted_8)) : (openBlock(), createElementBlock("i", _hoisted_9)),
+                    createBaseVNode("span", _hoisted_10, [
+                      createBaseVNode("span", _hoisted_11, toDisplayString(short(item.value)), 1),
+                      folder(item.value) ? (openBlock(), createElementBlock("span", _hoisted_12, toDisplayString(folder(item.value)), 1)) : createCommentVNode("", true)
+                    ]),
+                    createBaseVNode("button", {
+                      class: normalizeClass(["ls-star", { on: isFav(item.value) }]),
+                      title: isFav(item.value) ? "Remove bookmark" : "Bookmark",
+                      onClick: withModifiers(($event) => toggleFav(item.value), ["stop"])
+                    }, [
+                      createBaseVNode("i", {
+                        class: normalizeClass(["mdi", isFav(item.value) ? "mdi-star" : "mdi-star-outline"])
+                      }, null, 2)
+                    ], 10, _hoisted_13)
+                  ]),
+                  footer: withCtx(({ close }) => [
+                    createVNode(unref(ZenButton), {
+                      variant: "ghost",
+                      sm: "",
+                      block: "",
+                      icon: "mdi mdi-view-grid-outline",
+                      onClick: ($event) => openBrowse(i, close)
+                    }, {
+                      default: withCtx(() => [
+                        createTextVNode("Browse all (" + toDisplayString(loras.value.length) + ")", 1)
+                      ]),
+                      _: 1
+                    }, 8, ["onClick"])
+                  ]),
+                  _: 2
+                }, 1032, ["model-value", "items", "pinned", "onUpdate:modelValue"]),
+                createVNode(unref(ZenNumber), {
+                  class: "ls-str",
+                  "model-value": row.strength,
+                  step: 0.05,
+                  min: -10,
+                  max: 10,
+                  "onUpdate:modelValue": ($event) => setStrengthVal(i, $event)
+                }, null, 8, ["model-value", "onUpdate:modelValue"]),
+                createVNode(unref(ZenIconButton), {
+                  icon: "mdi mdi-close",
+                  title: "Remove",
+                  onClick: ($event) => removeRow(i)
+                }, null, 8, ["onClick"])
+              ], 2);
+            }), 128))
+          ])) : (openBlock(), createElementBlock("div", _hoisted_14, [..._cache2[7] || (_cache2[7] = [
+            createBaseVNode("i", { class: "mdi mdi-layers-triple-outline" }, null, -1),
+            createBaseVNode("span", null, "No LoRAs in this stack yet", -1)
+          ])]))
+        ]),
+        createBaseVNode("div", _hoisted_15, [
+          createBaseVNode("button", {
+            class: "ls-add",
+            onClick: _cache2[0] || (_cache2[0] = ($event) => addRow())
+          }, [
+            _cache2[8] || (_cache2[8] = createBaseVNode("i", { class: "mdi mdi-plus" }, null, -1)),
+            _cache2[9] || (_cache2[9] = createTextVNode(" Add LoRA", -1)),
+            rows.value.length ? (openBlock(), createElementBlock("span", _hoisted_16, toDisplayString(rows.value.length), 1)) : createCommentVNode("", true)
+          ]),
+          createVNode(unref(ZenIconButton), {
+            icon: "mdi mdi-view-grid-outline",
+            title: "Browse library",
+            onClick: _cache2[1] || (_cache2[1] = ($event) => openBrowse(-1))
+          }),
+          rows.value.length ? (openBlock(), createBlock(unref(ZenIconButton), {
+            key: 0,
+            icon: "mdi mdi-broom",
+            danger: "",
+            title: "Clear all",
+            onClick: clearAll
+          })) : createCommentVNode("", true)
+        ]),
+        createVNode(unref(_sfc_main$2), {
+          open: browse.value,
+          "onUpdate:open": _cache2[6] || (_cache2[6] = ($event) => browse.value = $event),
+          title: "LoRA browser",
+          width: "880px",
+          height: "78vh"
+        }, {
+          header: withCtx(() => [
+            createBaseVNode("span", _hoisted_17, [
+              createVNode(unref(ZenInput), {
+                modelValue: bq.value,
+                "onUpdate:modelValue": _cache2[2] || (_cache2[2] = ($event) => bq.value = $event),
+                placeholder: "Search LoRAs…",
+                sm: ""
+              }, null, 8, ["modelValue"])
+            ]),
+            createVNode(unref(ZenToggleGroup), {
+              modelValue: bmode.value,
+              "onUpdate:modelValue": _cache2[3] || (_cache2[3] = ($event) => bmode.value = $event),
+              options: BMODES
+            }, null, 8, ["modelValue"]),
+            createVNode(unref(ZenToggleGroup), {
+              modelValue: bfilter.value,
+              "onUpdate:modelValue": _cache2[4] || (_cache2[4] = ($event) => bfilter.value = $event),
+              options: FILTERS
+            }, null, 8, ["modelValue"])
+          ]),
+          default: withCtx(() => [
+            folderActive.value ? (openBlock(), createElementBlock("div", _hoisted_18, [
+              createBaseVNode("button", {
+                class: normalizeClass(["ls-crumb", { on: !bpath.value }]),
+                onClick: _cache2[5] || (_cache2[5] = ($event) => bpath.value = "")
+              }, "all", 2),
+              (openBlock(true), createElementBlock(Fragment, null, renderList(crumbSegs.value, (seg, i) => {
+                return openBlock(), createElementBlock(Fragment, { key: i }, [
+                  _cache2[10] || (_cache2[10] = createBaseVNode("i", { class: "mdi mdi-chevron-right" }, null, -1)),
+                  createBaseVNode("button", {
+                    class: normalizeClass(["ls-crumb", { on: i === crumbSegs.value.length - 1 }]),
+                    onClick: ($event) => bpath.value = crumbSegs.value.slice(0, i + 1).join("/")
+                  }, toDisplayString(seg), 11, _hoisted_19)
+                ], 64);
+              }), 128))
+            ])) : createCommentVNode("", true),
+            createBaseVNode("div", _hoisted_20, [
+              (openBlock(true), createElementBlock(Fragment, null, renderList(gridFolders.value, (f) => {
+                return openBlock(), createElementBlock("button", {
+                  key: "d:" + f,
+                  class: "ls-card ls-folder",
+                  onClick: ($event) => enterFolder(f)
+                }, [
+                  _cache2[12] || (_cache2[12] = createBaseVNode("div", { class: "ls-card-img" }, [
+                    createBaseVNode("i", { class: "mdi mdi-folder" })
+                  ], -1)),
+                  createBaseVNode("div", _hoisted_22, [
+                    createBaseVNode("span", {
+                      class: "ls-card-name",
+                      title: f
+                    }, toDisplayString(f), 9, _hoisted_23),
+                    _cache2[11] || (_cache2[11] = createBaseVNode("span", { class: "ls-card-dir" }, "folder", -1))
+                  ])
+                ], 8, _hoisted_21);
+              }), 128)),
+              (openBlock(true), createElementBlock(Fragment, null, renderList(gridFiles.value, (it) => {
+                return openBlock(), createElementBlock("button", {
+                  key: it.name,
+                  class: normalizeClass(["ls-card", { sel: browseTarget.value >= 0 && rows.value[browseTarget.value]?.name === it.name }]),
+                  onClick: ($event) => pickFromBrowse(it.name)
+                }, [
+                  createBaseVNode("div", _hoisted_25, [
+                    it.has_preview ? (openBlock(), createElementBlock("img", {
+                      key: 0,
+                      src: preview(it.name),
+                      loading: "lazy",
+                      onError: onImgErr
+                    }, null, 40, _hoisted_26)) : (openBlock(), createElementBlock("i", _hoisted_27)),
+                    createBaseVNode("span", {
+                      class: normalizeClass(["ls-card-star", { on: isFav(it.name) }]),
+                      onClick: withModifiers(($event) => toggleFav(it.name), ["stop"])
+                    }, [
+                      createBaseVNode("i", {
+                        class: normalizeClass(["mdi", isFav(it.name) ? "mdi-star" : "mdi-star-outline"])
+                      }, null, 2)
+                    ], 10, _hoisted_28)
+                  ]),
+                  createBaseVNode("div", _hoisted_29, [
+                    createBaseVNode("span", {
+                      class: "ls-card-name",
+                      title: it.name
+                    }, toDisplayString(short(it.name)), 9, _hoisted_30),
+                    createBaseVNode("span", _hoisted_31, toDisplayString(folderActive.value ? "—" : folder(it.name) || "—"), 1)
+                  ])
+                ], 10, _hoisted_24);
+              }), 128)),
+              !gridFolders.value.length && !gridFiles.value.length ? (openBlock(), createElementBlock("p", _hoisted_32, toDisplayString(folderActive.value ? "Empty folder." : "No matches."), 1)) : createCommentVNode("", true)
+            ])
+          ]),
+          _: 1
+        }, 8, ["open"])
+      ]);
+    };
+  }
+});
+const LoraStack = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-da184183"]]);
+const loraNode = defineNode({
+  is: [
+    "nynxz.experimental.NynxzLoraLoader",
+    "nynxz.experimental.NynxzLoraLoaderCLIP",
+    "nynxz.experimental.NynxzLoraPicker"
+  ],
+  minSize: [380, 130],
+  widgets: [
+    {
+      name: "stack",
+      type: "NYNXZ_EXP_LORA_STACK",
+      component: LoraStack,
+      minHeight: 60,
+      default: []
+    }
+  ]
+});
+registerNodes("nynxz.experimental", [fusionNode, loraNode]);
