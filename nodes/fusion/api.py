@@ -18,6 +18,7 @@ except ImportError:  # outside ComfyUI (e.g. syntax checks)
 
 try:
     from server import PromptServer
+
     _routes = PromptServer.instance.routes
 except Exception:  # noqa: BLE001 - no server (import-time checks, tests)
     _routes = None
@@ -53,19 +54,22 @@ def _list_images(folder_type: str = "input") -> list[dict]:
                 size, mtime = stat.st_size, int(stat.st_mtime)
             except OSError:
                 size, mtime = 0, 0
-            items.append({
-                "name": rel,
-                "filename": name,
-                "subfolder": os.path.dirname(rel),
-                "type": folder_type,
-                "size": size,
-                "mtime": mtime,
-            })
+            items.append(
+                {
+                    "name": rel,
+                    "filename": name,
+                    "subfolder": os.path.dirname(rel),
+                    "type": folder_type,
+                    "size": size,
+                    "mtime": mtime,
+                }
+            )
     items.sort(key=lambda item: item["name"].lower())
     return items
 
 
 if _routes is not None:
+
     @_routes.get("/nynxz/experimental/images")
     async def nynxz_experimental_images(request):
         folder_type = request.rel_url.query.get("type", "input")

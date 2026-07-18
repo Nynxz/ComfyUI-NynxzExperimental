@@ -42,8 +42,18 @@ def widget_input(socketless: bool = True):
             default: Any = None,
         ):
             super().__init__(
-                id, display_name, optional, tooltip,
-                None, default, socketless, None, None, None, None, advanced,
+                id,
+                display_name,
+                optional,
+                tooltip,
+                None,
+                default,
+                socketless,
+                None,
+                None,
+                None,
+                None,
+                advanced,
             )
 
     return _WidgetInput

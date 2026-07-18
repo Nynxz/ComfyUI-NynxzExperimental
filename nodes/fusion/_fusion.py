@@ -16,16 +16,24 @@ the math. The pipeline is split into reusable pieces so we can grow it later:
     it scales whatever the geometry/content stages decided.
   * `_blend(visuals, weights, ...)`              — how weights combine embeddings
     (weighted sum with optional norm preservation so blends don't wash out).
+
+The spatial interleave this is built on derives from silveroxides/ComfyUI-UtilsCollection
+(MIT). Its copyright notice and license are reproduced in THIRD_PARTY_LICENSES.md at the
+pack root, as the MIT license requires:
+
+    Copyright (c) 2026 Silver — MIT License
+    https://github.com/silveroxides/ComfyUI-UtilsCollection
 """
 
+import hashlib
 import math
+from collections import OrderedDict
 from dataclasses import dataclass
-
-import torch
-import torch.nn.functional as F
 
 import comfy.utils
 import node_helpers
+import torch
+import torch.nn.functional as F
 from comfy_api.latest import io
 
 try:
@@ -34,17 +42,18 @@ try:
     # means this pack tracks the encoder automatically once the core has it.
     from comfy.text_encoders.qwen_vl import qwen2vl_image_size
 except ImportError:
-    def qwen2vl_image_size(height, width, min_pixels=3136, max_pixels=12845056, patch_size=14, merge_size=2):
+
+    def qwen2vl_image_size(
+        height, width, min_pixels=3136, max_pixels=12845056, patch_size=14, merge_size=2
+    ):
         factor = patch_size * merge_size
         resized_height = round(height / factor) * factor
         resized_width = round(width / factor) * factor
 
         if resized_height * resized_width > max_pixels:
             beta = math.sqrt((height * width) / max_pixels)
-            resized_height = max(factor, math.floor(
-                height / beta / factor) * factor)
-            resized_width = max(factor, math.floor(
-                width / beta / factor) * factor)
+            resized_height = max(factor, math.floor(height / beta / factor) * factor)
+            resized_width = max(factor, math.floor(width / beta / factor) * factor)
         elif resized_height * resized_width < min_pixels:
             beta = math.sqrt(min_pixels / (height * width))
             resized_height = math.ceil(height * beta / factor) * factor
@@ -52,8 +61,8 @@ except ImportError:
 
         return resized_height, resized_width
 
-FUSION_METHODS = ["spatial-checkerboard",
-                  "spatial-block-interleave", "spatial-dither-random"]
+
+FUSION_METHODS = ["spatial-checkerboard", "spatial-block-interleave", "spatial-dither-random"]
 CONTENT_MODES = ["none", "saliency", "energy", "cross-attention"]
 STYLE_MODES = ["none", "gist", "whiten"]
 FIT_MODES = ["cover", "contain", "stretch"]
@@ -65,13 +74,20 @@ FIT_OVERRIDE_OPTIONS = [FIT_OVERRIDE, *FIT_MODES]
 # The fit a new grid card / Fusion Reference starts on. "contain" keeps the whole reference
 # (letterboxed), which is what the grid thumbnails show and what a reference is usually for.
 # It is only a starting value now — fit is per-image, and the encode node can override it.
-# Use "cover" (center-crop to fill) to reproduce the legacy Visual Fusion node, which had no
-# fit choice and always cropped.
+# Use "cover" (center-crop to fill) for the old center-crop framing (what the pack did before
+# fit was a choice).
 DEFAULT_FIT = "contain"
 
 # Explicit aspect choices for the visual grid; "auto" takes it from the first source.
-ASPECTS = {"1:1": 1.0, "4:3": 4 / 3, "3:4": 3 / 4,
-           "16:9": 16 / 9, "9:16": 9 / 16, "3:2": 3 / 2, "2:3": 2 / 3}
+ASPECTS = {
+    "1:1": 1.0,
+    "4:3": 4 / 3,
+    "3:4": 3 / 4,
+    "16:9": 16 / 9,
+    "9:16": 9 / 16,
+    "3:2": 3 / 2,
+    "2:3": 2 / 3,
+}
 ASPECT_OPTIONS = ["auto", *ASPECTS]
 
 
@@ -101,7 +117,9 @@ class FusionSettings:
     visual_size: int = 384
 
 
-def _spatial_fusion_mask(height, width, num_sources, method, block_size, dither_ratio, device, seed=0, pattern_jitter=0.0):
+def _spatial_fusion_mask(
+    height, width, num_sources, method, block_size, dither_ratio, device, seed=0, pattern_jitter=0.0
+):
     # Built on the CPU and moved, so a seed picks the same pattern regardless of the device
     # the encoder ran on — CUDA and CPU generators don't agree on a stream for a given seed.
     rows = torch.arange(height).unsqueeze(1)
@@ -153,7 +171,7 @@ def _jitter_mask(mask, num_sources, pattern_jitter, seed):
 def _gaussian_blur2d(x, sigma, radius):
     """Separable gaussian blur over the spatial grid. x: [sources, 1, H, W]."""
     coords = torch.arange(-radius, radius + 1, device=x.device, dtype=x.dtype)
-    kernel = torch.exp(-(coords ** 2) / (2.0 * sigma * sigma))
+    kernel = torch.exp(-(coords**2) / (2.0 * sigma * sigma))
     kernel = kernel / kernel.sum()
     x = F.pad(x, (radius, radius, radius, radius), mode="reflect")
     x = F.conv2d(x, kernel.view(1, 1, 1, -1))
@@ -161,7 +179,19 @@ def _gaussian_blur2d(x, sigma, radius):
     return x
 
 
-def _fusion_weights(height, width, num_sources, method, block_size, dither_ratio, feather, blend_strength, device, seed=0, pattern_jitter=0.0):
+def _fusion_weights(
+    height,
+    width,
+    num_sources,
+    method,
+    block_size,
+    dither_ratio,
+    feather,
+    blend_strength,
+    device,
+    seed=0,
+    pattern_jitter=0.0,
+):
     """Per-source blend weights over the visual grid: [num_sources, tokens], columns sum to 1.
 
     `blend_strength` interpolates between the hard mosaic (0.0 == legacy behavior)
@@ -171,17 +201,18 @@ def _fusion_weights(height, width, num_sources, method, block_size, dither_ratio
     """
     tokens = height * width
     assignment = _spatial_fusion_mask(
-        height, width, num_sources, method, block_size, dither_ratio, device, seed, pattern_jitter)
-    onehot = torch.zeros(num_sources, tokens,
-                         device=device, dtype=torch.float32)
+        height, width, num_sources, method, block_size, dither_ratio, device, seed, pattern_jitter
+    )
+    onehot = torch.zeros(num_sources, tokens, device=device, dtype=torch.float32)
     onehot.scatter_(0, assignment.unsqueeze(0).to(torch.int64), 1.0)
 
-    radius = min(int(math.ceil(3.0 * feather)), min(height, width) - 1)
+    radius = min(math.ceil(3.0 * feather), min(height, width) - 1)
     if blend_strength <= 0.0 or feather <= 0.0 or radius < 1:
         return onehot
 
-    soft = _gaussian_blur2d(onehot.view(
-        num_sources, 1, height, width), feather, radius).view(num_sources, tokens)
+    soft = _gaussian_blur2d(onehot.view(num_sources, 1, height, width), feather, radius).view(
+        num_sources, tokens
+    )
     soft = soft / soft.sum(dim=0, keepdim=True).clamp_min(1e-6)
     weights = (1.0 - blend_strength) * onehot + blend_strength * soft
     return weights / weights.sum(dim=0, keepdim=True).clamp_min(1e-6)
@@ -195,8 +226,7 @@ def _blend(visuals, weights, preserve_norm=True):
     of its contributors so averaging doesn't collapse the embedding magnitude.
     """
     per_token = weights.transpose(0, 1)  # [tokens, sources]
-    fused = (visuals * per_token[None, :, :, None]
-             ).sum(dim=2)  # [batch, tokens, dim]
+    fused = (visuals * per_token[None, :, :, None]).sum(dim=2)  # [batch, tokens, dim]
     if preserve_norm:
         source_norms = visuals.norm(dim=-1)  # [batch, tokens, sources]
         # [batch, tokens]
@@ -235,12 +265,9 @@ def _style_release(visual, mode, strength):
         # magnitude the encoder actually emits instead of going out of distribution.
         # [B, 1, D]
         mean = x.mean(dim=1, keepdim=True)
-        std = x.std(dim=1, unbiased=False, keepdim=True).clamp_min(
-            1e-6)    # [B, 1, D]
-        target_mean = torch.lerp(mean, mean.mean(
-            dim=-1, keepdim=True).expand_as(mean), strength)
-        target_std = torch.lerp(std, std.mean(
-            dim=-1, keepdim=True).expand_as(std), strength)
+        std = x.std(dim=1, unbiased=False, keepdim=True).clamp_min(1e-6)  # [B, 1, D]
+        target_mean = torch.lerp(mean, mean.mean(dim=-1, keepdim=True).expand_as(mean), strength)
+        target_std = torch.lerp(std, std.mean(dim=-1, keepdim=True).expand_as(std), strength)
         out = (x - mean) / std * target_std + target_mean
     else:
         raise ValueError(f"Unsupported style mode: {mode}")
@@ -277,8 +304,7 @@ def _content_weights(visuals, mode, temperature):
     else:
         raise ValueError(f"Unsupported content mode: {mode}")
 
-    weights = torch.softmax(
-        scores / max(temperature, 1e-3), dim=-1)  # over sources
+    weights = torch.softmax(scores / max(temperature, 1e-3), dim=-1)  # over sources
     return weights.transpose(0, 1)  # [sources, tokens]
 
 
@@ -305,7 +331,7 @@ def _roll_strengths(strengths, strength_roll, seed):
     unit = torch.rand(len(strengths), generator=generator)  # [0, 1) per source
     # at roll=1 the factor spans 1/4x .. 4x; scales down smoothly toward 1x as roll -> 0
     factors = torch.exp((2.0 * unit - 1.0) * strength_roll * math.log(4.0))
-    return [float(s) * float(f) for s, f in zip(strengths, factors.tolist())]
+    return [float(s) * float(f) for s, f in zip(strengths, factors.tolist(), strict=True)]
 
 
 def _strength_weights(weights, strengths):
@@ -320,8 +346,9 @@ def _strength_weights(weights, strengths):
     """
     if strengths is None:
         return weights
-    scale = torch.tensor(strengths, device=weights.device,
-                         dtype=weights.dtype).unsqueeze(1)  # [sources, 1]
+    scale = torch.tensor(strengths, device=weights.device, dtype=weights.dtype).unsqueeze(
+        1
+    )  # [sources, 1]
     if float(scale.sum()) <= 0.0:
         return weights  # everything muted — nothing meaningful to weight by
 
@@ -336,65 +363,72 @@ def _strength_weights(weights, strengths):
 
 def _visual_token_span(tokens, cond_length, visual_tokens):
     if len(tokens) != 1:
-        raise ValueError(
-            "Visual fusion requires a Qwen3-VL or Krea2 text encoder.")
+        raise ValueError("Visual fusion requires a Qwen3-VL or Krea2 text encoder.")
 
     token_pairs = next(iter(tokens.values()))[0]
-    image_positions = [i for i, pair in enumerate(token_pairs)
-                       if isinstance(pair[0], dict) and pair[0].get("type") == "image"]
+    image_positions = [
+        i
+        for i, pair in enumerate(token_pairs)
+        if isinstance(pair[0], dict) and pair[0].get("type") == "image"
+    ]
     if len(image_positions) != 1:
-        raise ValueError(
-            "Visual fusion requires exactly one visual token block per encoding pass.")
+        raise ValueError("Visual fusion requires exactly one visual token block per encoding pass.")
 
     image_position = image_positions[0]
-    if any(not isinstance(pair[0], (int, float)) for pair in token_pairs[image_position + 1:]):
-        raise ValueError(
-            "Visual fusion does not support embeddings after the image token block.")
+    if any(not isinstance(pair[0], (int, float)) for pair in token_pairs[image_position + 1 :]):
+        raise ValueError("Visual fusion does not support embeddings after the image token block.")
 
     end = cond_length - (len(token_pairs) - image_position - 1)
     start = end - visual_tokens
     if start < 0 or end > cond_length:
-        raise ValueError(
-            "Could not locate the visual token block in the encoded conditioning.")
+        raise ValueError("Could not locate the visual token block in the encoded conditioning.")
     return start, end
 
 
-def _fuse_conditionings(conditionings, tokens, visual_height, visual_width, settings, strengths=None):
+def _fuse_conditionings(
+    conditionings, tokens, visual_height, visual_width, settings, strengths=None
+):
     schedule_count = len(conditionings[0])
     if any(len(source) != schedule_count for source in conditionings):
-        raise ValueError(
-            "All visual fusion sources must use the same CLIP schedule.")
+        raise ValueError("All visual fusion sources must use the same CLIP schedule.")
 
     visual_tokens = visual_height * visual_width
     fused = []
     for schedule in range(schedule_count):
         source_conds = [source[schedule][0] for source in conditionings]
-        spans = [_visual_token_span(source_tokens, cond.shape[1], visual_tokens)
-                 for source_tokens, cond in zip(tokens, source_conds)]
+        spans = [
+            _visual_token_span(source_tokens, cond.shape[1], visual_tokens)
+            for source_tokens, cond in zip(tokens, source_conds, strict=True)
+        ]
         if any(span != spans[0] for span in spans[1:]):
-            raise ValueError(
-                "Visual fusion sources produced different token layouts.")
+            raise ValueError("Visual fusion sources produced different token layouts.")
 
         start, end = spans[0]
-        visuals = torch.stack([cond[:, start:end]
-                              for cond in source_conds], dim=2)
-        weights = _fusion_weights(visual_height, visual_width, len(source_conds), settings.fusion_method,
-                                  settings.block_size, settings.dither_ratio, settings.feather,
-                                  settings.blend_strength, visuals.device, settings.seed,
-                                  settings.pattern_jitter)
+        visuals = torch.stack([cond[:, start:end] for cond in source_conds], dim=2)
+        weights = _fusion_weights(
+            visual_height,
+            visual_width,
+            len(source_conds),
+            settings.fusion_method,
+            settings.block_size,
+            settings.dither_ratio,
+            settings.feather,
+            settings.blend_strength,
+            visuals.device,
+            settings.seed,
+            settings.pattern_jitter,
+        )
         if settings.content_mode != "none" and settings.content_strength > 0.0:
-            content = _content_weights(
-                visuals, settings.content_mode, settings.content_temperature)
-            weights = _combine_weights(
-                weights, content, settings.content_strength)
+            content = _content_weights(visuals, settings.content_mode, settings.content_temperature)
+            weights = _combine_weights(weights, content, settings.content_strength)
         # Strength goes last: it re-weights whatever geometry + content settled on.
         weights = _strength_weights(weights, strengths)
-        blended_visual = _blend(visuals, weights.to(
-            visuals.dtype), settings.preserve_norm)
+        blended_visual = _blend(visuals, weights.to(visuals.dtype), settings.preserve_norm)
         # Style release is about the fused block as a whole, so it runs after the blend —
         # it changes the tokens, never who contributed them.
         blended_visual = _style_release(
-            blended_visual, settings.style_mode, settings.style_strength)
+            blended_visual, settings.style_mode, settings.style_strength
+        )
 
         blended = source_conds[0].clone()
         blended[:, start:end] = blended_visual
@@ -411,36 +445,36 @@ def flatten_images(images):
             continue
         if image.ndim == 3:
             image = image.unsqueeze(0)
-        sources.extend(image[i:i + 1].clone() for i in range(image.shape[0]))
+        sources.extend(image[i : i + 1].clone() for i in range(image.shape[0]))
     return sources
 
 
 def fit_image(source, width, height, fit="cover"):
     """Resample one [1, H, W, C] source into the shared (width, height) grid.
 
-      * "cover"   — fill the frame, center-cropping the overflow (no distortion).
-      * "contain" — fit the whole image inside, letterboxing the remainder in black.
-      * "stretch" — squash to the exact frame, ignoring the source aspect.
+    * "cover"   — fill the frame, center-cropping the overflow (no distortion).
+    * "contain" — fit the whole image inside, letterboxing the remainder in black.
+    * "stretch" — squash to the exact frame, ignoring the source aspect.
     """
     samples = source[:, :, :, :3].movedim(-1, 1)  # [1, 3, H, W]
     if fit == "cover":
-        out = comfy.utils.common_upscale(
-            samples, width, height, "area", "center")
+        out = comfy.utils.common_upscale(samples, width, height, "area", "center")
     elif fit == "stretch":
-        out = comfy.utils.common_upscale(
-            samples, width, height, "area", "disabled")
+        out = comfy.utils.common_upscale(samples, width, height, "area", "disabled")
     elif fit == "contain":
         source_height, source_width = samples.shape[2], samples.shape[3]
         scale = min(width / source_width, height / source_height)
         inner_width = max(1, round(source_width * scale))
         inner_height = max(1, round(source_height * scale))
-        resized = comfy.utils.common_upscale(
-            samples, inner_width, inner_height, "area", "disabled")
-        out = torch.zeros((samples.shape[0], samples.shape[1], height, width),
-                          dtype=resized.dtype, device=resized.device)
+        resized = comfy.utils.common_upscale(samples, inner_width, inner_height, "area", "disabled")
+        out = torch.zeros(
+            (samples.shape[0], samples.shape[1], height, width),
+            dtype=resized.dtype,
+            device=resized.device,
+        )
         top = (height - inner_height) // 2
         left = (width - inner_width) // 2
-        out[:, :, top:top + inner_height, left:left + inner_width] = resized
+        out[:, :, top : top + inner_height, left : left + inner_width] = resized
     else:
         raise ValueError(f"Unsupported fit mode: {fit}")
     return out.movedim(1, -1)
@@ -463,17 +497,70 @@ def _visual_grid(first, aspect, size):
     return max(32, round(math.sqrt(total * ratio))), max(32, round(math.sqrt(total / ratio)))
 
 
+# --- encode cache --------------------------------------------------------------------
+# ComfyUI re-executes the encode node whenever any of its inputs change — a knob, the seed, the
+# prompt. But the two heavy per-source steps — the CLIP vision/text encode and the VAE encode of
+# each reference — depend only on the image (plus the prompt and grid for CLIP), never on the
+# seed or the blend knobs. So we cache them keyed by content: a re-run that didn't change the
+# images reuses them and only redoes the cheap blend (e.g. tweaking feather, or re-rolling the
+# variety seed, costs nothing extra). Bounded LRU; cleared when the model object changes so a
+# model swap frees the held tensors.
+_COND_CACHE: OrderedDict = OrderedDict()
+_LATENT_CACHE: OrderedDict = OrderedDict()
+_CACHE_MAX = 24  # per cache, counted in per-source entries
+_CACHE_OWNER = {"clip": None, "vae": None}
+
+
+def _content_key(tensor):
+    """Cheap, collision-safe identity for an image: shape + sha1 of its bytes. Hashing a couple
+    of MB is milliseconds — negligible against a vision or VAE encode."""
+    array = tensor.detach().to("cpu").contiguous().numpy()
+    return (tuple(tensor.shape), hashlib.sha1(array.tobytes()).hexdigest())
+
+
+def _cache_take(cache, key):
+    value = cache.get(key)
+    if value is not None:
+        cache.move_to_end(key)
+    return value
+
+
+def _cache_store(cache, key, value):
+    cache[key] = value
+    cache.move_to_end(key)
+    while len(cache) > _CACHE_MAX:
+        cache.popitem(last=False)
+
+
+def _cache_scope(cache, owner_key, model):
+    # id() identity: ComfyUI hands back the same model object across runs while it's loaded, so
+    # a changed id means a real swap — drop the stale cache so its (possibly large) tensors free.
+    # NB `!=`, not `is` — id() is a large int and large ints aren't interned, so `is` would read
+    # as "changed" every call and clear the cache each run.
+    if _CACHE_OWNER[owner_key] != id(model):
+        _CACHE_OWNER[owner_key] = id(model)
+        cache.clear()
+
+
 def _reference_latents(vae, sources):
+    _cache_scope(_LATENT_CACHE, "vae", vae)
     ref_latents = []
     for source in sources:
-        samples = source[:, :, :, :3].movedim(-1, 1)
-        scale_by = math.sqrt(
-            (1024 * 1024) / (samples.shape[3] * samples.shape[2]))
-        latent_width = max(8, round(samples.shape[3] * scale_by / 8.0) * 8)
-        latent_height = max(8, round(samples.shape[2] * scale_by / 8.0) * 8)
-        resized = comfy.utils.common_upscale(
-            samples, latent_width, latent_height, "area", "disabled")
-        ref_latents.append(vae.encode(resized.movedim(1, -1)))
+        key = _content_key(source)
+        latent = _cache_take(_LATENT_CACHE, key)
+        if latent is None:
+            samples = source[:, :, :, :3].movedim(-1, 1)
+            scale_by = math.sqrt((1024 * 1024) / (samples.shape[3] * samples.shape[2]))
+            latent_width = max(8, round(samples.shape[3] * scale_by / 8.0) * 8)
+            latent_height = max(8, round(samples.shape[2] * scale_by / 8.0) * 8)
+            resized = comfy.utils.common_upscale(
+                samples, latent_width, latent_height, "area", "disabled"
+            )
+            latent = vae.encode(resized.movedim(1, -1))
+            _cache_store(_LATENT_CACHE, key, latent)
+        # Clone on use: reference_latents are attached to the conditioning and consumed by the
+        # sampler, so hand out a copy and keep the cached tensor pristine for the next run.
+        ref_latents.append(latent.clone() if hasattr(latent, "clone") else latent)
     return ref_latents
 
 
@@ -489,16 +576,16 @@ def _prepare_sources(sources, settings, fits=None):
 
     The grid comes from the encoder's own sizing rule, so callers never have to re-derive it.
     """
-    width, height = _visual_grid(
-        sources[0], settings.visual_aspect, settings.visual_size)
-    processed = [fit_image(source, width, height, (fits[i] if fits else "cover"))
-                 for i, source in enumerate(sources)]
+    width, height = _visual_grid(sources[0], settings.visual_aspect, settings.visual_size)
+    processed = [
+        fit_image(source, width, height, (fits[i] if fits else "cover"))
+        for i, source in enumerate(sources)
+    ]
 
     # Ask the encoder's own sizing rule what grid it will produce rather than re-deriving it:
     # it also clamps to its min/max pixel budget, and a grid that disagrees with the encoder's
     # would slice the wrong span out of the conditioning.
-    grid_height, grid_width = qwen2vl_image_size(
-        height, width, patch_size=16, merge_size=2)
+    grid_height, grid_width = qwen2vl_image_size(height, width, patch_size=16, merge_size=2)
     return processed, grid_height // 32, grid_width // 32
 
 
@@ -508,40 +595,50 @@ def _check_sources(sources, strengths, fits):
     if len(sources) < 1:
         raise ValueError("Visual fusion requires at least one image.")
     if strengths is not None and len(strengths) != len(sources):
-        raise ValueError(
-            "Visual fusion got a strength list that doesn't match the sources.")
+        raise ValueError("Visual fusion got a strength list that doesn't match the sources.")
     if fits is not None and len(fits) != len(sources):
-        raise ValueError(
-            "Visual fusion got a fit list that doesn't match the sources.")
+        raise ValueError("Visual fusion got a fit list that doesn't match the sources.")
 
 
 def encode_fusion(clip, prompt, sources, settings, strengths=None, fits=None, vae=None):
     """Encode each source through the Qwen3-VL encoder and fuse their visual tokens.
 
-    sources:   list of [1, H, W, C] IMAGE tensors (at least two).
+    sources:   list of [1, H, W, C] IMAGE tensors (at least one).
     strengths: per-source prevalence, or None for an even blend.
     fits:      per-source fit mode into the shared grid, or None for all-"cover"
-               (what the original node did with its center crop).
+               (the old center-crop default).
     """
     _check_sources(sources, strengths, fits)
-    processed, visual_height, visual_width = _prepare_sources(
-        sources, settings, fits)
+    processed, visual_height, visual_width = _prepare_sources(sources, settings, fits)
 
     full_prompt = PROMPT_TEMPLATE.format(prompt=prompt)
-    tokens = [clip.tokenize(full_prompt, images=[image])
-              for image in processed]
+    # tokenize stays every run — it's the cheap image preprocessing + tokenizing, and the fuse
+    # needs the token layout to find each source's visual span. The expensive vision/text
+    # transformer pass below is what gets cached.
+    tokens = [clip.tokenize(full_prompt, images=[image]) for image in processed]
     token_key = next(iter(tokens[0]), None)
-    if token_key not in ("qwen3vl_4b", "qwen3vl_8b") or any(next(iter(source_tokens), None) != token_key for source_tokens in tokens):
-        raise ValueError(
-            "Visual fusion requires a Qwen3-VL or Krea2 text encoder.")
+    if token_key not in ("qwen3vl_4b", "qwen3vl_8b") or any(
+        next(iter(source_tokens), None) != token_key for source_tokens in tokens
+    ):
+        raise ValueError("Visual fusion requires a Qwen3-VL or Krea2 text encoder.")
 
-    conditionings = [clip.encode_from_tokens_scheduled(
-        source_tokens) for source_tokens in tokens]
+    _cache_scope(_COND_CACHE, "clip", clip)
+    conditionings = []
+    for source_tokens, image in zip(tokens, processed, strict=True):
+        # keyed on (prompt, processed image); the clip is pinned by _cache_scope. Read-only
+        # downstream — _fuse_conditionings clones before it writes — so no copy needed here.
+        key = (full_prompt, _content_key(image))
+        cached = _cache_take(_COND_CACHE, key)
+        if cached is None:
+            cached = clip.encode_from_tokens_scheduled(source_tokens)
+            _cache_store(_COND_CACHE, key, cached)
+        conditionings.append(cached)
     # Seed-driven re-weighting of the mix (off at strength_roll 0). Done once, before the
     # per-schedule fuse, so every schedule shares one roll.
     strengths = _roll_strengths(strengths, settings.strength_roll, settings.seed)
     conditioning = _fuse_conditionings(
-        conditionings, tokens, visual_height, visual_width, settings, strengths)
+        conditionings, tokens, visual_height, visual_width, settings, strengths
+    )
 
     if vae is not None:
         conditioning = node_helpers.conditioning_set_values(
@@ -555,62 +652,102 @@ def style_inputs() -> list[io.Input]:
     the widget layout its docstring promises — only the newer nodes opt in."""
     return [
         io.Combo.Input(
-            "style_mode", options=STYLE_MODES, default="none", advanced=True,
+            "style_mode",
+            options=STYLE_MODES,
+            default="none",
+            advanced=True,
             tooltip="EXPERIMENTAL. Loosen the reference's grip on style so the prompt/LoRA can set the look "
-                    "(e.g. an anime reference + a 2real LoRA). Spatial structure is kept either way. "
-                    "gist = fade the block's mean token (its overall look); "
-                    "whiten = flatten the per-channel token statistics (the AdaIN view of style). "
-                    "Needs style_strength above 0.",
+            "(e.g. an anime reference + a 2real LoRA). Spatial structure is kept either way. "
+            "gist = fade the block's mean token (its overall look); "
+            "whiten = flatten the per-channel token statistics (the AdaIN view of style). "
+            "Needs style_strength above 0.",
         ),
         io.Float.Input(
-            "style_strength", default=0.0, min=0.0, max=1.0, step=0.01, advanced=True,
+            "style_strength",
+            default=0.0,
+            min=0.0,
+            max=1.0,
+            step=0.01,
+            advanced=True,
             tooltip="How far to push style_mode. 0 = off, an exact no-op (the default). 1 = the block's "
-                    "style signature is fully flattened. Start around 0.3-0.5 — high values push the "
-                    "tokens out of the distribution the encoder normally produces.",
+            "style signature is fully flattened. Start around 0.3-0.5 — high values push the "
+            "tokens out of the distribution the encoder normally produces.",
         ),
     ]
 
 
 def tuning_inputs() -> list[io.Input]:
-    """The fusion tuning knobs every fusion node exposes — same ids, defaults and tooltips.
+    """The fusion encode node's core tuning knobs (geometry + content).
 
-    Kept in declaration order so the original node's widget layout is unchanged.
+    style_inputs / variation_inputs are kept separate so each stays a self-contained group.
     """
     inputs = {
-        "fusion_method": io.Combo.Input("fusion_method", options=FUSION_METHODS, default="spatial-checkerboard"),
+        "fusion_method": io.Combo.Input(
+            "fusion_method", options=FUSION_METHODS, default="spatial-checkerboard"
+        ),
         "block_size": io.Int.Input("block_size", default=2, min=1, max=8, step=1, advanced=True),
         "dither_ratio": io.Float.Input(
-            "dither_ratio", default=0.5, min=0.0, max=1.0, step=0.01, advanced=True,
+            "dither_ratio",
+            default=0.5,
+            min=0.0,
+            max=1.0,
+            step=0.01,
+            advanced=True,
             tooltip="Probability of selecting the first source. Remaining sources are selected with a checkerboard pattern.",
         ),
         "blend_strength": io.Float.Input(
-            "blend_strength", default=0.5, min=0.0, max=1.0, step=0.01, advanced=True,
+            "blend_strength",
+            default=0.5,
+            min=0.0,
+            max=1.0,
+            step=0.01,
+            advanced=True,
             tooltip="0.0 = hard per-cell mosaic (original behavior); 1.0 = fully feathered soft blend.",
         ),
         "feather": io.Float.Input(
-            "feather", default=1.0, min=0.0, max=6.0, step=0.1, advanced=True,
+            "feather",
+            default=1.0,
+            min=0.0,
+            max=6.0,
+            step=0.1,
+            advanced=True,
             tooltip="Gaussian smoothing (in visual-grid cells) applied to each source's territory. Higher = softer "
-                    "transitions. NOTE: the checkerboard sits at the grid's Nyquist frequency, so past ~1.3 every "
-                    "source contributes 1/N everywhere and the pattern washes out to a flat average.",
+            "transitions. NOTE: the checkerboard sits at the grid's Nyquist frequency, so past ~1.3 every "
+            "source contributes 1/N everywhere and the pattern washes out to a flat average.",
         ),
         "preserve_norm": io.Boolean.Input(
-            "preserve_norm", default=True, advanced=True,
+            "preserve_norm",
+            default=True,
+            advanced=True,
             tooltip="Rescale blended tokens to preserve embedding magnitude, avoiding washed-out conditioning.",
         ),
         "content_mode": io.Combo.Input(
-            "content_mode", options=CONTENT_MODES, default="none", advanced=True,
+            "content_mode",
+            options=CONTENT_MODES,
+            default="none",
+            advanced=True,
             tooltip="Derive blend weights from token content instead of geometry alone. "
-                    "saliency = foreground wins; energy = strongest signal wins; "
-                    "cross-attention = agreement with the per-cell consensus (smoother). "
-                    "Needs content_strength above 0 to do anything.",
+            "saliency = foreground wins; energy = strongest signal wins; "
+            "cross-attention = agreement with the per-cell consensus (smoother). "
+            "Needs content_strength above 0 to do anything.",
         ),
         "content_strength": io.Float.Input(
-            "content_strength", default=0.0, min=0.0, max=1.0, step=0.01, advanced=True,
+            "content_strength",
+            default=0.0,
+            min=0.0,
+            max=1.0,
+            step=0.01,
+            advanced=True,
             tooltip="How much content weighting overrides the geometric pattern. 0 = geometry only (the default, "
-                    "which makes content_mode inert); 1 = content only.",
+            "which makes content_mode inert); 1 = content only.",
         ),
         "content_temperature": io.Float.Input(
-            "content_temperature", default=1.0, min=0.05, max=5.0, step=0.05, advanced=True,
+            "content_temperature",
+            default=1.0,
+            min=0.05,
+            max=5.0,
+            step=0.05,
+            advanced=True,
             tooltip="Softmax temperature for content weights. Lower = sharper (winner-take-all); higher = softer mix.",
         ),
     }
@@ -618,10 +755,19 @@ def tuning_inputs() -> list[io.Input]:
 
 
 def seed_input() -> io.Input:
-    return io.Int.Input("seed", default=0, min=0, max=0xffffffffffffffff, control_after_generate=True,
-                        advanced=True,
-                        tooltip="Seed for spatial-dither-random and for pattern_jitter. With jitter above 0, "
-                                "bumping this re-rolls the fusion — that's how you get variety from the same images.")
+    # Deliberately no control_after_generate: this seed only feeds the opt-in variety features
+    # (spatial-dither-random, pattern_jitter, strength_roll). Auto-advancing it every queue
+    # would change a node input every run and defeat caching for everyone not using variety.
+    # It's a plain fixed value; change it by hand (or add the control on the node) to re-roll.
+    return io.Int.Input(
+        "seed",
+        default=0,
+        min=0,
+        max=0xFFFFFFFFFFFFFFFF,
+        advanced=True,
+        tooltip="Seed for spatial-dither-random and for pattern_jitter / strength_roll. Fixed by "
+        "default; change it to re-roll the variety features. Leaving it fixed keeps the encode cached.",
+    )
 
 
 def variation_inputs() -> list[io.Input]:
@@ -629,16 +775,26 @@ def variation_inputs() -> list[io.Input]:
     tuning_inputs so the legacy autogrow node's widget layout stays frozen."""
     return [
         io.Float.Input(
-            "strength_roll", default=0.0, min=0.0, max=1.0, step=0.01, advanced=True,
+            "strength_roll",
+            default=0.0,
+            min=0.0,
+            max=1.0,
+            step=0.01,
+            advanced=True,
             tooltip="Randomly re-weight the blend each run, driven by the seed — shifts which image dominates "
-                    "the mix. This is the one that actually moves the result (it changes the blend proportions, "
-                    "not just where tokens sit). 0 = off. Raise it, then bump the seed between runs. ~0.5 is a "
-                    "noticeable reroll; muted images stay muted.",
+            "the mix. This is the one that actually moves the result (it changes the blend proportions, "
+            "not just where tokens sit). 0 = off. Raise it, then bump the seed between runs. ~0.5 is a "
+            "noticeable reroll; muted images stay muted.",
         ),
         io.Float.Input(
-            "pattern_jitter", default=0.0, min=0.0, max=1.0, step=0.01, advanced=True,
+            "pattern_jitter",
+            default=0.0,
+            min=0.0,
+            max=1.0,
+            step=0.01,
+            advanced=True,
             tooltip="Randomly reassign this fraction of grid cells to a different image, driven by the seed. "
-                    "0 = the clean geometric pattern (exact default behaviour). Subtler than strength_roll — it "
-                    "rearranges the same tokens rather than re-weighting them. Works on any fusion_method.",
+            "0 = the clean geometric pattern (exact default behaviour). Subtler than strength_roll — it "
+            "rearranges the same tokens rather than re-weighting them. Works on any fusion_method.",
         ),
     ]

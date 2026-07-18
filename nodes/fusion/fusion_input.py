@@ -22,12 +22,11 @@ from __future__ import annotations
 import json
 import os
 
+import folder_paths
 import numpy as np
 import torch
-from PIL import Image, ImageOps
-
-import folder_paths
 from comfy_api.latest import io
+from PIL import Image, ImageOps
 
 from .._base import NynxzNode
 from ._fusion import DEFAULT_FIT, FIT_MODES
@@ -100,12 +99,15 @@ class FusionInput(NynxzNode):
             node_id="FusionInput",
             display_name="Fusion Input",
             description="Drop images into a grid and set each one's strength, fit and mute. "
-                        "Feeds a fusion node via fusion_input.",
+            "Feeds a fusion node via fusion_input.",
             inputs=[
                 NynxzFusionGridType.Input("grid", default=[]),
-                NynxzFusionInputData.Input("fusion_input", optional=True,
-                                           tooltip="Optional upstream Fusion Input — its images come first, "
-                                                   "then this node's grid."),
+                NynxzFusionInputData.Input(
+                    "fusion_input",
+                    optional=True,
+                    tooltip="Optional upstream Fusion Input — its images come first, "
+                    "then this node's grid.",
+                ),
             ],
             outputs=[NynxzFusionInputData.Output(display_name="fusion_input")],
         )
@@ -142,8 +144,13 @@ class FusionInput(NynxzNode):
             if image is None:
                 continue
             fit = row.get("fit")
-            sources.append({"image": image, "strength": _row_strength(row),
-                            "fit": fit if fit in FIT_MODES else DEFAULT_FIT,
-                            "label": str(row.get("ref"))})
+            sources.append(
+                {
+                    "image": image,
+                    "strength": _row_strength(row),
+                    "fit": fit if fit in FIT_MODES else DEFAULT_FIT,
+                    "label": str(row.get("ref")),
+                }
+            )
 
         return io.NodeOutput(sources)

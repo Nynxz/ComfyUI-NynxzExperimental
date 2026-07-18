@@ -1,8 +1,8 @@
 """Visual fusion nodes.
 
-  * QwenImageEditFusion — the original: autogrow IMAGE sockets, equal-weight blend.
   * fusion_input        — the Vue grid: drop images, set strength / fit / mute, reorder.
   * fusion_reference    — the plain-wire alternative: one IMAGE + strength, chained.
+  * fusion_images       — autogrow IMAGE sockets → fusion_input, no chaining.
   * fusion_encode       — fuses a Fusion Input's images into one conditioning.
 
 They all share `_fusion.py`, which owns the weight/blend/style math. `api.py` registers the

@@ -19,7 +19,6 @@ gets. A batched IMAGE contributes one source per frame, in batch order.
 from __future__ import annotations
 
 import torch
-
 from comfy_api.latest import io
 
 from .._base import NynxzNode
@@ -36,24 +35,31 @@ class FusionReference(NynxzNode):
             node_id="FusionReference",
             display_name="Fusion Reference",
             description="Add an IMAGE to a fusion_input with a strength. Chain these to fuse "
-                        "regular Load Image nodes without going through the Fusion Input grid.",
+            "regular Load Image nodes without going through the Fusion Input grid.",
             inputs=[
                 io.Image.Input("image", tooltip="Any IMAGE. A batch adds one reference per frame."),
                 io.Float.Input(
-                    "strength", default=1.0, min=0.0, max=10.0, step=0.05,
+                    "strength",
+                    default=1.0,
+                    min=0.0,
+                    max=10.0,
+                    step=0.05,
                     tooltip="Relative prevalence in the blend, not an absolute gain — doubling every "
-                            "reference changes nothing. 0 mutes this one. Matches the grid's strength.",
+                    "reference changes nothing. 0 mutes this one. Matches the grid's strength.",
                 ),
                 io.Combo.Input(
-                    "fit", options=FIT_MODES, default=DEFAULT_FIT,
+                    "fit",
+                    options=FIT_MODES,
+                    default=DEFAULT_FIT,
                     tooltip="How this image is framed into the shared grid. contain = whole image, "
-                            "letterboxed; cover = center-crop to fill; stretch = distort to fill. The "
-                            "encode node's fit override can force one mode for every source.",
+                    "letterboxed; cover = center-crop to fill; stretch = distort to fill. The "
+                    "encode node's fit override can force one mode for every source.",
                 ),
                 NynxzFusionInputData.Input(
-                    "fusion_input", optional=True,
+                    "fusion_input",
+                    optional=True,
                     tooltip="Optional upstream Fusion Reference or Fusion Input — its images come "
-                            "first, then this node's.",
+                    "first, then this node's.",
                 ),
             ],
             outputs=[NynxzFusionInputData.Output(display_name="fusion_input")],
@@ -74,10 +80,12 @@ class FusionReference(NynxzNode):
         weight = max(0.0, float(strength))
         fit = fit if fit in FIT_MODES else DEFAULT_FIT
         for i in range(frames.shape[0]):
-            sources.append({
-                "image": frames[i:i + 1].clone(),
-                "strength": weight,
-                "fit": fit,
-                "label": f"reference {len(sources) + 1}",
-            })
+            sources.append(
+                {
+                    "image": frames[i : i + 1].clone(),
+                    "strength": weight,
+                    "fit": fit,
+                    "label": f"reference {len(sources) + 1}",
+                }
+            )
         return io.NodeOutput(sources)
