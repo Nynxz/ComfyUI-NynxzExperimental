@@ -3147,7 +3147,7 @@ function applyOptions(instance) {
     // lifecycle
     created,
     beforeMount,
-    mounted,
+    mounted: mounted2,
     beforeUpdate,
     updated,
     activated,
@@ -3230,7 +3230,7 @@ function applyOptions(instance) {
     }
   }
   registerLifecycleHook(onBeforeMount, beforeMount);
-  registerLifecycleHook(onMounted, mounted);
+  registerLifecycleHook(onMounted, mounted2);
   registerLifecycleHook(onBeforeUpdate, beforeUpdate);
   registerLifecycleHook(onUpdated, updated);
   registerLifecycleHook(onActivated, activated);
@@ -6277,9 +6277,9 @@ function formatComponentName(instance, Component, isRoot = false) {
     }
   }
   if (!name && instance) {
-    const inferFromRegistry = (registry) => {
-      for (const key in registry) {
-        if (registry[key] === Component) {
+    const inferFromRegistry = (registry2) => {
+      for (const key in registry2) {
+        if (registry2[key] === Component) {
           return key;
         }
       }
@@ -9002,4 +9002,521 @@ const loraNode = defineNode({
     }
   ]
 });
+function lgCanvas() {
+  return app.canvas ?? null;
+}
+function oklToRgb(str) {
+  const num = (t) => t && t.indexOf("%") >= 0 ? parseFloat(t) / 100 : parseFloat(t);
+  let L, a, b;
+  let m = /oklch\(\s*([^)]+)\)/i.exec(str);
+  if (m) {
+    const p2 = m[1].split("/")[0].trim().split(/[\s,]+/);
+    L = num(p2[0]);
+    const C = parseFloat(p2[1]);
+    const H = (parseFloat(p2[2]) || 0) * Math.PI / 180;
+    a = C * Math.cos(H);
+    b = C * Math.sin(H);
+  } else if (m = /oklab\(\s*([^)]+)\)/i.exec(str)) {
+    const p2 = m[1].split("/")[0].trim().split(/[\s,]+/);
+    L = num(p2[0]);
+    a = parseFloat(p2[1]);
+    b = parseFloat(p2[2]);
+  } else {
+    return null;
+  }
+  if ([L, a, b].some(Number.isNaN)) return null;
+  const l_ = L + 0.3963377774 * a + 0.2158037573 * b;
+  const m_ = L - 0.1055613458 * a - 0.0638541728 * b;
+  const s_ = L - 0.0894841775 * a - 1.291485548 * b;
+  const l = l_ ** 3, mm = m_ ** 3, s = s_ ** 3;
+  const lin = [
+    4.0767416621 * l - 3.3077115913 * mm + 0.2309699292 * s,
+    -1.2684380046 * l + 2.6097574011 * mm - 0.3413193965 * s,
+    -0.0041960863 * l - 0.7034186147 * mm + 1.707614701 * s
+  ];
+  const g = (x) => {
+    const c = x <= 31308e-7 ? 12.92 * x : 1.055 * Math.pow(x, 1 / 2.4) - 0.055;
+    return Math.max(0, Math.min(255, Math.round(c * 255)));
+  };
+  return [g(lin[0]), g(lin[1]), g(lin[2])];
+}
+const probe2d = (() => {
+  try {
+    return document.createElement("canvas").getContext("2d");
+  } catch {
+    return null;
+  }
+})();
+function normalizeColor(value) {
+  const v = (value || "").trim();
+  if (!v) return "";
+  if (v[0] === "#" || v.startsWith("rgb")) return v;
+  if (v.startsWith("okl")) {
+    const rgb = oklToRgb(v);
+    if (rgb) return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+  }
+  if (probe2d) {
+    probe2d.fillStyle = "#000000";
+    probe2d.fillStyle = v;
+    const a = probe2d.fillStyle;
+    probe2d.fillStyle = "#ffffff";
+    probe2d.fillStyle = v;
+    if (a === probe2d.fillStyle) return a;
+  }
+  return "";
+}
+function cssColor(name, fallback) {
+  const el = document.querySelector(".comfyui-body-top") || document.body;
+  const raw = getComputedStyle(el).getPropertyValue(name);
+  return normalizeColor(raw) || fallback;
+}
+function hexToRgb(color) {
+  if (!color) return null;
+  const s = String(color).trim();
+  if (s[0] === "#") {
+    let h = s.slice(1);
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    if (h.length !== 6) return null;
+    const n = parseInt(h, 16);
+    if (Number.isNaN(n)) return null;
+    return [n >> 16 & 255, n >> 8 & 255, n & 255];
+  }
+  const m = s.match(/rgba?\(([^)]+)\)/i);
+  if (m) {
+    const p2 = m[1].split(/[\s,/]+/).filter(Boolean).map(parseFloat);
+    if (p2.length >= 3 && p2.slice(0, 3).every((x) => !Number.isNaN(x))) return [Math.round(p2[0]), Math.round(p2[1]), Math.round(p2[2])];
+  }
+  return null;
+}
+const S = {
+  rainbow: 1,
+  // drifting full-field spectrum (the original look)
+  colorSpeed: 45,
+  // °/sec
+  dotSpacing: 32,
+  // graph units
+  dotRadius: 1.4,
+  restAlpha: 0.22,
+  glowSize: 8,
+  mouseRadius: 200,
+  baseBrightness: 0.25,
+  saturation: 0.7,
+  lightness: 0.55,
+  vignette: 1
+};
+const VERT = `#version 300 es
+const vec2 V[3] = vec2[3](vec2(-1.0,-1.0), vec2(3.0,-1.0), vec2(-1.0,3.0));
+void main(){ gl_Position = vec4(V[gl_VertexID], 0.0, 1.0); }
+`;
+const FRAG = `#version 300 es
+precision highp float;
+out vec4 fragColor;
+uniform vec2  u_res;
+uniform float u_dpr;
+uniform float u_scale;
+uniform vec2  u_offset;
+uniform vec2  u_mouse;
+uniform float u_over;
+uniform float u_time;
+uniform float u_spacing;
+uniform float u_dotRadius;
+uniform float u_restAlpha;
+uniform float u_glow;
+uniform float u_mouseRadius;
+uniform float u_sat;
+uniform float u_lit;
+uniform float u_base;
+uniform float u_speed;
+uniform float u_rainbow;
+uniform vec3  u_dotColor;
+uniform vec3  u_bgColor;
+uniform float u_vignette;
+vec3 hsl2rgb(float h, float s, float l){
+  h = mod(h, 360.0) / 60.0;
+  float c = (1.0 - abs(2.0*l - 1.0)) * s;
+  float x = c * (1.0 - abs(mod(h, 2.0) - 1.0));
+  vec3 rgb;
+  if (h < 1.0)      rgb = vec3(c, x, 0.0);
+  else if (h < 2.0) rgb = vec3(x, c, 0.0);
+  else if (h < 3.0) rgb = vec3(0.0, c, x);
+  else if (h < 4.0) rgb = vec3(0.0, x, c);
+  else if (h < 5.0) rgb = vec3(x, 0.0, c);
+  else              rgb = vec3(c, 0.0, x);
+  return rgb + (l - c/2.0);
+}
+float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+void main(){
+  vec2 dev = vec2(gl_FragCoord.x, u_res.y - gl_FragCoord.y);
+  vec2 g = dev / (u_dpr * u_scale) - u_offset;
+  vec3 col = u_bgColor;
+  vec2 baseCell = floor(g / u_spacing + 0.5);
+  float aa = max(fwidth(g.x), fwidth(g.y)) + 0.001;
+  for (int oy = -1; oy <= 1; oy++) {
+    for (int ox = -1; ox <= 1; ox++) {
+      vec2 cell = baseCell + vec2(float(ox), float(oy));
+      vec2 dotPos = cell * u_spacing;
+      float dist = length(g - dotPos);
+      float prox = u_over > 0.5 ? max(0.0, 1.0 - length(dotPos - u_mouse) / u_mouseRadius) : 0.0;
+      float h = hash(cell);
+      float pulse = sin(u_time * (0.2 + h * 0.4) + h * 6.2831) * 0.5 + 0.5;
+      float baseAlpha = u_restAlpha + h * 0.08;
+      float alpha = baseAlpha + prox * 0.75 + pulse * 0.06;
+      vec3 dotc;
+      if (u_rainbow > 0.5) {
+        float flow = (dotPos.x + dotPos.y) * 0.12
+                   + 30.0 * sin(dotPos.x * 0.008 + u_time * 0.4)
+                   + 30.0 * sin(dotPos.y * 0.010 - u_time * 0.3)
+                   + u_time * u_speed;
+        float hue = flow + prox * 50.0;
+        float sat = u_base * 0.3 + prox * u_sat;
+        float lit = u_base + prox * (u_lit - u_base);
+        dotc = hsl2rgb(hue, sat, lit);
+      } else {
+        dotc = min(vec3(1.0), u_dotColor * (1.0 + prox * 0.7));
+      }
+      float coreR = u_dotRadius + prox * u_dotRadius * 1.8;
+      float core = (1.0 - smoothstep(coreR - aa, coreR + aa, dist)) * alpha;
+      float glowR = u_dotRadius + prox * u_glow;
+      float glow = prox > 0.05 ? (1.0 - smoothstep(0.0, glowR, dist)) * prox * 0.4 * alpha : 0.0;
+      col = mix(col, dotc, clamp(core + glow, 0.0, 1.0));
+    }
+  }
+  if (u_vignette > 0.5) {
+    vec2 uv = dev / u_res;
+    float d = distance(uv, vec2(0.5, 0.4));
+    col = mix(col, u_bgColor, smoothstep(0.55, 1.05, d));
+  }
+  fragColor = vec4(col, 1.0);
+}
+`;
+const UNIFORMS = [
+  "u_res",
+  "u_dpr",
+  "u_scale",
+  "u_offset",
+  "u_mouse",
+  "u_over",
+  "u_time",
+  "u_spacing",
+  "u_dotRadius",
+  "u_restAlpha",
+  "u_glow",
+  "u_mouseRadius",
+  "u_sat",
+  "u_lit",
+  "u_base",
+  "u_speed",
+  "u_rainbow",
+  "u_dotColor",
+  "u_bgColor",
+  "u_vignette"
+];
+function compile(gl, type, src) {
+  const sh = gl.createShader(type);
+  if (!sh) return null;
+  gl.shaderSource(sh, src);
+  gl.compileShader(sh);
+  if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+    console.error("[ZenKit] bg shader compile failed:", gl.getShaderInfoLog(sh));
+    gl.deleteShader(sh);
+    return null;
+  }
+  return sh;
+}
+function createGL(canvas) {
+  const gl = canvas.getContext("webgl2", { alpha: false, premultipliedAlpha: false, antialias: false });
+  if (!gl) return null;
+  const vs = compile(gl, gl.VERTEX_SHADER, VERT);
+  const fs = compile(gl, gl.FRAGMENT_SHADER, FRAG);
+  if (!vs || !fs) return null;
+  const prog = gl.createProgram();
+  gl.attachShader(prog, vs);
+  gl.attachShader(prog, fs);
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+    console.error("[ZenKit] bg program link failed:", gl.getProgramInfoLog(prog));
+    return null;
+  }
+  gl.useProgram(prog);
+  const u = {};
+  for (const name of UNIFORMS) u[name] = gl.getUniformLocation(prog, name);
+  return { gl, prog, u };
+}
+function renderGL(host2, st) {
+  const vw = host2.w | 0;
+  const vh = host2.h | 0;
+  if (vw <= 0 || vh <= 0) return;
+  const { gl, u } = st;
+  gl.useProgram(st.prog);
+  gl.viewport(0, 0, vw, vh);
+  const bg = (hexToRgb(host2.color("--zen-bg", "#121212")) ?? [18, 18, 18]).map((v) => v / 255);
+  const dot = (hexToRgb(host2.color("--zen-text", "#cccccc")) ?? [200, 200, 200]).map((v) => v / 255);
+  gl.uniform2f(u.u_res, vw, vh);
+  gl.uniform1f(u.u_dpr, host2.dpr);
+  gl.uniform1f(u.u_scale, host2.scale);
+  gl.uniform2f(u.u_offset, host2.offset.x, host2.offset.y);
+  gl.uniform2f(u.u_mouse, host2.mouse.x, host2.mouse.y);
+  gl.uniform1f(u.u_over, host2.mouse.over ? 1 : 0);
+  gl.uniform1f(u.u_time, host2.time * 1e-3);
+  gl.uniform1f(u.u_spacing, S.dotSpacing);
+  gl.uniform1f(u.u_dotRadius, S.dotRadius);
+  gl.uniform1f(u.u_restAlpha, S.restAlpha);
+  gl.uniform1f(u.u_glow, S.glowSize);
+  gl.uniform1f(u.u_mouseRadius, S.mouseRadius);
+  gl.uniform1f(u.u_sat, S.saturation);
+  gl.uniform1f(u.u_lit, S.lightness);
+  gl.uniform1f(u.u_base, S.baseBrightness);
+  gl.uniform1f(u.u_speed, S.colorSpeed);
+  gl.uniform1f(u.u_rainbow, S.rainbow);
+  gl.uniform3f(u.u_dotColor, dot[0], dot[1], dot[2]);
+  gl.uniform3f(u.u_bgColor, bg[0], bg[1], bg[2]);
+  gl.uniform1f(u.u_vignette, S.vignette);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+}
+function render2D(host2, st) {
+  const ctx = st.ctx2d || (st.ctx2d = host2.layer.getContext("2d"));
+  if (!ctx) return;
+  const W = host2.w, H = host2.h;
+  if (W <= 0 || H <= 0) return;
+  const k = host2.dpr * host2.scale;
+  const ox = host2.offset.x, oy = host2.offset.y;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  ctx.setTransform(k, 0, 0, k, k * ox, k * oy);
+  const ax = -ox, ay = -oy, aw = W / k, ah = H / k;
+  ctx.fillStyle = host2.color("--zen-bg", "#121212");
+  ctx.fillRect(ax, ay, aw, ah);
+  const dotCol = hexToRgb(host2.color("--zen-text", "#cccccc")) ?? [200, 200, 200];
+  host2.time * 1e-3;
+  const i0 = Math.floor(ax / S.dotSpacing) - 1, i1 = Math.ceil((ax + aw) / S.dotSpacing) + 1;
+  const j0 = Math.floor(ay / S.dotSpacing) - 1, j1 = Math.ceil((ay + ah) / S.dotSpacing) + 1;
+  for (let j = j0; j <= j1; j++) {
+    for (let i = i0; i <= i1; i++) {
+      const x = i * S.dotSpacing, y = j * S.dotSpacing;
+      const prox = host2.mouse.over ? Math.max(0, 1 - Math.hypot(x - host2.mouse.x, y - host2.mouse.y) / S.mouseRadius) : 0;
+      const r = dotCol[0] * (1 + prox * 0.7), g = dotCol[1] * (1 + prox * 0.7), b = dotCol[2] * (1 + prox * 0.7);
+      const alpha = S.restAlpha + prox * 0.75;
+      ctx.beginPath();
+      ctx.arc(x, y, S.dotRadius + prox * S.dotRadius * 1.8, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${Math.min(255, r) | 0}, ${Math.min(255, g) | 0}, ${Math.min(255, b) | 0}, ${Math.min(1, alpha)})`;
+      ctx.fill();
+    }
+  }
+}
+const grid = {
+  id: "grid",
+  label: "Interactive Grid",
+  init(host2) {
+    const gl = createGL(host2.layer);
+    if (!gl) console.warn("[ZenKit] WebGL2 unavailable — 2D fallback grid.");
+    return { gl, ctx2d: null };
+  },
+  frame(host2, state) {
+    const st = state;
+    if (st.gl) renderGL(host2, st.gl);
+    else render2D(host2, st);
+  },
+  dispose(state) {
+    const st = state;
+    st.gl?.gl.getExtension("WEBGL_lose_context")?.loseContext();
+  }
+};
+const registry = /* @__PURE__ */ new Map();
+registry.set(grid.id, grid);
+let desiredId = "grid";
+class Host {
+  layer = null;
+  raf = 0;
+  last = 0;
+  active = null;
+  state = null;
+  started = false;
+  ptr = { x: 0, y: 0, over: false };
+  saved = {};
+  mount() {
+    if (this.started) return;
+    this.started = true;
+    const move = (e) => {
+      this.ptr.x = e.clientX;
+      this.ptr.y = e.clientY;
+      this.ptr.over = true;
+    };
+    window.addEventListener("pointermove", move, { capture: true, passive: true });
+    window.addEventListener("pointerleave", () => this.ptr.over = false, true);
+    window.addEventListener("resize", () => this.resize());
+    this.whenReady();
+  }
+  whenReady(tries = 0) {
+    if (lgCanvas()?.canvas) return this.setActive(desiredId);
+    if (tries > 120) return;
+    requestAnimationFrame(() => this.whenReady(tries + 1));
+  }
+  makeLayer(lg) {
+    const el = lg.canvas;
+    const c = document.createElement("canvas");
+    c.setAttribute("aria-hidden", "true");
+    c.dataset.zenkitBg = "";
+    Object.assign(c.style, { position: "absolute", inset: "0", width: "100%", height: "100%", pointerEvents: "none" });
+    el.parentElement?.insertBefore(c, el);
+    this.layer = c;
+    this.resize();
+  }
+  resize() {
+    const el = lgCanvas()?.canvas;
+    const c = this.layer;
+    if (!el || !c) return;
+    if (c.width !== el.width || c.height !== el.height) {
+      c.width = el.width;
+      c.height = el.height;
+    }
+  }
+  suppress(lg) {
+    if (this.saved.clear === void 0) {
+      this.saved.bg = lg.background_image;
+      this.saved.clear = lg.clear_background_color;
+    }
+    lg.background_image = "";
+    lg.clear_background_color = "";
+    lg._pattern = void 0;
+    lg._bg_img = void 0;
+  }
+  restore(lg) {
+    if (this.saved.clear === void 0) return;
+    lg.background_image = this.saved.bg;
+    lg.clear_background_color = this.saved.clear;
+    lg._pattern = void 0;
+    lg._bg_img = void 0;
+    this.saved = {};
+  }
+  buildCtx(lg, now) {
+    const c = this.layer;
+    const dpr = window.devicePixelRatio || 1;
+    const off = lg.ds?.offset || [0, 0];
+    let mx = -1e6, my = -1e6, over = false;
+    if (this.ptr.over) {
+      const r = lg.canvas.getBoundingClientRect();
+      if (this.ptr.x >= r.left && this.ptr.x <= r.right && this.ptr.y >= r.top && this.ptr.y <= r.bottom) {
+        over = true;
+        mx = (this.ptr.x - r.left) / (lg.ds?.scale ?? 1) - off[0];
+        my = (this.ptr.y - r.top) / (lg.ds?.scale ?? 1) - off[1];
+      }
+    }
+    return {
+      layer: c,
+      w: c.width,
+      h: c.height,
+      dpr,
+      scale: lg.ds?.scale ?? 1,
+      offset: { x: off[0], y: off[1] },
+      mouse: { x: mx, y: my, over },
+      time: now,
+      dt: this.last ? now - this.last : 16,
+      color: (v, fb = "#888888") => cssColor(v, fb)
+    };
+  }
+  setActive(id) {
+    desiredId = id;
+    const targetId = id && id !== "none" ? id : null;
+    if (this.active?.id === targetId) return;
+    const lg = lgCanvas();
+    if (!lg || !lg.canvas) return;
+    if (this.raf) cancelAnimationFrame(this.raf);
+    this.raf = 0;
+    this.last = 0;
+    if (this.active) {
+      try {
+        this.active.dispose?.(this.state);
+      } catch (e) {
+        console.error("[ZenKit] background dispose failed", e);
+      }
+    }
+    this.active = null;
+    this.state = null;
+    this.layer?.remove();
+    this.layer = null;
+    const def2 = targetId ? registry.get(targetId) : void 0;
+    if (!def2) {
+      this.restore(lg);
+      lg.setDirty?.(true, true);
+      return;
+    }
+    this.active = def2;
+    this.makeLayer(lg);
+    this.suppress(lg);
+    try {
+      this.state = def2.init?.(this.buildCtx(lg, performance.now())) ?? {};
+    } catch (e) {
+      console.error("[ZenKit] background init failed", e);
+      this.state = {};
+    }
+    lg.setDirty?.(true, true);
+    const loop = (now) => {
+      this.raf = requestAnimationFrame(loop);
+      this.tick(now);
+    };
+    this.raf = requestAnimationFrame(loop);
+  }
+  tick(now) {
+    const lg = lgCanvas();
+    if (!this.active || !this.layer || !lg) return;
+    this.resize();
+    if (lg.clear_background_color || lg.background_image) {
+      lg.background_image = "";
+      lg.clear_background_color = "";
+      lg._pattern = void 0;
+      lg._bg_img = void 0;
+      lg.setDirty?.(false, true);
+    }
+    const c = this.buildCtx(lg, now);
+    this.last = now;
+    try {
+      this.active.frame(c, this.state);
+    } catch (e) {
+      console.error("[ZenKit] background frame failed; disabling", e);
+      this.setActive(null);
+    }
+  }
+}
+const host = new Host();
+let mounted = false;
+function setBackgroundEnabled(on) {
+  desiredId = on ? "grid" : null;
+  if (!mounted) {
+    if (!on) return;
+    mounted = true;
+    host.mount();
+  } else {
+    host.setActive(desiredId);
+  }
+}
+const SETTING_ID = "nynxz.experimental.interactiveBackground";
+function registerBackground() {
+  app.registerExtension({
+    name: "nynxz.experimental.background",
+    settings: [
+      {
+        id: SETTING_ID,
+        name: "Interactive background",
+        category: ["Nynxz Experimental", "Canvas", "Interactive background"],
+        type: "boolean",
+        defaultValue: false,
+        experimental: true,
+        tooltip: "A WebGL grid of glowing dots behind the node graph that reacts to your cursor and follows your theme colors. Off by default.",
+        onChange(value) {
+          setBackgroundEnabled(!!value);
+        }
+      }
+    ],
+    // Fallback: if this build of ComfyUI doesn't fire onChange on load, apply the stored value
+    // once at startup. setBackgroundEnabled is idempotent, so a double-apply is harmless.
+    async setup() {
+      try {
+        const on = app.extensionManager?.setting?.get(SETTING_ID);
+        if (on !== void 0) setBackgroundEnabled(!!on);
+      } catch {
+      }
+    }
+  });
+}
 registerNodes("nynxz.experimental", [fusionNode, loraNode]);
+registerBackground();

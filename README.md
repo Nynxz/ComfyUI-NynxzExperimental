@@ -167,6 +167,13 @@ on the node instead of chaining single-LoRA loaders.
 Each row's strength applies to both model and CLIP; set a separate CLIP strength per row if you
 need it. Bookmarks persist in a `favorites.json` beside the pack (gitignored, never shipped).
 
+## Interactive background
+
+An optional WebGL grid of glowing dots behind the node graph — it reacts to your cursor and
+follows your theme colors. **Off by default**; turn it on in **ComfyUI Settings → Nynxz
+Experimental → Canvas → Interactive background**. The choice persists via ComfyUI's own settings
+store, and the render machinery only spins up once you enable it, so leaving it off costs nothing.
+
 
 ## Development
 
