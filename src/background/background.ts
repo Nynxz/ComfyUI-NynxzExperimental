@@ -449,26 +449,31 @@ class Host {
 
   private buildCtx(lg: { canvas: HTMLCanvasElement; ds?: { scale?: number; offset?: number[] } }, now: number): BackgroundContext {
     const c = this.layer!
-    const dpr = window.devicePixelRatio || 1
     const off = lg.ds?.offset || [0, 0]
+    const scale = lg.ds?.scale ?? 1
+    const r = lg.canvas.getBoundingClientRect()
+    // Device pixels per CSS pixel for the graph canvas. We derive this from the canvas itself
+    // (backing-store width ÷ CSS width) rather than reading window.devicePixelRatio, because
+    // browser page zoom shifts devicePixelRatio independently of LiteGraph's backing store — so
+    // trusting it drifts the grid out of scale/alignment with the nodes on zoom. c.width tracks
+    // el.width (see resize()), so this is exactly the ratio LiteGraph rendered at, and it keeps
+    // the shader's g = dev/(dpr*scale) - offset consistent with the CSS-space cursor mapping below.
+    const dpr = r.width > 0 ? c.width / r.width : window.devicePixelRatio || 1
     let mx = -1e6,
       my = -1e6,
       over = false
-    if (this.ptr.over) {
-      const r = lg.canvas.getBoundingClientRect()
-      if (this.ptr.x >= r.left && this.ptr.x <= r.right && this.ptr.y >= r.top && this.ptr.y <= r.bottom) {
-        over = true
-        // graph-space cursor (matches the shader's g = dev/(dpr*scale) - offset)
-        mx = (this.ptr.x - r.left) / (lg.ds?.scale ?? 1) - off[0]!
-        my = (this.ptr.y - r.top) / (lg.ds?.scale ?? 1) - off[1]!
-      }
+    if (this.ptr.over && this.ptr.x >= r.left && this.ptr.x <= r.right && this.ptr.y >= r.top && this.ptr.y <= r.bottom) {
+      over = true
+      // graph-space cursor (matches the shader's g = dev/(dpr*scale) - offset)
+      mx = (this.ptr.x - r.left) / scale - off[0]!
+      my = (this.ptr.y - r.top) / scale - off[1]!
     }
     return {
       layer: c,
       w: c.width,
       h: c.height,
       dpr,
-      scale: lg.ds?.scale ?? 1,
+      scale,
       offset: { x: off[0]!, y: off[1]! },
       mouse: { x: mx, y: my, over },
       time: now,
