@@ -4,6 +4,15 @@ Experimental ComfyUI nodes — the stuff that's still moving. Node ids, schemas 
 behaviour here can change between commits. For the settled ones, see
 [Nynx'z Custom Nodes](https://github.com/nynxz-dev/ComfyUI-NynxzNodes).
 
+
+## Nodes at a glance
+
+| Group | Nodes |
+| --- | --- |
+| [**Fusion**](#fusion--nynxzfusion) — `Nynxz/Fusion` | Fusion Input · Fusion Images · Text Encode Qwen Image Edit (Fusion) |
+| [**Conditioning**](#conditioning--nynxzconditioning) — `Nynxz/Conditioning` | Conditioning Blend (Mixer) · Conditioning Sigma Gate · Conditioning Variation |
+| [**LoRA**](#lora--nynxzlora) — `Nynxz/LoRA` | LoRA Loader · LoRA Loader (CLIP) · LoRA Picker · Apply LoRA |
+
 ## Nodes
 
 ### Fusion — `Nynxz/Fusion`
@@ -13,20 +22,36 @@ independently, then their **visual** conditioning tokens are blended on a shared
 grid — so a single edit can draw on many reference images at once, and you control how
 much each one gets a say.
 
+The spatial interleave underneath — hard-assigning grid cells to sources in a
+checkerboard/block pattern — is [silveroxides'](https://github.com/silveroxides/ComfyUI-UtilsCollection)
+original idea and implementation. What this pack adds on top: a soft weight field with
+feathering, content-derived weights, per-source relative strength, style release, seeded
+variety, and the on-node grid UI.
+
+![Fusion overview](docs/images/fusion-overview.webp)
+<!-- SCREENSHOT: docs/images/fusion-before-after.webp — same prompt/seed, one reference vs three fused, side by side
+![One reference vs three fused](docs/images/fusion-before-after.webp)
+-->
+
 | Node | What it does |
 | --- | --- |
-| **Fusion Input** | The image grid. Drop images on it, weight each one, mute, reorder, remove. Outputs `fusion_input`. |
-| **Fusion Reference** | The plain-wire alternative: one IMAGE + a strength, chained. Use regular Load Image nodes. |
-| **Fusion Images** | Autogrow IMAGE sockets → `fusion_input` in one node. Wire several Load Image nodes straight in, no chaining. |
+| **Fusion Input** | The image grid, for files on disk. Drop images on it, weight each one, mute, reorder, remove. Outputs `fusion_input`. |
+| **Fusion Images** | The wire side. Autogrow IMAGE sockets, each with its own strength, fit and mute. Outputs `fusion_input`. |
 | **Text Encode Qwen Image Edit (Fusion)** | Takes a `fusion_input` plus your prompt and fuses it all into one conditioning. |
 
 Wire it up as: `Fusion Input → Text Encode Qwen Image Edit (Fusion) → KSampler`.
 
+**Two collectors, split by where your images live** — files on disk (the grid) or a wire
+(Fusion Images). They emit the same `fusion_input` and carry the same per-source controls, so
+pick whichever matches how the images arrive and chain them freely in either direction.
+
 **One image is a valid fusion.** The blend is then a passthrough, which is what you want when
-you're using the node for style release (below) or just as a single-reference encode. Fusion
-Input, Fusion Reference and the encode node all accept a single source.
+you're using the node for style release (below) or just as a single-reference encode. Both
+collectors and the encode node accept a single source.
 
 #### Fusion Input
+
+![Fusion Input](docs/images/fusion-input.webp)
 
 - **Drop images** anywhere on the node, or **Add images** / **Browse** to pick from your
   `input/`, `output/` or `temp/` folders. An image that's **already in `input/` is referenced,
@@ -47,28 +72,15 @@ Input, Fusion Reference and the encode node all accept a single source.
   and carry a visible weight. To fuse something generated upstream, run it through a Preview
   or Save node and pick it out of `temp/` or `output/`.
 
-#### Fusion Reference
-
-Same `fusion_input` as the grid, built from an ordinary IMAGE socket instead of a file on
-disk — so anything generated upstream (a sampler, a mask composite) can be a reference without
-a round trip through `temp/`.
-
-```
-Load Image ─→ Fusion Reference ─→ Fusion Reference ─→ Text Encode ... (Fusion)
-                    ↑ image             ↑ image
-```
-
-- **Chain order is source order**, matching Fusion Input, so it decides which grid cells each
-  image gets. Mix the two freely — a grid can feed a Fusion Reference and vice versa.
-- **`strength`** is the same relative prevalence the grid's cards carry.
-- A **batched IMAGE contributes one reference per frame**, in batch order.
-- Carries its own **`fit`** (`contain`/`cover`/`stretch`), like a grid card. The encode node's
-  `fit` override can force one mode for every source.
-
 #### Fusion Images
 
-The multi-socket collector, for when several images already live on separate Load Image nodes
-and you'd rather not chain Fusion References:
+<!-- SCREENSHOT: docs/images/fusion-images.webp — 3 Load Image nodes wired in, rows showing uneven strengths, one muted, mixed fits
+![Fusion Images](docs/images/fusion-images.webp)
+-->
+
+The wire-side collector. The grid only reaches files on disk; this takes any IMAGE, so
+anything generated upstream (a sampler, a mask composite) can be a reference without a round
+trip through `temp/`.
 
 ```
 Load Image ─┐
@@ -77,11 +89,21 @@ Load Image ─┘   (autogrow sockets)
 ```
 
 - **Autogrow sockets** — a new IMAGE input appears as you fill them, up to 16.
-- Every socket contributes at **equal strength**, framed by the node's shared **`fit`**. Want
-  per-image strength or fit? Use the grid or chain Fusion References; this one trades that for
-  one-node convenience.
-- A **batched IMAGE adds one source per frame**, and an optional upstream `fusion_input` is
-  prepended, so it still chains with the other collectors if you want.
+- **A row per connected socket**, each with the same controls a grid card carries: a
+  **strength** (the same relative prevalence), a **fit** (`contain`/`cover`/`stretch`), a
+  **mute**, and the live **`%`** share of the result that source claims.
+- **Rows map to sockets positionally** — the first row drives the first connected input. Wiring
+  a new image in adds a row at full strength; unwiring one drops its row.
+- **Muting drops the source from the blend entirely**, so the spatial patterns reflow across
+  the sources that remain rather than leaving its cells empty.
+- **Socket order is source order**, matching how the grid orders its cards, so it decides which
+  grid cells each image gets.
+- A **batched IMAGE adds one source per frame**, all sharing that socket's strength and fit.
+- An optional upstream `fusion_input` is **prepended**, so a grid can feed this and vice versa.
+
+> Per-source strength lives in a widget rather than on the sockets because a ComfyUI autogrow
+> template takes exactly one input per repeat — there's no way to pair each `image_N` with its
+> own strength field.
 
 #### Text Encode Qwen Image Edit (Fusion)
 
@@ -90,7 +112,7 @@ Holds the prompt and the tuning:
 | Knob | Does |
 | --- | --- |
 | `visual_aspect` / `visual_size` | The shared grid every source is fitted into. `auto` takes the aspect from the first image; set it explicitly if a portrait first image is letterboxing your landscapes too hard. Bigger `visual_size` = more visual tokens = finer fusion, more compute. |
-| `fit` | How sources are framed into the grid. `per image` honours each card / Fusion Reference; `cover` / `contain` / `stretch` force one mode for all. **`cover`** gives the old center-crop framing the pack used before fit was a choice. |
+| `fit` | How sources are framed into the grid. `per image` honours each grid card / Fusion Images row; `cover` / `contain` / `stretch` force one mode for all. **`cover`** gives the old center-crop framing the pack used before fit was a choice. |
 | `strength_roll` | **More variety from the same images.** Seed-driven random re-weighting of the blend — shifts which image dominates each run. The one that actually moves the mix. `0` = off. See below. |
 | `pattern_jitter` | Subtler spatial variety: reassigns a fraction of grid cells to a different image by seed. Rearranges the same tokens rather than re-weighting them, so it moves the result less. `0` = the clean pattern (default). |
 | `fusion_method` | How cells are handed out: `spatial-checkerboard`, `spatial-block-interleave` (see `block_size`), `spatial-dither-random` (see `dither_ratio` + `seed`). |
@@ -151,7 +173,41 @@ Both are verified for their math and their no-op guarantees (0 = exact no-op, se
 bounded, muted-stays-muted). Whether the variety *feels* right — and a good default value —
 is yours to judge on real generations; the honest lever for big swings is `strength_roll`.
 
+### Conditioning — `Nynxz/Conditioning`
+
+Composable primitives that act on any CONDITIONING wire — a CLIP encode, a Fusion encode,
+anything upstream. They stack: blend two prompts, gate the result to the back half of the
+denoise, nudge it with a variation seed.
+
+| Node | What it does |
+| --- | --- |
+| **Conditioning Sigma Gate** | Restrict a conditioning to a slice of sampling — in denoise percent or in real sigma. |
+| **Conditioning Variation** | A "variation seed" for conditioning: seeded noise nudges the prompt without touching the sampler seed. |
+
+#### Conditioning Sigma Gate
+
+Drop it on a wire to make that conditioning active only within a slice of the denoise.
+
+- **`denoise percent`** — a plain 0..1 fraction (`0` = first step, `1` = last). No model needed.
+- **`sigma`** — a real sigma window. Conditioning can only store a percent range, so sigma is
+  converted using the model's own schedule (**exact**, wire `MODEL`) or a wired `SIGMAS`
+  schedule as a lookup table (**approximate** — fine for normal schedulers, soft for
+  Karras/exponential, which are non-linear in percent).
+
+The gate **intersects** any range already on the conditioning rather than overwriting it, so
+gates stack — and it composes with the Mixer's ramp instead of fighting it.
+
+#### Conditioning Variation
+
+Explore neighbouring variations of the same prompt without changing the sampler seed. Noise is
+scaled to each token's own magnitude, so `strength` means the same thing regardless of how loud
+a given conditioning is. Keep **`preserve_norm`** on and the nudge changes *direction* (content)
+without changing activation energy — coherent variety rather than louder or washed-out. Turn it
+off for a rawer perturbation.
+
 ### LoRA — `Nynxz/LoRA`
+
+![LoRA stack](docs/images/lora-stack.webp)
 
 A multi-LoRA **stack widget** on the node: each row has an on/off toggle, a searchable and
 bookmarkable picker (with sidecar preview thumbnails), and a strength. Build the stack right
@@ -173,7 +229,6 @@ An optional WebGL grid of glowing dots behind the node graph — it reacts to yo
 follows your theme colors. **Off by default**; turn it on in **ComfyUI Settings → Nynxz
 Experimental → Canvas → Interactive background**. The choice persists via ComfyUI's own settings
 store, and the render machinery only spins up once you enable it, so leaving it off costs nothing.
-
 
 ## Development
 
@@ -202,12 +257,37 @@ in it that subclasses `NynxzNode`. Both are picked up automatically — no regis
 ```
 nodes/fusion/
   _fusion.py       the weight/blend/style math — one copy, shared by every fusion node
-  _io_types.py     NYNXZ_FUSION_GRID (on-node widget) + NYNXZ_FUSION_INPUT (wire)
-  fusion_input.py  fusion_reference.py  fusion_images.py  fusion_encode.py  api.py
+  _io_types.py     NYNXZ_FUSION_GRID + NYNXZ_FUSION_STRENGTHS (widgets), NYNXZ_FUSION_INPUT (wire)
+  fusion_input.py  fusion_images.py    fusion_encode.py   api.py
+nodes/conditioning/
+  _blend.py        blend modes (average / spherical / concat / combine)
+  _consensus.py    meaning-matched token merge     _schedule.py  timestep ramp curves
+  _sigma.py        sigma ↔ percent + range gating  _variation.py seeded perturbation
+  blend.py         sigma_gate.py    variation.py   io_types.py
 src/fusion/
-  node.ts          FusionGrid.vue    api.ts
+  node.ts          FusionGrid.vue    FusionStrengths.vue    api.ts
+src/conditioning/
+  CondMixer.vue
 ```
+
+The `_`-prefixed conditioning helpers are pure torch/Python with no ComfyUI imports, so the
+blend, schedule, sigma and variation math can all be exercised without a running ComfyUI.
 
 ## Credits
 
-Third-party code and licenses: [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md).
+### silveroxides — ComfyUI-UtilsCollection
+
+The Fusion nodes exist because of
+[**silveroxides**](https://github.com/silveroxides) and
+[ComfyUI-UtilsCollection](https://github.com/silveroxides/ComfyUI-UtilsCollection). The
+spatial visual-token interleave — the insight that you can encode several images through a
+Qwen3-VL text encoder and hand out grid cells between their visual tokens — is theirs, and
+`nodes/fusion/_fusion.py` started as their implementation.
+
+Everything this pack layered on top (the soft weight field, feathering, content-derived
+weights, relative strength, style release, seeded variety, the Vue grid UI) is an extension
+of that idea, not a replacement for it. Go look at the original — it's MIT, it's clean, and
+it's worth your star.
+
+Their license is reproduced in full in
+[THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md), as MIT requires.
