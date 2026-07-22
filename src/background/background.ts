@@ -15,6 +15,10 @@ interface BackgroundContext {
   scale: number
   offset: { x: number; y: number }
   mouse: { x: number; y: number; over: boolean }
+  /** Blob trail: recent cursor path in graph space, head→tail. `pts` is flat [x0,y0,x1,y1,…],
+   *  `radii` the per-point influence radius (tapering head→tail), `n` the point count. n < 2 ⇒
+   *  no tail (renderers fall back to a plain circle at `mouse`). */
+  trail: { pts: number[]; radii: number[]; n: number }
   time: number
   dt: number
   color(cssVar: string, fallback?: string): string
@@ -148,6 +152,28 @@ const S = {
   saturation: 0.7,
   lightness: 0.55,
   vignette: 1,
+  // Blob trail: the droplet is a tapered poly-line of recent positions, so it curves along the
+  // actual path (a comet/teardrop) instead of a rigid ellipse. These are the fixed knobs; tail
+  // length + pointiness come from the "Blob flow" slider (see flowParams).
+  trailSample: 5, // CSS px — min spacing between stored trail points
+  trailMax: 20, // hard cap on stored points (must be ≤ MAX_TRAIL in the shader)
+  headRadius: 200, // graph units — influence radius at the head (matches mouseRadius)
+  tailFade: 0.55, // brightness multiplier at the tail tip (thinning/fading water)
+}
+
+/* ── cursor-follow ("zen flow") ─────────────────────────────────────────────── */
+type FollowMode = 'snap' | 'follow' | 'blob'
+
+// Follow speed → the smoothing time-constant τ (seconds): higher slider = snappier = smaller τ.
+function speedToTau(v: number): number {
+  const s = Math.min(100, Math.max(1, v))
+  return 0.34 * (1 - s / 110) // ≈0.31s (very slow trail) … ≈0.03s (near-instant)
+}
+// Blob flow → how the droplet tail behaves. ttl = how long (ms) a trail point lives, so tail
+// length ∝ speed × ttl; tailRadius = influence at the tip (smaller ⇒ pointier, more water-like).
+function flowParams(v: number): { ttl: number; tailRadius: number } {
+  const n = Math.min(100, Math.max(0, v)) / 100
+  return { ttl: 140 + n * 300, tailRadius: 60 - n * 42 } // 140–440ms; tip 60→18 graph units
 }
 
 const VERT = `#version 300 es
@@ -157,6 +183,7 @@ void main(){ gl_Position = vec4(V[gl_VertexID], 0.0, 1.0); }
 
 const FRAG = `#version 300 es
 precision highp float;
+#define MAX_TRAIL 20
 out vec4 fragColor;
 uniform vec2  u_res;
 uniform float u_dpr;
@@ -178,6 +205,10 @@ uniform float u_rainbow;
 uniform vec3  u_dotColor;
 uniform vec3  u_bgColor;
 uniform float u_vignette;
+uniform float u_tailFade;         // brightness at the tail tip (< 1 ⇒ fades out)
+uniform int   u_trailN;           // number of active trail points (0/1 ⇒ plain circle at u_mouse)
+uniform vec2  u_trail[MAX_TRAIL];  // recent cursor path, head→tail, graph space
+uniform float u_trailR[MAX_TRAIL]; // per-point influence radius, tapering head→tail
 vec3 hsl2rgb(float h, float s, float l){
   h = mod(h, 360.0) / 60.0;
   float c = (1.0 - abs(2.0*l - 1.0)) * s;
@@ -192,6 +223,12 @@ vec3 hsl2rgb(float h, float s, float l){
   return rgb + (l - c/2.0);
 }
 float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+// Distance from p to segment a→b; returns the clamped projection param in t.
+float segDist(vec2 p, vec2 a, vec2 b, out float t){
+  vec2 ab = b - a;
+  t = clamp(dot(p - a, ab) / max(dot(ab, ab), 1e-4), 0.0, 1.0);
+  return length(p - (a + t * ab));
+}
 void main(){
   vec2 dev = vec2(gl_FragCoord.x, u_res.y - gl_FragCoord.y);
   vec2 g = dev / (u_dpr * u_scale) - u_offset;
@@ -203,7 +240,27 @@ void main(){
       vec2 cell = baseCell + vec2(float(ox), float(oy));
       vec2 dotPos = cell * u_spacing;
       float dist = length(g - dotPos);
-      float prox = u_over > 0.5 ? max(0.0, 1.0 - length(dotPos - u_mouse) / u_mouseRadius) : 0.0;
+      // Cursor proximity. With a trail (blob), light dots by distance to the tapered poly-line of
+      // recent cursor positions: a tube that is fat + bright at the head and thins + fades toward
+      // the tail, and — crucially — curves along the path actually travelled. Otherwise (snap/
+      // follow, u_trailN < 2) it's a plain circle around the single follow point u_mouse.
+      float prox = 0.0;
+      if (u_over > 0.5) {
+        if (u_trailN >= 2) {
+          for (int i = 0; i < MAX_TRAIL - 1; i++) {
+            if (i >= u_trailN - 1) break;
+            float t;
+            float d = segDist(dotPos, u_trail[i], u_trail[i + 1], t);
+            float rr = mix(u_trailR[i], u_trailR[i + 1], t);       // radius along the segment
+            float f = (float(i) + t) / float(u_trailN - 1);         // 0 head → 1 tail
+            float p = (1.0 - d / max(rr, 1e-3)) * mix(1.0, u_tailFade, f);
+            prox = max(prox, p);
+          }
+        } else {
+          prox = 1.0 - length(dotPos - u_mouse) / u_mouseRadius;
+        }
+        prox = max(0.0, prox);
+      }
       float h = hash(cell);
       float pulse = sin(u_time * (0.2 + h * 0.4) + h * 6.2831) * 0.5 + 0.5;
       float baseAlpha = u_restAlpha + h * 0.08;
@@ -240,6 +297,7 @@ void main(){
 const UNIFORMS = [
   'u_res', 'u_dpr', 'u_scale', 'u_offset', 'u_mouse', 'u_over', 'u_time', 'u_spacing', 'u_dotRadius', 'u_restAlpha',
   'u_glow', 'u_mouseRadius', 'u_sat', 'u_lit', 'u_base', 'u_speed', 'u_rainbow', 'u_dotColor', 'u_bgColor', 'u_vignette',
+  'u_tailFade', 'u_trailN', 'u_trail', 'u_trailR',
 ] as const
 
 type GLState = { gl: WebGL2RenderingContext; prog: WebGLProgram; u: Record<string, WebGLUniformLocation | null> }
@@ -307,6 +365,12 @@ function renderGL(host: BackgroundContext, st: GLState) {
   gl.uniform3f(u.u_dotColor!, dot[0]!, dot[1]!, dot[2]!)
   gl.uniform3f(u.u_bgColor!, bg[0]!, bg[1]!, bg[2]!)
   gl.uniform1f(u.u_vignette!, S.vignette)
+  gl.uniform1f(u.u_tailFade!, S.tailFade)
+  gl.uniform1i(u.u_trailN!, host.trail.n)
+  if (host.trail.n > 0) {
+    gl.uniform2fv(u.u_trail!, host.trail.pts)
+    gl.uniform1fv(u.u_trailR!, host.trail.radii)
+  }
   gl.drawArrays(gl.TRIANGLES, 0, 3)
 }
 
@@ -338,6 +402,8 @@ function render2D(host: BackgroundContext, st: GridState) {
     for (let i = i0; i <= i1; i++) {
       const x = i * S.dotSpacing,
         y = j * S.dotSpacing
+      // 2D fallback: a plain circle at the follow point. The tapered blob trail is WebGL-only;
+      // here it degrades to the same lagging glow as 'follow' mode.
       const prox = host.mouse.over ? Math.max(0, 1 - Math.hypot(x - host.mouse.x, y - host.mouse.y) / S.mouseRadius) : 0
       const r = dotCol[0] * (1 + prox * 0.7),
         g = dotCol[1] * (1 + prox * 0.7),
@@ -385,6 +451,28 @@ class Host {
   private started = false
   private ptr = { x: 0, y: 0, over: false }
   private saved: { bg?: unknown; clear?: unknown } = {}
+  // Cursor-follow state (see setBackgroundFollow* below). Defaults keep the classic snap look;
+  // flow params are pre-seeded so 'blob' works even before the sliders are first touched.
+  private followMode: FollowMode = 'snap'
+  private followTau = speedToTau(45) // smoothing time-constant, seconds
+  private trailTtl = flowParams(55).ttl // ms a trail point survives ⇒ tail length ∝ speed × ttl
+  private tailRadius = flowParams(55).tailRadius // graph-unit influence at the tail tip
+  private follow = { x: 0, y: 0, has: false } // eased pointer, canvas-local CSS px
+  private trail: { x: number; y: number; t: number }[] = [] // recent path, head first, CSS px + ms
+
+  setFollowMode(m: string) {
+    this.followMode = m === 'follow' || m === 'blob' ? m : 'snap'
+    this.follow.has = false // reset easing so a live mode switch doesn't lurch from a stale point
+    this.trail.length = 0
+  }
+  setFollowSpeed(v: number) {
+    this.followTau = speedToTau(v)
+  }
+  setBlobFlow(v: number) {
+    const p = flowParams(v)
+    this.trailTtl = p.ttl
+    this.tailRadius = p.tailRadius
+  }
 
   mount() {
     if (this.started) return
@@ -459,14 +547,41 @@ class Host {
     // el.width (see resize()), so this is exactly the ratio LiteGraph rendered at, and it keeps
     // the shader's g = dev/(dpr*scale) - offset consistent with the CSS-space cursor mapping below.
     const dpr = r.width > 0 ? c.width / r.width : window.devicePixelRatio || 1
+    const dt = this.last ? now - this.last : 16
     let mx = -1e6,
       my = -1e6,
       over = false
-    if (this.ptr.over && this.ptr.x >= r.left && this.ptr.x <= r.right && this.ptr.y >= r.top && this.ptr.y <= r.bottom) {
+    const inside = this.ptr.over && this.ptr.x >= r.left && this.ptr.x <= r.right && this.ptr.y >= r.top && this.ptr.y <= r.bottom
+    if (inside) {
       over = true
-      // graph-space cursor (matches the shader's g = dev/(dpr*scale) - offset)
-      mx = (this.ptr.x - r.left) / scale - off[0]!
-      my = (this.ptr.y - r.top) / scale - off[1]!
+      const tx = this.ptr.x - r.left // pointer target, canvas-local CSS px
+      const ty = this.ptr.y - r.top
+      if (this.followMode === 'snap' || !this.follow.has) {
+        this.follow.x = tx
+        this.follow.y = ty
+        this.follow.has = true
+      }
+      // Frame-rate-independent exponential smoothing toward the pointer (snap ⇒ a = 1, no lag).
+      const a = this.followMode === 'snap' ? 1 : 1 - Math.exp(-(dt / 1000) / Math.max(1e-3, this.followTau))
+      this.follow.x += (tx - this.follow.x) * a
+      this.follow.y += (ty - this.follow.y) * a
+      // graph-space follow point (matches the shader's g = dev/(dpr*scale) - offset)
+      mx = this.follow.x / scale - off[0]!
+      my = this.follow.y / scale - off[1]!
+      if (this.followMode === 'blob') this.updateTrail(now)
+      else this.trail.length = 0
+    } else {
+      this.follow.has = false // re-entry snaps in rather than sliding from a stale point
+      this.trail.length = 0
+    }
+    // Project the trail into graph space, tapering the influence radius from head to tail.
+    const pts: number[] = []
+    const radii: number[] = []
+    const n = this.trail.length
+    for (let i = 0; i < n; i++) {
+      const p = this.trail[i]!
+      pts.push(p.x / scale - off[0]!, p.y / scale - off[1]!)
+      radii.push(S.headRadius + (this.tailRadius - S.headRadius) * (n > 1 ? i / (n - 1) : 0))
     }
     return {
       layer: c,
@@ -476,10 +591,26 @@ class Host {
       scale,
       offset: { x: off[0]!, y: off[1]! },
       mouse: { x: mx, y: my, over },
+      trail: { pts, radii, n },
       time: now,
-      dt: this.last ? now - this.last : 16,
+      dt,
       color: (v, fb = '#888888') => cssColor(v, fb),
     }
+  }
+
+  // Append the current follow point to the head of the trail (or nudge the head if barely moved),
+  // then expire points older than the tail lifetime so the tail retracts as the cursor slows.
+  private updateTrail(now: number) {
+    const head = this.trail[0]
+    if (!head || Math.hypot(this.follow.x - head.x, this.follow.y - head.y) >= S.trailSample) {
+      this.trail.unshift({ x: this.follow.x, y: this.follow.y, t: now })
+    } else {
+      head.x = this.follow.x
+      head.y = this.follow.y
+      head.t = now
+    }
+    while (this.trail.length > 1 && now - this.trail[this.trail.length - 1]!.t > this.trailTtl) this.trail.pop()
+    if (this.trail.length > S.trailMax) this.trail.length = S.trailMax
   }
 
   setActive(id: string | null) {
@@ -566,4 +697,19 @@ export function setBackgroundEnabled(on: boolean): void {
   } else {
     host.setActive(desiredId)
   }
+}
+
+/** Cursor-follow behaviour for the grid. 'snap' (1:1, the classic look), 'follow' (the influence
+ *  point eases in behind the cursor), or 'blob' (a tapered droplet trail that curves along your
+ *  path). Safe to call any time — it only sets state on the host, independent of whether it's mounted. */
+export function setBackgroundFollow(mode: string): void {
+  host.setFollowMode(mode)
+}
+/** Follow smoothing speed, 0–100 (higher = snappier). No effect in 'snap' mode. */
+export function setBackgroundFollowSpeed(v: number): void {
+  host.setFollowSpeed(v)
+}
+/** Blob flow, 0–100: tail length & pointiness of the droplet trail. Only used in 'blob' mode. */
+export function setBackgroundBlobFlow(v: number): void {
+  host.setBlobFlow(v)
 }
