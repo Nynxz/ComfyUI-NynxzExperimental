@@ -36,6 +36,8 @@ import torch
 import torch.nn.functional as F
 from comfy_api.latest import io
 
+from ._regions import region_to_grid, region_weights
+
 try:
     # Newer cores expose the sizing rule; older ones keep it inline in
     # `process_qwen2vl_images`, so fall back to a copy of it. Preferring the core function
@@ -62,7 +64,13 @@ except ImportError:
         return resized_height, resized_width
 
 
-FUSION_METHODS = ["spatial-checkerboard", "spatial-block-interleave", "spatial-dither-random"]
+FUSION_METHODS = [
+    "spatial-checkerboard",
+    "spatial-block-interleave",
+    "spatial-dither-random",
+    "spatial-grid",
+    "spatial-strength-random",
+]
 CONTENT_MODES = ["none", "saliency", "energy", "cross-attention"]
 STYLE_MODES = ["none", "gist", "whiten"]
 FIT_MODES = ["cover", "contain", "stretch"]
@@ -71,7 +79,7 @@ FIT_MODES = ["cover", "contain", "stretch"]
 FIT_OVERRIDE = "per image"
 FIT_OVERRIDE_OPTIONS = [FIT_OVERRIDE, *FIT_MODES]
 
-# The fit a new grid card / Fusion Reference starts on. "contain" keeps the whole reference
+# The fit a new grid card / Fusion Images row starts on. "contain" keeps the whole reference
 # (letterboxed), which is what the grid thumbnails show and what a reference is usually for.
 # It is only a starting value now — fit is per-image, and the encode node can override it.
 # Use "cover" (center-crop to fill) for the old center-crop framing (what the pack did before
@@ -110,6 +118,7 @@ class FusionSettings:
     content_temperature: float = 1.0
     style_mode: str = "none"
     style_strength: float = 0.0
+    region_strength: float = 0.0
     pattern_jitter: float = 0.0
     jitter_mode: str = "reassign"
     strength_roll: float = 0.0
@@ -129,6 +138,7 @@ def _spatial_fusion_mask(
     seed=0,
     pattern_jitter=0.0,
     jitter_mode="reassign",
+    strengths=None,
 ):
     # Built on the CPU and moved, so a seed picks the same pattern regardless of the device
     # the encoder ran on — CUDA and CPU generators don't agree on a stream for a given seed.
@@ -149,6 +159,32 @@ def _spatial_fusion_mask(
             random = torch.rand((height, width), generator=generator)
             other_sources = 1 + ((rows + columns) % (num_sources - 1))
             mask = torch.where(random < dither_ratio, 0, other_sources)
+    elif method == "spatial-grid":
+        # Contiguous cell per source — a laid-out grid, not an interleave. Sources fill a
+        # ceil(sqrt(N))-column grid row by row (source 0 top-left); any trailing empty cells
+        # fold onto the last source. blend_strength/feather still soften the cell seams.
+        cols = max(1, math.ceil(math.sqrt(num_sources)))
+        grid_rows = max(1, math.ceil(num_sources / cols))
+        col_of = (columns * cols) // width
+        row_of = (rows * grid_rows) // height
+        mask = (row_of * cols + col_of).clamp(max=num_sources - 1)
+    elif method == "spatial-strength-random":
+        if num_sources < 2:
+            mask = torch.zeros((height, width), dtype=torch.long)
+        else:
+            # Each cell drawn independently from a categorical over sources weighted by strength,
+            # so a 2x-strength source claims ~2x the cells — the strength sliders finally control
+            # coverage (how much of the frame an image gets), not just the blend at the seams.
+            raw = strengths if strengths and len(strengths) >= num_sources else [1.0] * num_sources
+            probs = torch.tensor(
+                [max(0.0, float(raw[i])) for i in range(num_sources)], dtype=torch.float32
+            )
+            if float(probs.sum()) <= 0.0:
+                probs = torch.ones(num_sources, dtype=torch.float32)
+            generator = torch.Generator().manual_seed(seed)
+            mask = torch.multinomial(
+                probs, height * width, replacement=True, generator=generator
+            ).view(height, width)
     else:
         raise ValueError(f"Unsupported visual fusion method: {method}")
 
@@ -230,6 +266,7 @@ def _fusion_weights(
     seed=0,
     pattern_jitter=0.0,
     jitter_mode="reassign",
+    strengths=None,
 ):
     """Per-source blend weights over the visual grid: [num_sources, tokens], columns sum to 1.
 
@@ -250,6 +287,7 @@ def _fusion_weights(
         seed,
         pattern_jitter,
         jitter_mode,
+        strengths,
     )
     onehot = torch.zeros(num_sources, tokens, device=device, dtype=torch.float32)
     onehot.scatter_(0, assignment.unsqueeze(0).to(torch.int64), 1.0)
@@ -433,8 +471,60 @@ def _visual_token_span(tokens, cond_length, visual_tokens):
     return start, end
 
 
+def _compute_weights(
+    num_sources, visual_height, visual_width, settings, strengths, regions, device, visuals=None
+):
+    """The blend weight field `[num_sources, tokens]` the fusion applies: geometry, optional content
+    weighting, optional semantic regions, then per-source strength.
+
+    Shared by `_fuse_conditionings` and the Fusion Weight Map node, so the map renders exactly the
+    field that actually ran — they can't drift. `visuals` (the stacked source tokens) is only needed
+    for content_mode; pass None to skip it (the map has no encoded tokens, and content_mode is off
+    by default).
+
+    On the region step: grounded regions are layered over the geometric field, and any token no
+    source claims falls back to a neutral even blend — NOT the geometric mosaic (keeping the
+    checkerboard there was what made ungrounded areas look "randomly fused"). A full-frame
+    (ungrounded) source, being non-zero everywhere, fills those areas by itself.
+    """
+    weights = _fusion_weights(
+        visual_height,
+        visual_width,
+        num_sources,
+        settings.fusion_method,
+        settings.block_size,
+        settings.dither_ratio,
+        settings.feather,
+        settings.blend_strength,
+        device,
+        settings.seed,
+        settings.pattern_jitter,
+        settings.jitter_mode,
+        strengths,
+    )
+    if visuals is not None and settings.content_mode != "none" and settings.content_strength > 0.0:
+        content = _content_weights(visuals, settings.content_mode, settings.content_temperature)
+        weights = _combine_weights(weights, content, settings.content_strength)
+    if regions is not None and settings.region_strength > 0.0:
+        region_field, dead = region_weights(regions, visual_height, visual_width, device)
+        combined = _combine_weights(
+            weights, region_field.to(weights.dtype), settings.region_strength
+        )
+        even = torch.full_like(region_field, 1.0 / region_field.shape[0])
+        weights = torch.where(dead.unsqueeze(0), even, combined)
+    # Strength goes last: it re-weights whatever geometry + content + regions settled on.
+    return _strength_weights(weights, strengths)
+
+
 def _fuse_conditionings(
-    conditionings, tokens, visual_height, visual_width, settings, strengths=None
+    conditionings,
+    tokens,
+    visual_height,
+    visual_width,
+    settings,
+    strengths=None,
+    regions=None,
+    debug=None,
 ):
     schedule_count = len(conditionings[0])
     if any(len(source) != schedule_count for source in conditionings):
@@ -453,25 +543,20 @@ def _fuse_conditionings(
 
         start, end = spans[0]
         visuals = torch.stack([cond[:, start:end] for cond in source_conds], dim=2)
-        weights = _fusion_weights(
+        weights = _compute_weights(
+            len(source_conds),
             visual_height,
             visual_width,
-            len(source_conds),
-            settings.fusion_method,
-            settings.block_size,
-            settings.dither_ratio,
-            settings.feather,
-            settings.blend_strength,
+            settings,
+            strengths,
+            regions,
             visuals.device,
-            settings.seed,
-            settings.pattern_jitter,
-            settings.jitter_mode,
+            visuals,
         )
-        if settings.content_mode != "none" and settings.content_strength > 0.0:
-            content = _content_weights(visuals, settings.content_mode, settings.content_temperature)
-            weights = _combine_weights(weights, content, settings.content_strength)
-        # Strength goes last: it re-weights whatever geometry + content settled on.
-        weights = _strength_weights(weights, strengths)
+        if debug is not None:
+            # Hand the exact field back for the Fusion Weight Map (last schedule wins; normally one).
+            debug["weights"] = weights.detach().to("cpu", torch.float32)
+            debug["grid"] = (visual_height, visual_width)
         blended_visual = _blend(visuals, weights.to(visuals.dtype), settings.preserve_norm)
         # Style release is about the fused block as a whole, so it runs after the blend —
         # it changes the tokens, never who contributed them.
@@ -485,17 +570,23 @@ def _fuse_conditionings(
     return fused
 
 
-def flatten_images(images):
-    """Autogrow IMAGE dict -> a flat list of single-frame [1, H, W, C] sources, in socket order."""
-    sources = []
+def group_images(images):
+    """Autogrow IMAGE dict -> one list of single-frame [1, H, W, C] sources per connected socket.
+
+    Socket grouping is kept rather than flattened because Fusion Images' strength widget carries
+    one row per *socket*, not per frame — so a batched IMAGE spends its socket's strength and fit
+    across every frame it contributes. Unconnected sockets are dropped, which is what makes the
+    surviving order line up with the widget rows (the frontend counts connected inputs too).
+    """
+    groups = []
     for name in sorted(images, key=lambda value: int(value.rsplit("_", 1)[-1])):
         image = images[name]
         if image is None:
             continue
         if image.ndim == 3:
             image = image.unsqueeze(0)
-        sources.extend(image[i : i + 1].clone() for i in range(image.shape[0]))
-    return sources
+        groups.append([image[i : i + 1].clone() for i in range(image.shape[0])])
+    return groups
 
 
 def fit_image(source, width, height, fit="cover"):
@@ -620,22 +711,44 @@ PROMPT_TEMPLATE = (
 )
 
 
-def _prepare_sources(sources, settings, fits=None):
+def _prepare_sources(sources, settings, fits=None, regions=None):
     """Fit every source into the shared grid and report the token grid the encoder will make.
 
     The grid comes from the encoder's own sizing rule, so callers never have to re-derive it.
+
+    When `regions` is given (one list of source-frame region dicts per source, or None), each
+    source's regions are carried through the same fit transform into grid-normalised space, so the
+    semantic weight field lines up with where the source's pixels actually landed. Returns the
+    grid-mapped regions alongside the processed images.
     """
     width, height = _visual_grid(sources[0], settings.visual_aspect, settings.visual_size)
-    processed = [
-        fit_image(source, width, height, (fits[i] if fits else "cover"))
-        for i, source in enumerate(sources)
-    ]
+
+    def fit_of(i):
+        return fits[i] if fits else "cover"
+
+    processed = [fit_image(source, width, height, fit_of(i)) for i, source in enumerate(sources)]
+
+    regions_grid = None
+    if regions is not None:
+        regions_grid = []
+        for i, source in enumerate(sources):
+            src_regions = regions[i] if i < len(regions) else None
+            if not src_regions:
+                regions_grid.append(src_regions)
+                continue
+            source_h, source_w = source.shape[1], source.shape[2]
+            regions_grid.append(
+                [
+                    region_to_grid(region, fit_of(i), source_w, source_h, width, height)
+                    for region in src_regions
+                ]
+            )
 
     # Ask the encoder's own sizing rule what grid it will produce rather than re-deriving it:
     # it also clamps to its min/max pixel budget, and a grid that disagrees with the encoder's
     # would slice the wrong span out of the conditioning.
     grid_height, grid_width = qwen2vl_image_size(height, width, patch_size=16, merge_size=2)
-    return processed, grid_height // 32, grid_width // 32
+    return processed, grid_height // 32, grid_width // 32, regions_grid
 
 
 def _check_sources(sources, strengths, fits):
@@ -649,16 +762,22 @@ def _check_sources(sources, strengths, fits):
         raise ValueError("Visual fusion got a fit list that doesn't match the sources.")
 
 
-def encode_fusion(clip, prompt, sources, settings, strengths=None, fits=None, vae=None):
+def encode_fusion(
+    clip, prompt, sources, settings, strengths=None, fits=None, vae=None, regions=None, debug=None
+):
     """Encode each source through the Qwen3-VL encoder and fuse their visual tokens.
 
     sources:   list of [1, H, W, C] IMAGE tensors (at least one).
     strengths: per-source prevalence, or None for an even blend.
     fits:      per-source fit mode into the shared grid, or None for all-"cover"
                (the old center-crop default).
+    regions:   per-source list of source-frame region dicts (or None), driving a semantic weight
+               field when settings.region_strength > 0. None = geometry only (unchanged behaviour).
     """
     _check_sources(sources, strengths, fits)
-    processed, visual_height, visual_width = _prepare_sources(sources, settings, fits)
+    processed, visual_height, visual_width, regions_grid = _prepare_sources(
+        sources, settings, fits, regions
+    )
 
     full_prompt = PROMPT_TEMPLATE.format(prompt=prompt)
     # tokenize stays every run — it's the cheap image preprocessing + tokenizing, and the fuse
@@ -686,7 +805,7 @@ def encode_fusion(clip, prompt, sources, settings, strengths=None, fits=None, va
     # per-schedule fuse, so every schedule shares one roll.
     strengths = _roll_strengths(strengths, settings.strength_roll, settings.seed)
     conditioning = _fuse_conditionings(
-        conditionings, tokens, visual_height, visual_width, settings, strengths
+        conditionings, tokens, visual_height, visual_width, settings, strengths, regions_grid, debug
     )
 
     if vae is not None:
@@ -725,6 +844,25 @@ def style_inputs() -> list[io.Input]:
     ]
 
 
+def region_inputs() -> list[io.Input]:
+    """The semantic-region knob. Inert (an exact no-op) at 0, so nodes/workflows without regions
+    are untouched. Kept separate from tuning_inputs so the legacy autogrow node's layout is frozen."""
+    return [
+        io.Float.Input(
+            "region_strength",
+            default=0.0,
+            min=0.0,
+            max=1.0,
+            step=0.01,
+            advanced=True,
+            tooltip="EXPERIMENTAL. How far per-image regions (drawn or grounded, carried on "
+            "fusion_input) override the geometric pattern. 0 = geometry only, an exact no-op (the "
+            "default, and what happens when no image carries a region); 1 = the semantic field "
+            "fully decides which image wins each area. Feather/blend still smooth the seams.",
+        ),
+    ]
+
+
 def tuning_inputs() -> list[io.Input]:
     """The fusion encode node's core tuning knobs (geometry + content).
 
@@ -732,7 +870,15 @@ def tuning_inputs() -> list[io.Input]:
     """
     inputs = {
         "fusion_method": io.Combo.Input(
-            "fusion_method", options=FUSION_METHODS, default="spatial-checkerboard"
+            "fusion_method",
+            options=FUSION_METHODS,
+            default="spatial-checkerboard",
+            tooltip="How the sources are tiled across the token grid. checkerboard / block / dither "
+            "INTERLEAVE the sources cell-by-cell in equal shares (mix their content — good for "
+            "style, ignores strength). 'spatial-grid' gives each source ONE contiguous cell (source "
+            "order fills a grid row by row) — N images lay out as a grid. 'spatial-strength-random' "
+            "scatters cells randomly but weighted by each image's STRENGTH, so a 2x-strength image "
+            "covers ~2x the frame — this is the mode where the strength sliders control coverage.",
         ),
         "block_size": io.Int.Input("block_size", default=2, min=1, max=8, step=1, advanced=True),
         "dither_ratio": io.Float.Input(

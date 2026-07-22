@@ -136,6 +136,11 @@ class FusionInput(NynxzNode):
         for row in normalize_grid(grid):
             if not row.get("on", True):
                 continue
+            # 0 strength removes the source (drops it from the source count so the spatial pattern
+            # reflows), same as muting — a 0-weight source would otherwise just leave a dead cell.
+            strength = _row_strength(row)
+            if strength <= 0.0:
+                continue
             path = _resolve_path(row.get("ref"), row.get("type", "input"))
             if not path:
                 print(f"[Nynxz] fusion input skipping missing image: {row.get('ref')}")
@@ -147,7 +152,7 @@ class FusionInput(NynxzNode):
             sources.append(
                 {
                     "image": image,
-                    "strength": _row_strength(row),
+                    "strength": strength,
                     "fit": fit if fit in FIT_MODES else DEFAULT_FIT,
                     "label": str(row.get("ref")),
                 }

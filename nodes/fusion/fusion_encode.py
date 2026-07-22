@@ -11,7 +11,13 @@ and fit mode, and the visual grid's size/aspect is explicit rather than inherite
 whichever image happened to be first.
 """
 
+import base64
+from io import BytesIO
+
+import numpy as np
+import torch
 from comfy_api.latest import io
+from PIL import Image
 
 from .._base import NynxzNode
 from ._fusion import (
@@ -20,12 +26,31 @@ from ._fusion import (
     FIT_OVERRIDE_OPTIONS,
     FusionSettings,
     encode_fusion,
+    region_inputs,
     seed_input,
     style_inputs,
     tuning_inputs,
     variation_inputs,
 )
-from ._io_types import NynxzFusionInputData
+from ._inspect import build_inspect_payload
+from ._io_types import NynxzFusionInputData, NynxzFusionInspect
+
+
+def _source_thumb(image: torch.Tensor, size: int = 72) -> str:
+    """A small aspect-preserving JPEG data-uri of a source image, for the inspector legend.
+
+    Base64-embedded in the payload (which already rides the ui channel), so no temp files or extra
+    routes. `image` is a [1, H, W, C] float source; empty string on any failure (thumbs are optional).
+    """
+    try:
+        arr = (image[0, :, :, :3].clamp(0.0, 1.0).cpu().numpy() * 255.0).astype(np.uint8)
+        pil = Image.fromarray(arr, "RGB")
+        pil.thumbnail((size, size), Image.LANCZOS)
+        buf = BytesIO()
+        pil.save(buf, format="JPEG", quality=80)
+        return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode("ascii")
+    except Exception:  # noqa: BLE001 - a bad thumbnail must never break the encode
+        return ""
 
 
 class QwenFusionEncode(NynxzNode):
@@ -63,17 +88,26 @@ class QwenFusionEncode(NynxzNode):
                     options=FIT_OVERRIDE_OPTIONS,
                     default=FIT_OVERRIDE,
                     tooltip="How every source is framed into the grid. 'per image' honours each image's "
-                    "own fit (set on the grid card or Fusion Reference). cover = center-crop to "
-                    "fill; contain = fit whole, letterboxed; stretch = distort to fill. 'cover' "
+                    "own fit (set on the grid card or the Fusion Images row). cover = center-crop "
+                    "to fill; contain = fit whole, letterboxed; stretch = distort to fill. 'cover' "
                     "gives the old center-crop framing.",
                 ),
                 *tuning_inputs(),
                 *style_inputs(),
+                *region_inputs(),
                 *variation_inputs(),
                 seed_input(),
                 io.Vae.Input("vae", optional=True),
             ],
-            outputs=[io.Conditioning.Output()],
+            outputs=[
+                io.Conditioning.Output(),
+                NynxzFusionInspect.Output(
+                    display_name="fusion_inspect",
+                    tooltip="Wire into a Fusion Inspector node for an interactive view of the blend "
+                    "field — hover the token grid, view per-source panels, and see which images win "
+                    "where plus the settings that produced it.",
+                ),
+            ],
         )
 
     @classmethod
@@ -96,6 +130,7 @@ class QwenFusionEncode(NynxzNode):
         content_temperature=1.0,
         style_mode="none",
         style_strength=0.0,
+        region_strength=0.0,
         strength_roll=0.0,
         pattern_jitter=0.0,
         jitter_mode="reassign",
@@ -108,7 +143,7 @@ class QwenFusionEncode(NynxzNode):
         if not entries:
             raise ValueError(
                 "Visual fusion needs at least one image — add one to the Fusion Input grid or "
-                "wire a Fusion Reference. Muted rows and missing files don't count."
+                "wire one into Fusion Images. Muted rows and missing files don't count."
             )
 
         settings = FusionSettings(
@@ -123,6 +158,7 @@ class QwenFusionEncode(NynxzNode):
             content_temperature=content_temperature,
             style_mode=style_mode,
             style_strength=style_strength,
+            region_strength=region_strength,
             pattern_jitter=pattern_jitter,
             jitter_mode=jitter_mode,
             strength_roll=strength_roll,
@@ -132,6 +168,10 @@ class QwenFusionEncode(NynxzNode):
         )
         # "per image" keeps each source's own fit; any other value forces all of them.
         fits = [entry.get("fit", "contain") if fit == FIT_OVERRIDE else fit for entry in entries]
+        # Regions ride along on each fusion_input entry (populated by a region canvas or a
+        # grounding node). None throughout = geometry only, so nothing carries them today yet.
+        regions = [entry.get("regions") for entry in entries]
+        debug: dict = {}
         conditioning = encode_fusion(
             clip,
             prompt,
@@ -140,5 +180,41 @@ class QwenFusionEncode(NynxzNode):
             strengths=[entry.get("strength", 1.0) for entry in entries],
             fits=fits,
             vae=vae,
+            regions=regions if any(regions) else None,
+            debug=debug,
         )
-        return io.NodeOutput(conditioning)
+        weights = debug.get("weights")
+        labels = [entry.get("label", "") for entry in entries]
+        if weights is not None:
+            grid_h, grid_w = debug["grid"]
+            inspect = build_inspect_payload(
+                weights,
+                grid_h,
+                grid_w,
+                labels=labels,
+                strengths=[entry.get("strength", 1.0) for entry in entries],
+                fits=fits,
+                thumbs=[_source_thumb(entry["image"]) for entry in entries],
+                settings={
+                    "fusion_method": settings.fusion_method,
+                    "block_size": settings.block_size,
+                    "dither_ratio": settings.dither_ratio,
+                    "blend_strength": settings.blend_strength,
+                    "feather": settings.feather,
+                    "region_strength": settings.region_strength,
+                    "content_mode": settings.content_mode,
+                    "content_strength": settings.content_strength,
+                    "style_mode": settings.style_mode,
+                    "style_strength": settings.style_strength,
+                    "pattern_jitter": settings.pattern_jitter,
+                    "strength_roll": settings.strength_roll,
+                    "preserve_norm": settings.preserve_norm,
+                    "seed": settings.seed,
+                    "visual_size": settings.visual_size,
+                    "visual_aspect": settings.visual_aspect,
+                },
+                has_regions=bool(regions and any(regions)),
+            )
+        else:
+            inspect = {}
+        return io.NodeOutput(conditioning, inspect)
