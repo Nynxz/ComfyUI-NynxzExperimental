@@ -75,3 +75,64 @@ export async function uploadImage(file: File): Promise<{ ref: string; type: Sour
 export function shortName(ref: string): string {
   return ref.split('/').pop() || ref
 }
+
+// --- Fusion Studio preset Library ----------------------------------------------------
+
+export interface StageItem {
+  stem: string
+  name: string
+  mtime: number
+  has_thumb: boolean
+  stage: unknown
+}
+
+/** Every saved stage preset, newest first. */
+export async function listStages(): Promise<StageItem[]> {
+  try {
+    const d = await (await fetch('/nynxz/experimental/stages')).json()
+    return Array.isArray(d.stages) ? d.stages : []
+  } catch {
+    return []
+  }
+}
+
+/** Save the current stage under `name` (+ an optional data-uri thumbnail). Returns its stem. */
+export async function saveStage(
+  name: string,
+  stage: unknown,
+  thumb?: string,
+  overwrite = true,
+): Promise<string | null> {
+  try {
+    const d = await (
+      await fetch('/nynxz/experimental/stages/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, stage, thumb, overwrite }),
+      })
+    ).json()
+    return d?.ok ? String(d.stem) : null
+  } catch {
+    return null
+  }
+}
+
+export async function deleteStage(stem: string): Promise<boolean> {
+  try {
+    const d = await (
+      await fetch('/nynxz/experimental/stages/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stem }),
+      })
+    ).json()
+    return !!d?.ok
+  } catch {
+    return false
+  }
+}
+
+/** Thumbnail URL for a preset (cache-busted by mtime so a re-save refreshes it). */
+export function stageThumbUrl(stem: string, mtime = 0): string {
+  return `/nynxz/experimental/stage_thumb?stem=${encodeURIComponent(stem)}&v=${mtime}`
+}

@@ -8,10 +8,11 @@
 // sizing, and — when ZenKit is installed — middle-click slot composition. Add a node = add
 // one file + one line here.
 import { registerNodes } from '@/lib/registerNodes'
-import fusionNode from '@/fusion/node'
+import fusionNodes from '@/fusion/node'
 import loraNode from '@/lora/node'
+import conditioningNodes from '@/conditioning/node'
 import { registerBackground } from '@/background/register'
 import '@zenkit/ui/comfy-bridge.css'
 
-registerNodes('nynxz.experimental', [fusionNode, loraNode])
+registerNodes('nynxz.experimental', [...fusionNodes, loraNode, ...conditioningNodes])
 registerBackground()
