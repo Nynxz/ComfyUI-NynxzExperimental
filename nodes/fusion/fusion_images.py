@@ -1,14 +1,15 @@
 """Fusion Images — collect several IMAGE sockets into a fusion_input, no chaining.
 
-The quickest way to fuse a handful of regular Load Image nodes: wire each into an autogrow
-socket and this outputs a `fusion_input` for the encode node. It's the multi-socket sibling of
-Fusion Reference (one image, chainable) and the Fusion Input grid (files on disk) — pick
+The plain-wire collector: wire each Load Image (or any upstream IMAGE — a sampler, a mask
+composite) into an autogrow socket and this outputs a `fusion_input` for the encode node. It's
+the wire-side sibling of the Fusion Input grid, which reaches files on disk instead — pick
 whichever matches how your images arrive.
 
-Every socket contributes at equal strength, framed by the shared `fit`. For per-image strength
-or fit, use the grid or chain Fusion References instead; for equal-weight convenience, this.
-A batched IMAGE contributes one source per frame, and an optional upstream fusion_input is
-prepended so this still chains with the other collectors if you want.
+One `strength` and one `fit` apply to every wired image. They're single native widgets rather
+than per-socket fields because an autogrow template takes exactly one input per repeat, so
+there's no way to pair each `image_N` with its own controls — for per-image strength or fit,
+use the grid instead. A batched IMAGE contributes one source per frame at that same strength
+and fit, and an optional upstream fusion_input is prepended so this still chains with the grid.
 """
 
 from __future__ import annotations
@@ -16,7 +17,7 @@ from __future__ import annotations
 from comfy_api.latest import io
 
 from .._base import NynxzNode
-from ._fusion import DEFAULT_FIT, FIT_MODES, flatten_images
+from ._fusion import DEFAULT_FIT, FIT_MODES
 from ._io_types import NynxzFusionInputData
 
 
@@ -34,9 +35,20 @@ class FusionImages(NynxzNode):
             node_id="FusionImages",
             display_name="Fusion Images",
             description="Collect several IMAGE sockets into a fusion_input — wire Load Image "
-            "nodes straight in, no chaining. Feeds a fusion encode node.",
+            "nodes straight in, no chaining. One strength and fit apply to every wired image. "
+            "Feeds a fusion encode node.",
             inputs=[
                 io.Autogrow.Input("images", template=images),
+                io.Float.Input(
+                    "strength",
+                    default=1.0,
+                    min=0.0,
+                    max=10.0,
+                    step=0.01,
+                    tooltip="Relative prevalence applied to every wired image, matching the "
+                    "grid's strength. The encode node still normalizes across all sources, so "
+                    "this only matters against an upstream fusion_input's own strengths.",
+                ),
                 io.Combo.Input(
                     "fit",
                     options=FIT_MODES,
@@ -48,25 +60,42 @@ class FusionImages(NynxzNode):
                 NynxzFusionInputData.Input(
                     "fusion_input",
                     optional=True,
-                    tooltip="Optional upstream Fusion Input / Reference / Images — its images come first.",
+                    tooltip="Optional upstream Fusion Input / Images — its images come first.",
                 ),
             ],
             outputs=[NynxzFusionInputData.Output(display_name="fusion_input")],
         )
 
     @classmethod
-    def execute(cls, images: io.Autogrow.Type, fit=DEFAULT_FIT, fusion_input=None) -> io.NodeOutput:
+    def execute(
+        cls, images: io.Autogrow.Type, strength=1.0, fit=DEFAULT_FIT, fusion_input=None
+    ) -> io.NodeOutput:
         # Copy the upstream list — ComfyUI hands the same object to every consumer, so appending
         # in place would make a fan-out silently accumulate images.
         sources: list[dict] = list(fusion_input or [])
         fit = fit if fit in FIT_MODES else DEFAULT_FIT
-        for image in flatten_images(images):
-            sources.append(
-                {
-                    "image": image,
-                    "strength": 1.0,
-                    "fit": fit,
-                    "label": f"image {len(sources) + 1}",
-                }
-            )
+        try:
+            strength = max(0.0, float(strength))
+        except (TypeError, ValueError):
+            strength = 1.0
+
+        # One source per frame, in socket order. A batched IMAGE spends the shared strength/fit
+        # across each of its frames. Flattened inline (rather than via a helper) so this node
+        # stays decoupled from the fusion weight-math module — with strength and fit shared, the
+        # per-socket grouping the grid needs buys nothing here.
+        for name in sorted(images or {}, key=lambda value: int(value.rsplit("_", 1)[-1])):
+            image = images[name]
+            if image is None:
+                continue
+            if image.ndim == 3:
+                image = image.unsqueeze(0)
+            for i in range(image.shape[0]):
+                sources.append(
+                    {
+                        "image": image[i : i + 1].clone(),
+                        "strength": strength,
+                        "fit": fit,
+                        "label": f"image {len(sources) + 1}",
+                    }
+                )
         return io.NodeOutput(sources)

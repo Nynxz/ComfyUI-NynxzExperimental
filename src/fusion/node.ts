@@ -1,6 +1,5 @@
 import { defineNode } from '@/lib/defineNode'
 import FusionGrid from './FusionGrid.vue'
-import FusionStrengths from './FusionStrengths.vue'
 import FusionStage from './FusionStage.vue'
 import FusionInspector from './FusionInspector.vue'
 
@@ -24,22 +23,11 @@ export const fusionInputNode = defineNode({
   slotLinks: [{ output: 'fusion_input', spawn: 'nynxz.experimental.QwenFusionEncode' }],
 })
 
-// The wire-side collector. Its rows widget gives each connected IMAGE socket the same
-// strength / fit / mute the grid's cards carry — see FusionStrengths.vue for why that has to be
-// a widget rather than fields on the sockets. No `fill`: the rows grow to fit, so the node
-// sizes to however many images are wired in.
+// The wire-side collector. No custom widget any more — it carries plain native inputs (a
+// shared strength float + fit combo), so all this contributes is the slot-link: middle-click
+// the fusion_input output → spawn + wire the encoder (lights up with ZenKit, no-op otherwise).
 export const fusionImagesNode = defineNode({
   is: 'nynxz.experimental.FusionImages',
-  minSize: [380, 170],
-  widgets: [
-    {
-      name: 'rows',
-      type: 'NYNXZ_FUSION_STRENGTHS',
-      component: FusionStrengths,
-      minHeight: 76,
-      default: { strengths: [], fits: [], enabled: [] },
-    },
-  ],
   slotLinks: [{ output: 'fusion_input', spawn: 'nynxz.experimental.QwenFusionEncode' }],
 })
 
