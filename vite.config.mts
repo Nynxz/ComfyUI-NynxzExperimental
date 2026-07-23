@@ -52,9 +52,14 @@ export default defineConfig({
       // NOTE: the subpath alias MUST come first — @zenkit/ui also matches @zenkit/ui/… , so
       // first-match ordering keeps the CSS from resolving into index.ts/comfy-bridge.css.
       '@zenkit/ui/comfy-bridge.css': fileURLToPath(
-        new URL('../ZenKit/packages/ui/src/comfy-bridge.css', import.meta.url),
+        new URL(
+          '../../../nynxz/custom_nodes/ZenKit/packages/ui/src/comfy-bridge.css',
+          import.meta.url,
+        ),
       ),
-      '@zenkit/ui': fileURLToPath(new URL('../ZenKit/packages/ui/src/index.ts', import.meta.url)),
+      '@zenkit/ui': fileURLToPath(
+        new URL('../../../nynxz/custom_nodes/ZenKit/packages/ui/src/index.ts', import.meta.url),
+      ),
     },
   },
   define: { 'process.env.NODE_ENV': JSON.stringify('production') },

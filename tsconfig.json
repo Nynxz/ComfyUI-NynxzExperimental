@@ -11,8 +11,10 @@
     "noEmit": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@zenkit/ui/comfy-bridge.css": ["../ZenKit/packages/ui/src/comfy-bridge.css"],
-      "@zenkit/ui": ["../ZenKit/packages/ui/src/index.ts"]
+      "@zenkit/ui/comfy-bridge.css": [
+        "../../../nynxz/custom_nodes/ZenKit/packages/ui/src/comfy-bridge.css"
+      ],
+      "@zenkit/ui": ["../../../nynxz/custom_nodes/ZenKit/packages/ui/src/index.ts"]
     },
     "typeRoots": ["src/types", "node_modules/@types"]
   },
