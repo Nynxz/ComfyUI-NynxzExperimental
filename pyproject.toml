@@ -1,6 +1,6 @@
 [project]
 name = "comfyui-nynxz-experimental"
-version = "0.1.6"
+version = "0.1.7"
 description = "A collection of experimental custom nodes for ComfyUI made by Nynxz."
 authors = [{ name = "Nynxz", email = "contact@nynxz.com" }]
 readme = "README.md"
