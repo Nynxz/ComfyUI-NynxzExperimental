@@ -14,7 +14,7 @@ import globals from 'globals'
 
 export default defineConfig(
   // Built output, deps, and scratch dirs — never our source.
-  globalIgnores(['node_modules/**', 'web/**', 'dist/**', 'temp/**']),
+  globalIgnores(['node_modules/**', 'web/**', 'dist/**', 'temp/**', 'dev/**']),
 
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
