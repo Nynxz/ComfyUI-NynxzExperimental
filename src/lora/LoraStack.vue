@@ -35,9 +35,14 @@
             @open="ensureLoras"
           >
             <template #selected>
-              <span class="ls-sel">
+              <span class="ls-sel" :class="{ missing: isMissing(row.name) }">
+                <i
+                  v-if="isMissing(row.name)"
+                  class="mdi mdi-alert ls-thumb sm warn"
+                  :title="`LoRA not found on disk: ${row.name}`"
+                />
                 <img
-                  v-if="row.name && selThumb(row.name)"
+                  v-else-if="row.name && selThumb(row.name)"
                   class="ls-thumb sm"
                   :src="preview(row.name)"
                   @error="onSelErr(row.name)"
@@ -294,6 +299,16 @@ async function ensureLoras() {
   for (const l of ls) if (l.has_preview) previewable.add(l.name)
   listLoaded.value = true
 }
+
+// Missing-lora warning: the set of names that exist on disk (once the list is loaded), and a
+// per-row check. A node that opens with saved loras fetches the list once (cached across nodes)
+// so a deleted / renamed lora is flagged without opening the picker; empty nodes stay lazy.
+const known = computed(() => new Set(loras.value.map((l) => l.name)))
+function isMissing(name: unknown): boolean {
+  const n = String(name)
+  return listLoaded.value && !!n && !known.value.has(n)
+}
+if (rows.value.some((r) => r.name)) void ensureLoras()
 
 const items = computed<ComboItem[]>(() =>
   loras.value.map((l) => ({ value: l.name, label: short(l.name), keywords: l.name })),
@@ -646,6 +661,19 @@ async function toggleFav(name: unknown) {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+/* a chosen LoRA that no longer exists on disk */
+.ls-sel.missing .ls-sel-name {
+  color: var(--zen-danger, #f5665f);
+}
+.ls-thumb.warn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--zen-danger, #f5665f);
+  background: color-mix(in srgb, var(--zen-danger, #f5665f) 14%, transparent);
+  border-color: color-mix(in srgb, var(--zen-danger, #f5665f) 45%, transparent);
+  font-size: 12px;
 }
 .ls-thumb {
   flex: none;
