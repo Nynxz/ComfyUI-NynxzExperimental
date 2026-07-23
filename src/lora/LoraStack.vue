@@ -2,7 +2,24 @@
   <div class="ls">
     <div class="ls-mid">
       <div v-if="rows.length" class="ls-rows">
-        <div v-for="(row, i) in rows" :key="i" class="ls-row" :class="{ off: !row.on }">
+        <div
+          v-for="(row, i) in rows"
+          :key="row.id"
+          class="ls-row"
+          :class="{ off: !row.on, dragging: dragIndex === i, over: dropIndex === i && dragIndex !== i }"
+          @dragover.prevent="onRowDragOver(i, $event)"
+          @drop="onRowDrop(i, $event)"
+          @dragend="endReorder"
+        >
+          <!-- only the grip starts a reorder: a draggable row would swallow slider/combo drags -->
+          <div
+            class="ls-grip"
+            draggable="true"
+            title="Drag to reorder"
+            @dragstart="startReorder(i, $event)"
+          >
+            <i class="mdi mdi-drag-vertical" />
+          </div>
           <ZenSwitch :model-value="row.on" title="Enable" @update:model-value="setOn(i, $event)" />
 
           <ZenCombo
@@ -185,6 +202,7 @@ import {
 import { listLoras, getFavorites, setFavorite, previewUrl, type LoraItem } from '@/lora/api'
 
 interface LoraRow {
+  id: number
   on: boolean
   name: string
   strength: number
@@ -195,12 +213,28 @@ interface DOMWidget {
 }
 const props = defineProps<{
   widget?: DOMWidget
-  node?: { graph?: { setDirtyCanvas?: (a: boolean, b: boolean) => void } }
+  node?: {
+    graph?: { setDirtyCanvas?: (a: boolean, b: boolean) => void }
+    properties?: Record<string, unknown>
+  }
 }>()
 
 const loras = ref<LoraItem[]>([])
 const favorites = ref<string[]>([])
-const rows = ref<LoraRow[]>(parseRows(props.widget?.value))
+
+// Reordering must not bust the graph cache. The widget VALUE (what ComfyUI hashes) is the rows
+// sorted by name — order-independent — so dragging never changes the node signature. The manual
+// drag order lives in node.properties instead: it serialises with the graph but is NOT a hashed
+// input. Each row carries a stable id so the two stay linked across reloads. LoRA merges are
+// additive, so the backend applying them name-sorted gives the same result regardless of order.
+const ORDER_KEY = 'nynxzLoraOrder'
+let idSeq = 0
+function nextId(): number {
+  return ++idSeq
+}
+const rows = ref<LoraRow[]>(loadRows())
+const dragIndex = ref(-1) // row being dragged, or -1
+const dropIndex = ref(-1) // row hovered as the drop target
 const browse = ref(false)
 const browseTarget = ref(-1) // row index to pick into, or -1 = append a new row
 const bq = ref('')
@@ -222,6 +256,15 @@ function num(v: unknown, fallback: number) {
   const n = +(v as number)
   return Number.isFinite(n) ? n : fallback
 }
+function normalizeRows(arr: unknown[]): LoraRow[] {
+  return arr
+    .filter((r) => r && typeof r === 'object')
+    .map((r: any) => {
+      const id = Number.isFinite(+r.id) ? +r.id : nextId()
+      if (id > idSeq) idSeq = id // keep nextId() above any id restored from the graph
+      return { id, on: r.on !== false, name: String(r.name ?? ''), strength: num(r.strength, 1) }
+    })
+}
 function parseRows(v: unknown): LoraRow[] {
   let arr = v
   if (typeof arr === 'string') {
@@ -232,13 +275,14 @@ function parseRows(v: unknown): LoraRow[] {
     }
   }
   if (!Array.isArray(arr)) return []
-  return arr
-    .filter((r) => r && typeof r === 'object')
-    .map((r: any) => ({
-      on: r.on !== false,
-      name: String(r.name ?? ''),
-      strength: num(r.strength, 1),
-    }))
+  return normalizeRows(arr)
+}
+// Prefer the ordered rows saved in node.properties (they carry the display order + ids); fall
+// back to the widget value (older graphs / first load), which is the name-sorted backend value.
+function loadRows(): LoraRow[] {
+  const stored = props.node?.properties?.[ORDER_KEY]
+  if (Array.isArray(stored) && stored.length) return normalizeRows(stored)
+  return parseRows(props.widget?.value)
 }
 
 // Lazy: load LoRAs + favorites on first picker open (not on mount), so stacked LoRA nodes
@@ -321,16 +365,23 @@ function onImgErr(e: Event) {
   img.style.display = 'none'
 }
 
-// commit rows to the widget value (serializes with the graph) + redraw
+// commit rows: display order + ids to node.properties (persisted, NOT hashed), and the backend
+// value to the widget as a name-sorted (order-independent) projection so reordering doesn't
+// change the node signature or re-run the graph.
 function commit() {
-  if (props.widget) {
-    const snapshot = rows.value.map((r) => ({ ...r }))
-    // Writing the ComfyUI DOM widget's value is how the stack serializes with the graph —
-    // the intended mutation, same as the fusion grid.
+  if (props.node?.properties) {
+    // Persisting display order onto the node is the intended mutation (same as widget.value).
     // eslint-disable-next-line vue/no-mutating-props
-    props.widget.value = snapshot
+    props.node.properties[ORDER_KEY] = rows.value.map((r) => ({ ...r }))
+  }
+  if (props.widget) {
+    const value = rows.value
+      .map((r) => ({ on: r.on, name: r.name, strength: r.strength }))
+      .sort((a, b) => a.name.localeCompare(b.name) || a.strength - b.strength || +a.on - +b.on)
+    // eslint-disable-next-line vue/no-mutating-props
+    props.widget.value = value
     try {
-      props.widget.callback?.(snapshot)
+      props.widget.callback?.(value)
     } catch {
       /* no callback */
     }
@@ -357,7 +408,7 @@ function setStrengthVal(i: number, v: number) {
   }
 }
 function addRow(name = '') {
-  rows.value.push({ on: true, name, strength: 1 })
+  rows.value.push({ id: nextId(), on: true, name, strength: 1 })
   commit()
 }
 function removeRow(i: number) {
@@ -367,6 +418,36 @@ function removeRow(i: number) {
 function clearAll() {
   rows.value = []
   commit()
+}
+
+// --- reorder (stack order = apply order, so dragging beats delete-and-re-add) ---------
+function startReorder(i: number, e: DragEvent) {
+  dragIndex.value = i
+  if (e.dataTransfer) {
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('text/plain', String(i)) // Firefox needs a payload to start a drag
+  }
+}
+function onRowDragOver(i: number, e: DragEvent) {
+  if (dragIndex.value < 0) return // ignore anything that isn't a row reorder
+  e.stopPropagation()
+  dropIndex.value = i
+}
+function onRowDrop(to: number, e: DragEvent) {
+  if (dragIndex.value < 0) return
+  e.preventDefault()
+  e.stopPropagation()
+  const from = dragIndex.value
+  endReorder()
+  if (from === to) return
+  const moved = rows.value.splice(from, 1)[0]
+  if (!moved) return
+  rows.value.splice(to, 0, moved)
+  commit()
+}
+function endReorder() {
+  dragIndex.value = -1
+  dropIndex.value = -1
 }
 
 function enterFolder(name: string) {
@@ -438,6 +519,30 @@ async function toggleFav(name: unknown) {
 }
 .ls-row.off {
   opacity: 0.5;
+}
+.ls-row.dragging {
+  opacity: 0.4;
+}
+.ls-row.over {
+  outline: 2px solid var(--zen-accent, #6366f1);
+  outline-offset: -1px;
+  border-radius: var(--zen-radius, 6px);
+}
+.ls-grip {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  cursor: grab;
+  color: var(--zen-muted, #9aa0aa);
+  font-size: 16px;
+}
+.ls-grip:active {
+  cursor: grabbing;
+}
+.ls-grip:hover {
+  color: var(--zen-text, #e5e5ea);
 }
 .ls-pick {
   flex: 1;
