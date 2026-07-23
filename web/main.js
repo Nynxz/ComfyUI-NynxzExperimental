@@ -1,4 +1,5 @@
-(function(){var s=document.createElement('style');s.setAttribute('data-extension','comfyui-nynxz-experimental');s.textContent="/* Reusable themed scrollbar. Add class=\"zen-scroll\" to ANY scroll container — including\n * teleported popovers/menus that live outside #zenkit-host — for a consistent, slim\n * scrollbar: neutral at rest (blends into the surface), accent/primary on hover.\n *\n * IMPORTANT: only the ::-webkit-scrollbar pseudo-elements are used for the look, because\n * Chromium DISABLES them the moment `scrollbar-color`/`scrollbar-width` is set (it then\n * draws the standard scrollbar, whose default hover lightens the thumb ~white). So the\n * standard props are gated to non-webkit engines (Firefox) via @supports.\n * Override --zen-scrollbar (rest) / --zen-scrollbar-hover (hover) to retint. */\n.zen-scroll::-webkit-scrollbar { width: 10px; height: 10px; }\n.zen-scroll::-webkit-scrollbar-track { background: transparent; }\n.zen-scroll::-webkit-scrollbar-thumb {\n  background: var(--zen-scrollbar, color-mix(in srgb, var(--zen-text, #9aa0aa) 22%, transparent));\n  border: 2px solid transparent;\n  border-radius: var(--zen-radius, 8px);\n  background-clip: padding-box;\n}\n.zen-scroll::-webkit-scrollbar-thumb:hover {\n  background: var(--zen-scrollbar-hover, var(--zen-accent, #6366f1));\n  background-clip: padding-box;\n}\n.zen-scroll::-webkit-scrollbar-corner { background: transparent; }\n\n@supports not selector(::-webkit-scrollbar) {\n  .zen-scroll {\n    scrollbar-width: thin;\n    scrollbar-color: var(--zen-scrollbar, color-mix(in srgb, var(--zen-text, #9aa0aa) 26%, transparent)) transparent;\n  }\n}\n\n/* layout only — scrollbar styling lives in scrollbar.css (.zen-scroll, global) */\n.zen-scroll[data-v-2eaaf1dd] { height: 100%; min-height: 0; overflow-y: auto; overflow-x: hidden;\n}\n.zen-scroll.x[data-v-2eaaf1dd] { overflow-x: auto; overflow-y: hidden;\n}\n\n.zen-btn[data-v-ca361f6f] {\n  display: inline-flex; align-items: center; justify-content: center; gap: 7px; cursor: pointer;\n  font-family: inherit; font-size: 12px; font-weight: 600; padding: 7px 12px; border-radius: var(--zen-radius, 8px);\n  border: 1px solid var(--zen-border, #3a3a44); background: var(--zen-surface, #202026); color: var(--zen-text, #e5e5ea);\n  transition: border-color .12s ease, background .12s ease, color .12s ease, filter .12s ease;\n}\n.zen-btn[data-v-ca361f6f]:hover:not(:disabled) { border-color: var(--zen-accent, #3b82f6);\n}\n.zen-btn[data-v-ca361f6f]:disabled { opacity: .5; cursor: default;\n}\n.zen-btn .mdi[data-v-ca361f6f] { font-size: 15px;\n}\n.zen-btn.block[data-v-ca361f6f] { width: 100%;\n}\n.zen-btn.sm[data-v-ca361f6f] { padding: 5px 9px; font-size: 11px;\n}\n.zen-btn.primary[data-v-ca361f6f] { background: var(--zen-accent, #3b82f6); border-color: var(--zen-accent, #3b82f6); color: var(--zen-accent-text, #fff);\n}\n.zen-btn.primary[data-v-ca361f6f]:hover:not(:disabled) { filter: brightness(1.08);\n}\n.zen-btn.ghost[data-v-ca361f6f] { background: transparent; border-color: transparent;\n}\n.zen-btn.ghost[data-v-ca361f6f]:hover:not(:disabled) { background: color-mix(in srgb, var(--zen-text, #fff) 10%, transparent); border-color: transparent;\n}\n.zen-btn.danger[data-v-ca361f6f]:hover:not(:disabled) { background: #b91c1c; border-color: #b91c1c; color: #fff;\n}\n\n.zen-iconbtn[data-v-e73501c0] {\n  display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px;\n  border: 1px solid transparent; border-radius: var(--zen-radius, 6px); background: none; color: var(--zen-muted, #9aa0aa);\n  cursor: pointer; transition: background .1s ease, color .1s ease;\n}\n.zen-iconbtn[data-v-e73501c0]:hover:not(:disabled) { background: color-mix(in srgb, var(--zen-text, #fff) 12%, transparent); color: var(--zen-text, #e5e5ea);\n}\n.zen-iconbtn.active[data-v-e73501c0] { color: var(--zen-accent, #3b82f6);\n}\n.zen-iconbtn.danger[data-v-e73501c0]:hover:not(:disabled) { background: #b91c1c; color: #fff;\n}\n.zen-iconbtn[data-v-e73501c0]:disabled { opacity: .4; cursor: default;\n}\n.zen-iconbtn .mdi[data-v-e73501c0] { font-size: 16px;\n}\n\n.zen-input[data-v-ec969410] {\n  /* line-height: normal decouples from ComfyUI's inherited (small) line-height; the\n     asymmetric padding (1px more top than bottom) optically centres the glyphs, which\n     otherwise sit a touch high inside the field (line-height alone can't fix that). */\n  width: 100%; box-sizing: border-box; font: inherit; font-size: 12px; line-height: normal;\n  background: var(--zen-input, #1b1b20); color: var(--zen-text, #e5e5ea);\n  border: 1px solid var(--zen-border, #34343c); border-radius: var(--zen-radius, 7px);\n  padding: 8px 9px 6px; transition: border-color .12s ease;\n}\n.zen-input[data-v-ec969410]::placeholder { color: var(--zen-muted, #9aa0aa);\n}\n.zen-input[data-v-ec969410]:focus { outline: none; border-color: var(--zen-accent, #6366f1);\n}\n.zen-input[data-v-ec969410]:disabled { opacity: .5; cursor: default;\n}\n.zen-input.sm[data-v-ec969410] { padding: 6px 8px 4px; font-size: 11px;\n}\n.zen-input.area[data-v-ec969410] { resize: vertical; min-height: 64px; line-height: 1.45;\n}\n\n.zen-num[data-v-45cda24e] { display: inline-flex; align-items: stretch; height: 28px; box-sizing: border-box; border: 1px solid var(--zen-border, #34343c); border-radius: var(--zen-radius, 6px); background: var(--zen-input, #1b1b20); overflow: hidden; user-select: none;\n}\n.zen-num[data-v-45cda24e]:focus-within { border-color: var(--zen-accent, #6366f1);\n}\n.zen-num.disabled[data-v-45cda24e] { opacity: .5; pointer-events: none;\n}\n.zn-step[data-v-45cda24e] { flex: none; width: 21px; border: none; background: none; color: var(--zen-muted, #9aa0aa); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;\n}\n.zn-step.hot[data-v-45cda24e] { color: var(--zen-text, #e5e5ea); background: color-mix(in srgb, var(--zen-text, #fff) 9%, transparent);\n}\n.zn-step .mdi[data-v-45cda24e] { font-size: 13px;\n}\n.zn-val[data-v-45cda24e] { flex: 1; min-width: 40px; display: flex; align-items: center; justify-content: center; cursor: ew-resize; border-left: 1px solid var(--zen-border, #34343c); border-right: 1px solid var(--zen-border, #34343c); padding: 0 2px;\n}\n/* bare: no ±steppers — just a scrub/type value box (for tight inline use, e.g. ZenDimensions) */\n.zen-num.bare .zn-val[data-v-45cda24e] { border-left: none; border-right: none;\n}\n/* The input IS the value display: pointer-events off while blurred so the wrapper handles\n   drag-scrub; on when focused so the caret/selection work. line-height:normal decouples\n   from ComfyUI's inherited (small) line-height. */\n.zn-input[data-v-45cda24e] { width: 100%; background: none; border: none; outline: none; color: var(--zen-text, #e5e5ea); font: inherit; font-size: 11px; line-height: normal; text-align: center; font-variant-numeric: tabular-nums; pointer-events: none; cursor: ew-resize;\n}\n.zn-input.live[data-v-45cda24e] { pointer-events: auto; cursor: text;\n}\n.zn-input[data-v-45cda24e]:disabled { color: var(--zen-muted, #9aa0aa);\n}\n\n.zen-combo[data-v-1c65dbd1] { position: relative; width: 100%;\n}\n.zc-trigger[data-v-1c65dbd1] {\n  display: flex; align-items: center; gap: 6px; width: 100%; box-sizing: border-box; min-height: 28px;\n  background: var(--zen-input, #1b1b20); color: var(--zen-text, #e5e5ea);\n  border: 1px solid var(--zen-border, #34343c); border-radius: var(--zen-radius, 7px);\n  padding: 4px 8px; font: inherit; font-size: 12px; cursor: pointer; text-align: left;\n  transition: border-color .12s ease;\n}\n.zc-trigger[data-v-1c65dbd1]:hover:not(:disabled) { border-color: var(--zen-accent, #6366f1);\n}\n.zc-trigger[data-v-1c65dbd1]:disabled { opacity: .5; cursor: default;\n}\n.zen-combo.open .zc-trigger[data-v-1c65dbd1] { border-color: var(--zen-accent, #6366f1);\n}\n.zc-current[data-v-1c65dbd1] { flex: 1; min-width: 0; overflow: hidden;\n}\n.zc-caret[data-v-1c65dbd1] { flex: none; color: var(--zen-muted, #9aa0aa); transition: transform .12s ease;\n}\n.zen-combo.open .zc-caret[data-v-1c65dbd1] { transform: rotate(180deg);\n}\n\n/* Teleported menu — NOT scoped (lives at <body>); reads the same --zen-* tokens. */\n.zen-combo-menu {\n  position: fixed; z-index: 11000; display: flex; flex-direction: column; max-height: 360px;\n  background: var(--zen-surface, #202026); border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 8px); box-shadow: 0 12px 34px rgba(0, 0, 0, .5); overflow: hidden;\n  font-family: var(--p-font-family, system-ui, sans-serif); color: var(--zen-text, #e5e5ea);\n}\n.zen-combo-menu .zc-search { display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-bottom: 1px solid var(--zen-border, #34343c);\n}\n.zen-combo-menu .zc-search > .mdi { color: var(--zen-muted, #9aa0aa); font-size: 16px;\n}\n.zen-combo-menu .zc-search input { flex: 1; min-width: 0; background: none; border: none; outline: none; color: inherit; font: inherit; font-size: 12px;\n}\n.zen-combo-menu .zc-clear { border: none; background: none; color: var(--zen-muted, #9aa0aa); cursor: pointer; padding: 0 2px;\n}\n.zen-combo-menu .zc-search-actions { flex: none; display: inline-flex; align-items: center;\n}\n.zen-combo-menu .zc-list { overflow-y: auto; padding: 4px; min-height: 0;\n}\n.zen-combo-menu .zc-virt { position: relative; width: 100%;\n}\n.zen-combo-menu .zc-win { position: absolute; top: 0; left: 0; right: 0;\n}\n.zen-combo-menu .zc-opt { display: flex; align-items: center; gap: 9px; padding: 6px 8px; border-radius: var(--zen-radius, 6px); cursor: pointer; font-size: 12px; box-sizing: border-box; overflow: hidden;\n}\n.zen-combo-menu .zc-opt.active { background: color-mix(in srgb, var(--zen-text, #fff) 10%, transparent);\n}\n.zen-combo-menu .zc-opt.sel { color: var(--zen-accent, #6366f1);\n}\n.zen-combo-menu .zc-opt-lbl { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;\n}\n.zen-combo-menu .zc-sep { height: 1px; margin: 4px 6px; background: var(--zen-border, #34343c);\n}\n.zen-combo-menu .zc-empty { padding: 16px; text-align: center; font-size: 12px; color: var(--zen-muted, #9aa0aa);\n}\n.zen-combo-menu .zc-footer { border-top: 1px solid var(--zen-border, #34343c); padding: 6px;\n}\n/* grid mode: options become responsive cards (e.g. an image picker) */\n.zen-combo-menu.grid .zc-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--zc-grid-min, 92px), 1fr)); gap: 6px; align-content: start;\n}\n.zen-combo-menu.grid .zc-opt { flex-direction: column; align-items: stretch; height: auto; gap: 4px; padding: 4px;\n}\n.zen-combo-menu.grid .zc-empty { grid-column: 1 / -1;\n}\n\n/* radius follows the theme's rounding token (--zen-radius, bridged from --radius), so\n   square/straight-edge themes like Mecha get a square toggle. Falls back to a pill +\n   round knob; override just the switch with --zen-switch-radius if needed. */\n.zen-switch[data-v-0bd24040] { position: relative; flex: 0 0 auto; width: 42px; height: 23px; padding: 0; border: 1px solid var(--zen-border, #3a3a44); border-radius: var(--zen-switch-radius, var(--zen-radius, 999px)); background: var(--zen-surface, #202026); cursor: pointer; transition: background .15s ease, border-color .15s ease;\n}\n.zen-switch.on[data-v-0bd24040] { background: var(--zen-accent, #3b82f6); border-color: var(--zen-accent, #3b82f6);\n}\n.zen-switch[data-v-0bd24040]:disabled { opacity: .5; cursor: default;\n}\n.zen-switch .knob[data-v-0bd24040] { position: absolute; top: 1px; left: 1px; width: 19px; height: 19px; border-radius: var(--zen-switch-radius, var(--zen-radius, 50%)); background: #fff; display: flex; align-items: center; justify-content: center; transition: transform .15s ease; box-shadow: 0 1px 2px rgba(0, 0, 0, .35);\n}\n.zen-switch.on .knob[data-v-0bd24040] { transform: translateX(19px);\n}\n.zen-switch .knob .mdi[data-v-0bd24040] { font-size: 12px; color: var(--zen-muted, #9aa0aa);\n}\n.zen-switch.on .knob .mdi[data-v-0bd24040] { color: var(--zen-accent, #3b82f6);\n}\n\n.zen-tg[data-v-30ea6574] { display: inline-flex; border: 1px solid var(--zen-border, #3a3a44); border-radius: var(--zen-radius, 7px); overflow: hidden; background: var(--zen-surface, #202026);\n}\n.zen-tg-b[data-v-30ea6574] { display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 4px 9px; border: none; background: none; color: var(--zen-muted, #9aa0aa); font-size: 11px; font-weight: 600; font-family: inherit; cursor: pointer; transition: background .1s ease, color .1s ease;\n}\n.zen-tg-b + .zen-tg-b[data-v-30ea6574] { border-left: 1px solid var(--zen-border, #3a3a44);\n}\n.zen-tg-b[data-v-30ea6574]:hover { color: var(--zen-text, #e5e5ea);\n}\n.zen-tg-b.on[data-v-30ea6574] { background: color-mix(in srgb, var(--zen-accent, #3b82f6) 20%, transparent); color: var(--zen-accent, #3b82f6);\n}\n.zen-tg-b .mdi[data-v-30ea6574] { font-size: 14px;\n}\n\n.zen-slider[data-v-a2688f55] { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: var(--zen-radius, 999px); background: var(--zen-border, #34343c); outline: none; cursor: pointer;\n}\n.zen-slider[data-v-a2688f55]:disabled { opacity: .5; cursor: default;\n}\n.zen-slider[data-v-a2688f55]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: var(--zen-radius, 50%); background: var(--zen-accent, #6366f1); border: 2px solid var(--zen-bg, #1a1a1f); cursor: pointer; box-shadow: 0 1px 3px rgba(0, 0, 0, .4);\n}\n.zen-slider[data-v-a2688f55]::-moz-range-thumb { width: 14px; height: 14px; border: 2px solid var(--zen-bg, #1a1a1f); border-radius: var(--zen-radius, 50%); background: var(--zen-accent, #6366f1); cursor: pointer;\n}\n.zen-slider[data-v-a2688f55]::-moz-range-track { height: 4px; border-radius: var(--zen-radius, 999px); background: var(--zen-border, #34343c);\n}\n.zen-slider[data-v-a2688f55]:focus-visible { box-shadow: 0 0 0 2px color-mix(in srgb, var(--zen-accent, #6366f1) 50%, transparent);\n}\n\n/* Not scoped — teleported to <body>; reads --zen-* tokens. */\n.zen-modal-back {\n  position: fixed; inset: 0; z-index: 12000; display: flex; align-items: center; justify-content: center;\n  background: rgba(0, 0, 0, .55); backdrop-filter: blur(2px);\n}\n.zen-modal {\n  display: flex; flex-direction: column; max-width: 94vw; max-height: 90vh; overflow: hidden;\n  background: var(--zen-surface, #202026); color: var(--zen-text, #e5e5ea);\n  border: 1px solid var(--zen-border, #34343c); border-radius: calc(var(--zen-radius, 8px) + 2px);\n  box-shadow: 0 24px 70px rgba(0, 0, 0, .6); font-family: var(--p-font-family, system-ui, sans-serif);\n}\n.zen-modal .zm-head { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-bottom: 1px solid var(--zen-border, #34343c); flex: none;\n}\n.zen-modal .zm-title { flex: none; font-size: 13px; font-weight: 600; white-space: nowrap;\n}\n.zen-modal .zm-head-mid { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px;\n}\n.zen-modal .zm-x { border: none; background: none; color: var(--zen-muted, #9aa0aa); cursor: pointer; font-size: 18px; display: inline-flex;\n}\n.zen-modal .zm-x:hover { color: var(--zen-text, #e5e5ea);\n}\n.zen-modal .zm-body { flex: 1; min-height: 0; overflow: auto; padding: 14px;\n}\n.zen-modal .zm-foot { flex: none; border-top: 1px solid var(--zen-border, #34343c); padding: 10px 14px;\n}\n\n/* Fill layout (see mountWidget's `fill`): the widget takes the node body, the image grid\n   takes whatever height is left and scrolls, and the toolbar is pinned under it. Resizing\n   the node therefore shows more images, never more padding. */\n.fg[data-v-84e98745] {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  gap: 7px;\n  height: 100%;\n  min-height: 0;\n  padding: 2px;\n  box-sizing: border-box;\n  font-size: 12px;\n  color: var(--zen-text, #e5e5ea);\n}\n\n/* flex-basis 0 (not auto) so the grid's content can't push the toolbar off the node */\n/* focused programmatically on hover (see armScroll) — never show a ring for it */\n.fg-scroll[data-v-84e98745] {\n  flex: 1 1 0;\n  min-height: 0;\n  outline: none;\n}\n.fg-grid[data-v-84e98745] {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));\n  gap: 6px;\n  align-items: start;\n  padding-right: 2px;\n}\n.fg-card[data-v-84e98745] {\n  display: flex;\n  flex-direction: column;\n  gap: 3px;\n  padding: 4px;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 9px);\n  background: var(--zen-input, #1b1b20);\n  transition:\n    border-color 0.12s ease,\n    opacity 0.12s ease;\n}\n.fg-card.off[data-v-84e98745] {\n  opacity: 0.5;\n}\n.fg-card.dragging[data-v-84e98745] {\n  opacity: 0.35;\n}\n.fg-card.over[data-v-84e98745] {\n  border-color: var(--zen-accent, #6366f1);\n  box-shadow: 0 0 0 1px var(--zen-accent, #6366f1) inset;\n}\n.fg-thumb[data-v-84e98745] {\n  position: relative;\n  width: 100%;\n  aspect-ratio: 1;\n  border-radius: var(--zen-radius, 6px);\n  background: var(--zen-surface, #202026);\n  overflow: hidden;\n  cursor: grab;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.fg-thumb[data-v-84e98745]:active {\n  cursor: grabbing;\n}\n/* contain on black: the encoder letterboxes with real black pixels, so the card shows the\n   actual frame it gets rather than flattering it with a themed backdrop */\n.fg-thumb img[data-v-84e98745] {\n  width: 100%;\n  height: 100%;\n  display: block;\n  object-fit: contain;\n  background: #000;\n}\n.fg-ph[data-v-84e98745] {\n  font-size: 30px;\n  color: var(--zen-muted, #9aa0aa);\n}\n.fg-ph.warn[data-v-84e98745] {\n  color: #e0a33a;\n}\n.fg-idx[data-v-84e98745] {\n  position: absolute;\n  top: 4px;\n  left: 4px;\n  min-width: 16px;\n  height: 16px;\n  padding: 0 4px;\n  border-radius: var(--zen-radius, 5px);\n  background: rgba(0, 0, 0, 0.62);\n  color: #fff;\n  font-size: 10px;\n  font-weight: 700;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n}\n.fg-acts[data-v-84e98745] {\n  position: absolute;\n  top: 4px;\n  right: 4px;\n  display: flex;\n  gap: 3px;\n  opacity: 0;\n  transition: opacity 0.12s ease;\n}\n.fg-card:hover .fg-acts[data-v-84e98745] {\n  opacity: 1;\n}\n.fg-act[data-v-84e98745] {\n  width: 19px;\n  height: 19px;\n  padding: 0;\n  border: none;\n  border-radius: var(--zen-radius, 5px);\n  background: rgba(0, 0, 0, 0.62);\n  color: #fff;\n  font-size: 12px;\n  cursor: pointer;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n}\n.fg-act[data-v-84e98745]:hover {\n  background: var(--zen-accent, #6366f1);\n}\n.fg-act.danger[data-v-84e98745]:hover {\n  background: #d9534f;\n}\n.fg-mutemark[data-v-84e98745] {\n  position: absolute;\n  inset: 0;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background: rgba(0, 0, 0, 0.45);\n  color: #fff;\n  font-size: 22px;\n  pointer-events: none;\n}\n\n/* name + share ride in the thumb's bottom strip rather than costing the card its own rows */\n.fg-meta[data-v-84e98745] {\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 3px;\n  display: flex;\n  align-items: flex-end;\n  gap: 4px;\n  padding: 10px 5px 1px;\n  background: linear-gradient(transparent, rgba(0, 0, 0, 0.78));\n  pointer-events: none;\n}\n.fg-name[data-v-84e98745] {\n  flex: 1;\n  min-width: 0;\n  font-size: 9.5px;\n  color: #fff;\n  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.fg-pct[data-v-84e98745] {\n  flex: none;\n  font-size: 9.5px;\n  font-weight: 700;\n  line-height: 1.25;\n  color: #fff;\n  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);\n}\n.fg-pct.dim[data-v-84e98745] {\n  font-weight: 500;\n  color: var(--zen-muted, #9aa0aa);\n}\n/* the live share of the blend this source claims */\n.fg-share[data-v-84e98745] {\n  position: absolute;\n  left: 0;\n  bottom: 0;\n  height: 3px;\n  background: var(--zen-accent, #6366f1);\n  transition: width 0.12s ease;\n  pointer-events: none;\n}\n.fg-foot[data-v-84e98745] {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n}\n.fg-slider[data-v-84e98745] {\n  flex: 1;\n  min-width: 0;\n}\n.fg-num[data-v-84e98745] {\n  flex: none;\n  width: 46px;\n}\n\n/* fills the scroll area so the empty node reads as one big drop target */\n.fg-empty[data-v-84e98745] {\n  height: 100%;\n  min-height: 96px;\n  box-sizing: border-box;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 4px;\n  padding: 18px 8px;\n  text-align: center;\n  color: var(--zen-muted, #9aa0aa);\n  border: 1px dashed var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 8px);\n  background: color-mix(in srgb, var(--zen-text, #fff) 3%, transparent);\n}\n.fg-empty > .mdi[data-v-84e98745] {\n  font-size: 26px;\n  opacity: 0.8;\n}\n.fg-empty > span[data-v-84e98745] {\n  font-size: 11px;\n}\n.fg-empty > small[data-v-84e98745] {\n  font-size: 10px;\n  opacity: 0.7;\n}\n.fg-warn[data-v-84e98745] {\n  flex: none;\n  display: flex;\n  align-items: center;\n  gap: 5px;\n  padding: 5px 8px;\n  border-radius: var(--zen-radius, 7px);\n  background: color-mix(in srgb, #e0a33a 14%, transparent);\n  color: #e0a33a;\n  font-size: 10.5px;\n}\n.fg-bar[data-v-84e98745] {\n  flex: none;\n  display: flex;\n  align-items: center;\n  gap: 6px;\n}\n.fg-add[data-v-84e98745] {\n  flex: 1;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  padding: 7px;\n  border: 1px dashed var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 7px);\n  background: transparent;\n  color: var(--zen-muted, #9aa0aa);\n  font: inherit;\n  font-size: 11px;\n  font-weight: 600;\n  cursor: pointer;\n  transition:\n    border-color 0.12s ease,\n    color 0.12s ease,\n    background 0.12s ease;\n}\n.fg-add[data-v-84e98745]:hover:not(:disabled) {\n  border-color: var(--zen-accent, #6366f1);\n  color: var(--zen-text, #e5e5ea);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 8%, transparent);\n}\n.fg-add[data-v-84e98745]:disabled {\n  opacity: 0.6;\n  cursor: default;\n}\n.fg-add .mdi[data-v-84e98745] {\n  font-size: 15px;\n}\n.fg-add-n[data-v-84e98745] {\n  margin-left: 2px;\n  padding: 0 5px;\n  border-radius: var(--zen-radius, 8px);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 22%, transparent);\n  color: var(--zen-text, #e5e5ea);\n  font-size: 10px;\n  font-weight: 700;\n}\n.fg-dropmask[data-v-84e98745] {\n  position: absolute;\n  inset: 0;\n  z-index: 5;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  border: 2px dashed var(--zen-accent, #6366f1);\n  border-radius: var(--zen-radius, 9px);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 16%, rgba(0, 0, 0, 0.55));\n  color: var(--zen-text, #e5e5ea);\n  font-size: 11px;\n  font-weight: 600;\n  pointer-events: none;\n}\n.fg-dropmask .mdi[data-v-84e98745] {\n  font-size: 28px;\n}\n\n/* browse dialog */\n.fg-search[data-v-84e98745] {\n  flex: 1;\n  min-width: 0;\n  max-width: 320px;\n  display: flex;\n}\n.fg-bgrid[data-v-84e98745] {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));\n  gap: 12px;\n  align-items: start;\n}\n.fg-bcard[data-v-84e98745] {\n  display: flex;\n  flex-direction: column;\n  height: 170px;\n  padding: 0;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 9px);\n  background: var(--zen-input, #1b1b20);\n  cursor: pointer;\n  overflow: hidden;\n  text-align: left;\n  color: inherit;\n  font: inherit;\n}\n.fg-bcard[data-v-84e98745]:hover {\n  border-color: var(--zen-accent, #6366f1);\n}\n.fg-bcard.sel[data-v-84e98745] {\n  border-color: var(--zen-accent, #6366f1);\n  box-shadow: 0 0 0 1px var(--zen-accent, #6366f1) inset;\n}\n.fg-bcard-img[data-v-84e98745] {\n  position: relative;\n  flex: 1 1 0;\n  min-height: 0;\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background: var(--zen-surface, #202026);\n  overflow: hidden;\n}\n.fg-bcard-img img[data-v-84e98745] {\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n  display: block;\n}\n.fg-bcard-tick[data-v-84e98745] {\n  position: absolute;\n  top: 5px;\n  right: 5px;\n  width: 22px;\n  height: 22px;\n  border-radius: 50%;\n  background: var(--zen-accent, #6366f1);\n  color: var(--zen-accent-text, #fff);\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 14px;\n}\n.fg-bcard-meta[data-v-84e98745] {\n  flex: none;\n  height: 38px;\n  box-sizing: border-box;\n  padding: 5px 8px;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  gap: 1px;\n  border-top: 1px solid var(--zen-border, #34343c);\n}\n.fg-bcard-name[data-v-84e98745] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12px;\n}\n.fg-bcard-dir[data-v-84e98745] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 10px;\n  color: var(--zen-muted, #9aa0aa);\n}\n.fg-bgrid-empty[data-v-84e98745] {\n  grid-column: 1 / -1;\n  text-align: center;\n  color: var(--zen-muted, #9aa0aa);\n  padding: 30px;\n}\n\n/* natural content flow — the node auto-grows to fit (see mountWidget), so rows are never\n   scrolled and the Add button simply follows the last row. */\n.ls[data-v-da184183] {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  padding: 2px;\n  box-sizing: border-box;\n  font-size: 12px;\n  color: var(--zen-text, #e5e5ea);\n}\n.ls-mid[data-v-da184183] {\n  display: flex;\n  flex-direction: column;\n}\n.ls-rows[data-v-da184183] {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n.ls-empty[data-v-da184183] {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 5px;\n  padding: 14px 8px;\n  text-align: center;\n  color: var(--zen-muted, #9aa0aa);\n  border: 1px dashed var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 8px);\n  background: color-mix(in srgb, var(--zen-text, #fff) 3%, transparent);\n}\n.ls-empty > .mdi[data-v-da184183] {\n  font-size: 24px;\n  opacity: 0.8;\n}\n.ls-empty > span[data-v-da184183] {\n  font-size: 11px;\n}\n.ls-row[data-v-da184183] {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n}\n.ls-row.off[data-v-da184183] {\n  opacity: 0.5;\n}\n.ls-pick[data-v-da184183] {\n  flex: 1;\n  min-width: 0;\n}\n/* fixed width so every row's combo lines up regardless of the strength digits */\n.ls-str[data-v-da184183] {\n  flex: none;\n  width: 84px;\n}\n.ls-foot[data-v-da184183] {\n  flex: none;\n  display: flex;\n  align-items: center;\n  gap: 6px;\n}\n.ls-add[data-v-da184183] {\n  flex: 1;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  padding: 7px;\n  border: 1px dashed var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 7px);\n  background: transparent;\n  color: var(--zen-muted, #9aa0aa);\n  font: inherit;\n  font-size: 11px;\n  font-weight: 600;\n  cursor: pointer;\n  transition:\n    border-color 0.12s ease,\n    color 0.12s ease,\n    background 0.12s ease;\n}\n.ls-add[data-v-da184183]:hover {\n  border-color: var(--zen-accent, #6366f1);\n  color: var(--zen-text, #e5e5ea);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 8%, transparent);\n}\n.ls-add .mdi[data-v-da184183] {\n  font-size: 15px;\n}\n.ls-add-n[data-v-da184183] {\n  margin-left: 4px;\n  padding: 0 5px;\n  border-radius: var(--zen-radius, 8px);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 22%, transparent);\n  color: var(--zen-text, #e5e5ea);\n  font-size: 10px;\n  font-weight: 700;\n}\n\n/* browse-modal folder navigation */\n.ls-crumbs[data-v-da184183] {\n  display: flex;\n  align-items: center;\n  flex-wrap: wrap;\n  gap: 2px;\n  padding-bottom: 10px;\n}\n.ls-crumb[data-v-da184183] {\n  background: none;\n  border: none;\n  cursor: pointer;\n  font: inherit;\n  font-size: 12px;\n  padding: 2px 6px;\n  border-radius: var(--zen-radius, 5px);\n  color: var(--zen-muted, #9aa0aa);\n}\n.ls-crumb[data-v-da184183]:hover {\n  color: var(--zen-text, #e5e5ea);\n  background: color-mix(in srgb, var(--zen-text, #fff) 6%, transparent);\n}\n.ls-crumb.on[data-v-da184183] {\n  color: var(--zen-text, #e5e5ea);\n  font-weight: 600;\n}\n.ls-crumbs .mdi[data-v-da184183] {\n  color: var(--zen-muted, #9aa0aa);\n  font-size: 14px;\n}\n.ls-folder .ls-card-img[data-v-da184183] {\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 8%, var(--zen-surface, #202026));\n}\n.ls-folder .ls-card-img > .mdi[data-v-da184183] {\n  font-size: 40px;\n  color: var(--zen-accent, #6366f1);\n}\n.ls-sel[data-v-da184183] {\n  display: flex;\n  align-items: center;\n  gap: 7px;\n  min-width: 0;\n}\n.ls-sel-name[data-v-da184183] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.ls-thumb[data-v-da184183] {\n  flex: none;\n  box-sizing: border-box;\n  width: 40px;\n  height: 40px;\n  object-fit: contain;\n  border-radius: var(--zen-radius, 6px);\n  background: var(--zen-input, #1b1b20);\n  border: 1px solid var(--zen-border, #34343c);\n}\n.ls-thumb.sm[data-v-da184183] {\n  width: 18px;\n  height: 18px;\n  border-radius: var(--zen-radius, 5px);\n}\n.ls-thumb.ph[data-v-da184183] {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--zen-muted, #9aa0aa);\n  font-size: 20px;\n}\n.ls-thumb.sm.ph[data-v-da184183] {\n  font-size: 11px;\n}\n.ls-opt-txt[data-v-da184183] {\n  flex: 1;\n  min-width: 0;\n  display: flex;\n  flex-direction: column;\n  gap: 1px;\n  line-height: 1.25;\n}\n.ls-opt-name[data-v-da184183] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12.5px;\n}\n.ls-opt-dir[data-v-da184183] {\n  font-size: 10px;\n  color: var(--zen-muted, #9aa0aa);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.ls-star[data-v-da184183] {\n  flex: none;\n  border: none;\n  background: none;\n  cursor: pointer;\n  color: var(--zen-muted, #9aa0aa);\n  font-size: 15px;\n  padding: 2px;\n  display: inline-flex;\n}\n.ls-star.on[data-v-da184183],\n.ls-star[data-v-da184183]:hover {\n  color: #f5b301;\n}\n\n/* browser dialog */\n.ls-search[data-v-da184183] {\n  flex: 1;\n  min-width: 0;\n  max-width: 320px;\n  display: flex;\n}\n.ls-grid[data-v-da184183] {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));\n  gap: 12px;\n  align-items: start;\n}\n/* every card is a fixed size: fixed-height image + fixed-height meta, so neither the\n   image dimensions nor the text length can change a card's footprint. */\n.ls-card[data-v-da184183] {\n  display: flex;\n  flex-direction: column;\n  height: 170px;\n  padding: 0;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 9px);\n  background: var(--zen-input, #1b1b20);\n  cursor: pointer;\n  overflow: hidden;\n  text-align: left;\n  color: inherit;\n  font: inherit;\n}\n.ls-card[data-v-da184183]:hover {\n  border-color: var(--zen-accent, #6366f1);\n}\n.ls-card.sel[data-v-da184183] {\n  border-color: var(--zen-accent, #6366f1);\n  box-shadow: 0 0 0 1px var(--zen-accent, #6366f1) inset;\n}\n.ls-card-img[data-v-da184183] {\n  position: relative;\n  flex: 1 1 0;\n  min-height: 0;\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background: var(--zen-surface, #202026);\n  overflow: hidden;\n}\n.ls-card-img img[data-v-da184183] {\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n  display: block;\n}\n.ls-card-img > .mdi[data-v-da184183] {\n  font-size: 32px;\n  color: var(--zen-muted, #9aa0aa);\n}\n.ls-card-star[data-v-da184183] {\n  position: absolute;\n  top: 5px;\n  right: 5px;\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n  background: rgba(0, 0, 0, 0.5);\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  color: #fff;\n  font-size: 14px;\n}\n.ls-card-star.on[data-v-da184183] {\n  color: #f5b301;\n}\n/* fixed-height meta so every card is identical regardless of folder/name length */\n.ls-card-meta[data-v-da184183] {\n  flex: none;\n  height: 38px;\n  box-sizing: border-box;\n  padding: 5px 8px;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  gap: 1px;\n  border-top: 1px solid var(--zen-border, #34343c);\n}\n.ls-card-name[data-v-da184183] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12px;\n}\n.ls-card-dir[data-v-da184183] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 10px;\n  color: var(--zen-muted, #9aa0aa);\n}\n.ls-grid-empty[data-v-da184183] {\n  grid-column: 1 / -1;\n  text-align: center;\n  color: var(--zen-muted, #9aa0aa);\n  padding: 30px;\n}\n/* ZenKit ↔ ComfyUI theme bridge — the runtime-free way to theme @zenkit/ui.\n *\n * @zenkit/ui components read --zen-* tokens. WITH the ZenKit runtime installed,\n * @zenkit/core sets those from the active theme pack (the derivation in @zenkit/theme's\n * zen.ts → zenAliases). Consumers that use @zenkit/ui WITHOUT the runtime import this file\n * instead: it maps the same --zen-* set straight onto ComfyUI's native theme variables, so\n * the components follow the user's selected ComfyUI theme with zero JS.\n *\n * Declared at :root so teleported overlays (ZenPopover / ZenCombo menus, ZenModal) — which\n * mount outside any component subtree — pick the tokens up too. The right-hand fallbacks keep\n * every token sane if ComfyUI renames or drops a variable. Kept in lockstep with zen.ts: the\n * same 10 tokens, sourced from the host instead of a pack. (The other --zen-* tokens the\n * components use — glass, mono, scrollbar, switch-radius — resolve through inline fallbacks\n * that chain back to these, so this set is sufficient on its own.)\n *\n * Import once, near your extension entry:  import '@zenkit/ui/comfy-bridge.css'\n */\n:root {\n  --zen-bg: var(--comfy-menu-bg, #1a1a1f);\n  --zen-surface: var(--comfy-menu-secondary-bg, #202026);\n  --zen-surface-2: var(--comfy-menu-secondary-bg, #26262d);\n  --zen-input: var(--comfy-input-bg, #1b1b20);\n  --zen-border: var(--border-color, #34343c);\n  --zen-text: var(--input-text, var(--fg-color, #e5e5ea));\n  --zen-muted: var(--descrip-text, #9aa0aa);\n  --zen-accent: var(--p-primary-color, #6366f1);\n  --zen-accent-text: var(--p-button-text-primary-color, #fff);\n  --zen-radius: var(--border-radius-base, 7px);\n}\n";document.head.appendChild(s);})();import { app } from "../../../scripts/app.js";
+(function(){var s=document.createElement('style');s.setAttribute('data-extension','comfyui-nynxz-experimental');s.textContent="/* Reusable themed scrollbar. Add class=\"zen-scroll\" to ANY scroll container — including\n * teleported popovers/menus that live outside #zenkit-host — for a consistent, slim\n * scrollbar: neutral at rest (blends into the surface), accent/primary on hover.\n *\n * IMPORTANT: only the ::-webkit-scrollbar pseudo-elements are used for the look, because\n * Chromium DISABLES them the moment `scrollbar-color`/`scrollbar-width` is set (it then\n * draws the standard scrollbar, whose default hover lightens the thumb ~white). So the\n * standard props are gated to non-webkit engines (Firefox) via @supports.\n * Override --zen-scrollbar (rest) / --zen-scrollbar-hover (hover) to retint. */\n.zen-scroll::-webkit-scrollbar { width: 10px; height: 10px; }\n.zen-scroll::-webkit-scrollbar-track { background: transparent; }\n.zen-scroll::-webkit-scrollbar-thumb {\n  background: var(--zen-scrollbar, color-mix(in srgb, var(--zen-text, #9aa0aa) 22%, transparent));\n  border: 2px solid transparent;\n  border-radius: var(--zen-radius, 8px);\n  background-clip: padding-box;\n}\n.zen-scroll::-webkit-scrollbar-thumb:hover {\n  background: var(--zen-scrollbar-hover, var(--zen-accent, #6366f1));\n  background-clip: padding-box;\n}\n.zen-scroll::-webkit-scrollbar-corner { background: transparent; }\n\n@supports not selector(::-webkit-scrollbar) {\n  .zen-scroll {\n    scrollbar-width: thin;\n    scrollbar-color: var(--zen-scrollbar, color-mix(in srgb, var(--zen-text, #9aa0aa) 26%, transparent)) transparent;\n  }\n}\n\n/* layout only — scrollbar styling lives in scrollbar.css (.zen-scroll, global) */\n.zen-scroll[data-v-38b756b6] { height: 100%; min-height: 0; overflow-y: auto; overflow-x: hidden;\n}\n.zen-scroll.x[data-v-38b756b6] { overflow-x: auto; overflow-y: hidden;\n}\n\n.zen-btn[data-v-7242ad73] {\n  display: inline-flex; align-items: center; justify-content: center; gap: 7px; cursor: pointer;\n  font-family: inherit; font-size: 12px; font-weight: 600; padding: 7px 12px; border-radius: var(--zen-radius, 8px);\n  border: 1px solid var(--zen-border, #3a3a44); background: var(--zen-surface, #202026); color: var(--zen-text, #e5e5ea);\n  transition: border-color .12s ease, background .12s ease, color .12s ease, filter .12s ease;\n}\n.zen-btn[data-v-7242ad73]:hover:not(:disabled) { border-color: var(--zen-accent, #3b82f6);\n}\n.zen-btn[data-v-7242ad73]:disabled { opacity: .5; cursor: default;\n}\n.zen-btn .mdi[data-v-7242ad73] { font-size: 15px;\n}\n.zen-btn.block[data-v-7242ad73] { width: 100%;\n}\n.zen-btn.sm[data-v-7242ad73] { padding: 5px 9px; font-size: 11px;\n}\n.zen-btn.primary[data-v-7242ad73] { background: var(--zen-accent, #3b82f6); border-color: var(--zen-accent, #3b82f6); color: var(--zen-accent-text, #fff);\n}\n.zen-btn.primary[data-v-7242ad73]:hover:not(:disabled) { filter: brightness(1.08);\n}\n.zen-btn.ghost[data-v-7242ad73] { background: transparent; border-color: transparent;\n}\n.zen-btn.ghost[data-v-7242ad73]:hover:not(:disabled) { background: color-mix(in srgb, var(--zen-text, #fff) 10%, transparent); border-color: transparent;\n}\n.zen-btn.danger[data-v-7242ad73]:hover:not(:disabled) { background: #b91c1c; border-color: #b91c1c; color: #fff;\n}\n\n.zen-iconbtn[data-v-fc152c1e] {\n  display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px;\n  border: 1px solid transparent; border-radius: var(--zen-radius, 6px); background: none; color: var(--zen-muted, #9aa0aa);\n  cursor: pointer; transition: background .1s ease, color .1s ease;\n}\n.zen-iconbtn[data-v-fc152c1e]:hover:not(:disabled) { background: color-mix(in srgb, var(--zen-text, #fff) 12%, transparent); color: var(--zen-text, #e5e5ea);\n}\n.zen-iconbtn.active[data-v-fc152c1e] { color: var(--zen-accent, #3b82f6);\n}\n.zen-iconbtn.danger[data-v-fc152c1e]:hover:not(:disabled) { background: #b91c1c; color: #fff;\n}\n.zen-iconbtn[data-v-fc152c1e]:disabled { opacity: .4; cursor: default;\n}\n.zen-iconbtn .mdi[data-v-fc152c1e] { font-size: 16px;\n}\n\n.zen-input[data-v-262ee20d] {\n  /* line-height: normal decouples from ComfyUI's inherited (small) line-height; the\n     asymmetric padding (1px more top than bottom) optically centres the glyphs, which\n     otherwise sit a touch high inside the field (line-height alone can't fix that). */\n  width: 100%; box-sizing: border-box; font: inherit; font-size: 12px; line-height: normal;\n  background: var(--zen-input, #1b1b20); color: var(--zen-text, #e5e5ea);\n  border: 1px solid var(--zen-border, #34343c); border-radius: var(--zen-radius, 7px);\n  padding: 8px 9px 6px; transition: border-color .12s ease;\n}\n.zen-input[data-v-262ee20d]::placeholder { color: var(--zen-muted, #9aa0aa);\n}\n.zen-input[data-v-262ee20d]:focus { outline: none; border-color: var(--zen-accent, #6366f1);\n}\n.zen-input[data-v-262ee20d]:disabled { opacity: .5; cursor: default;\n}\n.zen-input.sm[data-v-262ee20d] { padding: 6px 8px 4px; font-size: 11px;\n}\n.zen-input.area[data-v-262ee20d] { resize: vertical; min-height: 64px; line-height: 1.45;\n}\n\n.zen-num[data-v-55261609] { display: inline-flex; align-items: stretch; height: 28px; box-sizing: border-box; border: 1px solid var(--zen-border, #34343c); border-radius: var(--zen-radius, 6px); background: var(--zen-input, #1b1b20); overflow: hidden; user-select: none;\n}\n.zen-num[data-v-55261609]:focus-within { border-color: var(--zen-accent, #6366f1);\n}\n.zen-num.disabled[data-v-55261609] { opacity: .5; pointer-events: none;\n}\n.zn-step[data-v-55261609] { flex: none; width: 21px; border: none; background: none; color: var(--zen-muted, #9aa0aa); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;\n}\n.zn-step.hot[data-v-55261609] { color: var(--zen-text, #e5e5ea); background: color-mix(in srgb, var(--zen-text, #fff) 9%, transparent);\n}\n.zn-step .mdi[data-v-55261609] { font-size: 13px;\n}\n.zn-val[data-v-55261609] { flex: 1; min-width: 40px; display: flex; align-items: center; justify-content: center; cursor: ew-resize; border-left: 1px solid var(--zen-border, #34343c); border-right: 1px solid var(--zen-border, #34343c); padding: 0 2px;\n}\n/* bare: no ±steppers — just a scrub/type value box (for tight inline use, e.g. ZenDimensions) */\n.zen-num.bare .zn-val[data-v-55261609] { border-left: none; border-right: none;\n}\n/* The input IS the value display: pointer-events off while blurred so the wrapper handles\n   drag-scrub; on when focused so the caret/selection work. line-height:normal decouples\n   from ComfyUI's inherited (small) line-height. */\n.zn-input[data-v-55261609] { width: 100%; background: none; border: none; outline: none; color: var(--zen-text, #e5e5ea); font: inherit; font-size: 11px; line-height: normal; text-align: center; font-variant-numeric: tabular-nums; pointer-events: none; cursor: ew-resize;\n}\n.zn-input.live[data-v-55261609] { pointer-events: auto; cursor: text;\n}\n.zn-input[data-v-55261609]:disabled { color: var(--zen-muted, #9aa0aa);\n}\n\n.zen-combo[data-v-cf4f46d5] { position: relative; width: 100%;\n}\n.zc-trigger[data-v-cf4f46d5] {\n  display: flex; align-items: center; gap: 6px; width: 100%; box-sizing: border-box; min-height: 28px;\n  background: var(--zen-input, #1b1b20); color: var(--zen-text, #e5e5ea);\n  border: 1px solid var(--zen-border, #34343c); border-radius: var(--zen-radius, 7px);\n  padding: 4px 8px; font: inherit; font-size: 12px; cursor: pointer; text-align: left;\n  transition: border-color .12s ease;\n}\n.zc-trigger[data-v-cf4f46d5]:hover:not(:disabled) { border-color: var(--zen-accent, #6366f1);\n}\n.zc-trigger[data-v-cf4f46d5]:disabled { opacity: .5; cursor: default;\n}\n.zen-combo.open .zc-trigger[data-v-cf4f46d5] { border-color: var(--zen-accent, #6366f1);\n}\n.zc-current[data-v-cf4f46d5] { flex: 1; min-width: 0; overflow: hidden;\n}\n.zc-caret[data-v-cf4f46d5] { flex: none; color: var(--zen-muted, #9aa0aa); transition: transform .12s ease;\n}\n.zen-combo.open .zc-caret[data-v-cf4f46d5] { transform: rotate(180deg);\n}\n\n/* Teleported menu — NOT scoped (lives at <body>); reads the same --zen-* tokens. */\n.zen-combo-menu {\n  position: fixed; z-index: 11000; display: flex; flex-direction: column; max-height: 360px;\n  background: var(--zen-surface, #202026); border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 8px); box-shadow: 0 12px 34px rgba(0, 0, 0, .5); overflow: hidden;\n  font-family: var(--p-font-family, system-ui, sans-serif); color: var(--zen-text, #e5e5ea);\n}\n.zen-combo-menu .zc-search { display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-bottom: 1px solid var(--zen-border, #34343c);\n}\n.zen-combo-menu .zc-search > .mdi { color: var(--zen-muted, #9aa0aa); font-size: 16px;\n}\n.zen-combo-menu .zc-search input { flex: 1; min-width: 0; background: none; border: none; outline: none; color: inherit; font: inherit; font-size: 12px;\n}\n.zen-combo-menu .zc-clear { border: none; background: none; color: var(--zen-muted, #9aa0aa); cursor: pointer; padding: 0 2px;\n}\n.zen-combo-menu .zc-search-actions { flex: none; display: inline-flex; align-items: center;\n}\n.zen-combo-menu .zc-list { overflow-y: auto; padding: 4px; min-height: 0;\n}\n.zen-combo-menu .zc-virt { position: relative; width: 100%;\n}\n.zen-combo-menu .zc-win { position: absolute; top: 0; left: 0; right: 0;\n}\n.zen-combo-menu .zc-opt { display: flex; align-items: center; gap: 9px; padding: 6px 8px; border-radius: var(--zen-radius, 6px); cursor: pointer; font-size: 12px; box-sizing: border-box; overflow: hidden;\n}\n.zen-combo-menu .zc-opt.active { background: color-mix(in srgb, var(--zen-text, #fff) 10%, transparent);\n}\n.zen-combo-menu .zc-opt.sel { color: var(--zen-accent, #6366f1);\n}\n.zen-combo-menu .zc-opt-lbl { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;\n}\n.zen-combo-menu .zc-sep { height: 1px; margin: 4px 6px; background: var(--zen-border, #34343c);\n}\n.zen-combo-menu .zc-empty { padding: 16px; text-align: center; font-size: 12px; color: var(--zen-muted, #9aa0aa);\n}\n.zen-combo-menu .zc-footer { border-top: 1px solid var(--zen-border, #34343c); padding: 6px;\n}\n/* grid mode: options become responsive cards (e.g. an image picker) */\n.zen-combo-menu.grid .zc-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--zc-grid-min, 92px), 1fr)); gap: 6px; align-content: start;\n}\n.zen-combo-menu.grid .zc-opt { flex-direction: column; align-items: stretch; height: auto; gap: 4px; padding: 4px;\n}\n.zen-combo-menu.grid .zc-empty { grid-column: 1 / -1;\n}\n\n/* radius follows the theme's rounding token (--zen-radius, bridged from --radius), so\n   square/straight-edge themes like Mecha get a square toggle. Falls back to a pill +\n   round knob; override just the switch with --zen-switch-radius if needed. */\n.zen-switch[data-v-b969721c] { position: relative; flex: 0 0 auto; width: 42px; height: 23px; padding: 0; border: 1px solid var(--zen-border, #3a3a44); border-radius: var(--zen-switch-radius, var(--zen-radius, 999px)); background: var(--zen-surface, #202026); cursor: pointer; transition: background .15s ease, border-color .15s ease;\n}\n.zen-switch.on[data-v-b969721c] { background: var(--zen-accent, #3b82f6); border-color: var(--zen-accent, #3b82f6);\n}\n.zen-switch[data-v-b969721c]:disabled { opacity: .5; cursor: default;\n}\n.zen-switch .knob[data-v-b969721c] { position: absolute; top: 1px; left: 1px; width: 19px; height: 19px; border-radius: var(--zen-switch-radius, var(--zen-radius, 50%)); background: #fff; display: flex; align-items: center; justify-content: center; transition: transform .15s ease; box-shadow: 0 1px 2px rgba(0, 0, 0, .35);\n}\n.zen-switch.on .knob[data-v-b969721c] { transform: translateX(19px);\n}\n.zen-switch .knob .mdi[data-v-b969721c] { font-size: 12px; color: var(--zen-muted, #9aa0aa);\n}\n.zen-switch.on .knob .mdi[data-v-b969721c] { color: var(--zen-accent, #3b82f6);\n}\n\n.zen-tg[data-v-b8484c32] { display: inline-flex; border: 1px solid var(--zen-border, #3a3a44); border-radius: var(--zen-radius, 7px); overflow: hidden; background: var(--zen-surface, #202026);\n}\n.zen-tg-b[data-v-b8484c32] { display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 4px 9px; border: none; background: none; color: var(--zen-muted, #9aa0aa); font-size: 11px; font-weight: 600; font-family: inherit; cursor: pointer; transition: background .1s ease, color .1s ease;\n}\n.zen-tg-b + .zen-tg-b[data-v-b8484c32] { border-left: 1px solid var(--zen-border, #3a3a44);\n}\n.zen-tg-b[data-v-b8484c32]:hover { color: var(--zen-text, #e5e5ea);\n}\n.zen-tg-b.on[data-v-b8484c32] { background: color-mix(in srgb, var(--zen-accent, #3b82f6) 20%, transparent); color: var(--zen-accent, #3b82f6);\n}\n.zen-tg-b .mdi[data-v-b8484c32] { font-size: 14px;\n}\n\n.zen-slider[data-v-10c7ff78] { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: var(--zen-radius, 999px); background: var(--zen-border, #34343c); outline: none; cursor: pointer;\n}\n.zen-slider[data-v-10c7ff78]:disabled { opacity: .5; cursor: default;\n}\n.zen-slider[data-v-10c7ff78]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: var(--zen-radius, 50%); background: var(--zen-accent, #6366f1); border: 2px solid var(--zen-bg, #1a1a1f); cursor: pointer; box-shadow: 0 1px 3px rgba(0, 0, 0, .4);\n}\n.zen-slider[data-v-10c7ff78]::-moz-range-thumb { width: 14px; height: 14px; border: 2px solid var(--zen-bg, #1a1a1f); border-radius: var(--zen-radius, 50%); background: var(--zen-accent, #6366f1); cursor: pointer;\n}\n.zen-slider[data-v-10c7ff78]::-moz-range-track { height: 4px; border-radius: var(--zen-radius, 999px); background: var(--zen-border, #34343c);\n}\n.zen-slider[data-v-10c7ff78]:focus-visible { box-shadow: 0 0 0 2px color-mix(in srgb, var(--zen-accent, #6366f1) 50%, transparent);\n}\n\n/* one inline row; wraps only if the node gets very narrow */\n.zen-dims[data-v-f9393177] { display: flex; align-items: center; flex-wrap: wrap; gap: 5px;\n}\n.zd-n[data-v-f9393177] { flex: 1 1 60px; min-width: 48px;\n}\n.zd-x[data-v-f9393177] { flex: none; color: var(--zen-muted, #9aa0aa); font-size: 11px;\n}\n.zd-mp[data-v-f9393177] { flex: 0 1 56px; min-width: 44px;\n}\n.zd-unit[data-v-f9393177], .zd-aspect[data-v-f9393177] { flex: none; font-size: 10px; color: var(--zen-muted, #9aa0aa); font-variant-numeric: tabular-nums;\n}\n.zd-aspect[data-v-f9393177] { margin-left: auto;\n}\n\n/* Not scoped — teleported to <body>; reads --zen-* tokens. */\n.zen-modal-back {\n  position: fixed; inset: 0; z-index: 12000; display: flex; align-items: center; justify-content: center;\n  background: rgba(0, 0, 0, .55); backdrop-filter: blur(2px);\n}\n.zen-modal {\n  display: flex; flex-direction: column; max-width: 94vw; max-height: 90vh; overflow: hidden;\n  background: var(--zen-surface, #202026); color: var(--zen-text, #e5e5ea);\n  border: 1px solid var(--zen-border, #34343c); border-radius: calc(var(--zen-radius, 8px) + 2px);\n  box-shadow: 0 24px 70px rgba(0, 0, 0, .6); font-family: var(--p-font-family, system-ui, sans-serif);\n}\n.zen-modal .zm-head { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-bottom: 1px solid var(--zen-border, #34343c); flex: none;\n}\n.zen-modal .zm-title { flex: none; font-size: 13px; font-weight: 600; white-space: nowrap;\n}\n.zen-modal .zm-head-mid { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px;\n}\n.zen-modal .zm-x { border: none; background: none; color: var(--zen-muted, #9aa0aa); cursor: pointer; font-size: 18px; display: inline-flex;\n}\n.zen-modal .zm-x:hover { color: var(--zen-text, #e5e5ea);\n}\n.zen-modal .zm-body { flex: 1; min-height: 0; overflow: auto; padding: 14px;\n}\n.zen-modal .zm-foot { flex: none; border-top: 1px solid var(--zen-border, #34343c); padding: 10px 14px;\n}\n\n/* Fill layout (see mountWidget's `fill`): the widget takes the node body, the image grid\n   takes whatever height is left and scrolls, and the toolbar is pinned under it. Resizing\n   the node therefore shows more images, never more padding. */\n.fg[data-v-84e98745] {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  gap: 7px;\n  height: 100%;\n  min-height: 0;\n  padding: 2px;\n  box-sizing: border-box;\n  font-size: 12px;\n  color: var(--zen-text, #e5e5ea);\n}\n\n/* flex-basis 0 (not auto) so the grid's content can't push the toolbar off the node */\n/* focused programmatically on hover (see armScroll) — never show a ring for it */\n.fg-scroll[data-v-84e98745] {\n  flex: 1 1 0;\n  min-height: 0;\n  outline: none;\n}\n.fg-grid[data-v-84e98745] {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));\n  gap: 6px;\n  align-items: start;\n  padding-right: 2px;\n}\n.fg-card[data-v-84e98745] {\n  display: flex;\n  flex-direction: column;\n  gap: 3px;\n  padding: 4px;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 9px);\n  background: var(--zen-input, #1b1b20);\n  transition:\n    border-color 0.12s ease,\n    opacity 0.12s ease;\n}\n.fg-card.off[data-v-84e98745] {\n  opacity: 0.5;\n}\n.fg-card.dragging[data-v-84e98745] {\n  opacity: 0.35;\n}\n.fg-card.over[data-v-84e98745] {\n  border-color: var(--zen-accent, #6366f1);\n  box-shadow: 0 0 0 1px var(--zen-accent, #6366f1) inset;\n}\n.fg-thumb[data-v-84e98745] {\n  position: relative;\n  width: 100%;\n  aspect-ratio: 1;\n  border-radius: var(--zen-radius, 6px);\n  background: var(--zen-surface, #202026);\n  overflow: hidden;\n  cursor: grab;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.fg-thumb[data-v-84e98745]:active {\n  cursor: grabbing;\n}\n/* contain on black: the encoder letterboxes with real black pixels, so the card shows the\n   actual frame it gets rather than flattering it with a themed backdrop */\n.fg-thumb img[data-v-84e98745] {\n  width: 100%;\n  height: 100%;\n  display: block;\n  object-fit: contain;\n  background: #000;\n}\n.fg-ph[data-v-84e98745] {\n  font-size: 30px;\n  color: var(--zen-muted, #9aa0aa);\n}\n.fg-ph.warn[data-v-84e98745] {\n  color: #e0a33a;\n}\n.fg-idx[data-v-84e98745] {\n  position: absolute;\n  top: 4px;\n  left: 4px;\n  min-width: 16px;\n  height: 16px;\n  padding: 0 4px;\n  border-radius: var(--zen-radius, 5px);\n  background: rgba(0, 0, 0, 0.62);\n  color: #fff;\n  font-size: 10px;\n  font-weight: 700;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n}\n.fg-acts[data-v-84e98745] {\n  position: absolute;\n  top: 4px;\n  right: 4px;\n  display: flex;\n  gap: 3px;\n  opacity: 0;\n  transition: opacity 0.12s ease;\n}\n.fg-card:hover .fg-acts[data-v-84e98745] {\n  opacity: 1;\n}\n.fg-act[data-v-84e98745] {\n  width: 19px;\n  height: 19px;\n  padding: 0;\n  border: none;\n  border-radius: var(--zen-radius, 5px);\n  background: rgba(0, 0, 0, 0.62);\n  color: #fff;\n  font-size: 12px;\n  cursor: pointer;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n}\n.fg-act[data-v-84e98745]:hover {\n  background: var(--zen-accent, #6366f1);\n}\n.fg-act.danger[data-v-84e98745]:hover {\n  background: #d9534f;\n}\n.fg-mutemark[data-v-84e98745] {\n  position: absolute;\n  inset: 0;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background: rgba(0, 0, 0, 0.45);\n  color: #fff;\n  font-size: 22px;\n  pointer-events: none;\n}\n\n/* name + share ride in the thumb's bottom strip rather than costing the card its own rows */\n.fg-meta[data-v-84e98745] {\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 3px;\n  display: flex;\n  align-items: flex-end;\n  gap: 4px;\n  padding: 10px 5px 1px;\n  background: linear-gradient(transparent, rgba(0, 0, 0, 0.78));\n  pointer-events: none;\n}\n.fg-name[data-v-84e98745] {\n  flex: 1;\n  min-width: 0;\n  font-size: 9.5px;\n  color: #fff;\n  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.fg-pct[data-v-84e98745] {\n  flex: none;\n  font-size: 9.5px;\n  font-weight: 700;\n  line-height: 1.25;\n  color: #fff;\n  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);\n}\n.fg-pct.dim[data-v-84e98745] {\n  font-weight: 500;\n  color: var(--zen-muted, #9aa0aa);\n}\n/* the live share of the blend this source claims */\n.fg-share[data-v-84e98745] {\n  position: absolute;\n  left: 0;\n  bottom: 0;\n  height: 3px;\n  background: var(--zen-accent, #6366f1);\n  transition: width 0.12s ease;\n  pointer-events: none;\n}\n.fg-foot[data-v-84e98745] {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n}\n.fg-slider[data-v-84e98745] {\n  flex: 1;\n  min-width: 0;\n}\n.fg-num[data-v-84e98745] {\n  flex: none;\n  width: 46px;\n}\n\n/* fills the scroll area so the empty node reads as one big drop target */\n.fg-empty[data-v-84e98745] {\n  height: 100%;\n  min-height: 96px;\n  box-sizing: border-box;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 4px;\n  padding: 18px 8px;\n  text-align: center;\n  color: var(--zen-muted, #9aa0aa);\n  border: 1px dashed var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 8px);\n  background: color-mix(in srgb, var(--zen-text, #fff) 3%, transparent);\n}\n.fg-empty > .mdi[data-v-84e98745] {\n  font-size: 26px;\n  opacity: 0.8;\n}\n.fg-empty > span[data-v-84e98745] {\n  font-size: 11px;\n}\n.fg-empty > small[data-v-84e98745] {\n  font-size: 10px;\n  opacity: 0.7;\n}\n.fg-warn[data-v-84e98745] {\n  flex: none;\n  display: flex;\n  align-items: center;\n  gap: 5px;\n  padding: 5px 8px;\n  border-radius: var(--zen-radius, 7px);\n  background: color-mix(in srgb, #e0a33a 14%, transparent);\n  color: #e0a33a;\n  font-size: 10.5px;\n}\n.fg-bar[data-v-84e98745] {\n  flex: none;\n  display: flex;\n  align-items: center;\n  gap: 6px;\n}\n.fg-add[data-v-84e98745] {\n  flex: 1;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  padding: 7px;\n  border: 1px dashed var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 7px);\n  background: transparent;\n  color: var(--zen-muted, #9aa0aa);\n  font: inherit;\n  font-size: 11px;\n  font-weight: 600;\n  cursor: pointer;\n  transition:\n    border-color 0.12s ease,\n    color 0.12s ease,\n    background 0.12s ease;\n}\n.fg-add[data-v-84e98745]:hover:not(:disabled) {\n  border-color: var(--zen-accent, #6366f1);\n  color: var(--zen-text, #e5e5ea);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 8%, transparent);\n}\n.fg-add[data-v-84e98745]:disabled {\n  opacity: 0.6;\n  cursor: default;\n}\n.fg-add .mdi[data-v-84e98745] {\n  font-size: 15px;\n}\n.fg-add-n[data-v-84e98745] {\n  margin-left: 2px;\n  padding: 0 5px;\n  border-radius: var(--zen-radius, 8px);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 22%, transparent);\n  color: var(--zen-text, #e5e5ea);\n  font-size: 10px;\n  font-weight: 700;\n}\n.fg-dropmask[data-v-84e98745] {\n  position: absolute;\n  inset: 0;\n  z-index: 5;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  border: 2px dashed var(--zen-accent, #6366f1);\n  border-radius: var(--zen-radius, 9px);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 16%, rgba(0, 0, 0, 0.55));\n  color: var(--zen-text, #e5e5ea);\n  font-size: 11px;\n  font-weight: 600;\n  pointer-events: none;\n}\n.fg-dropmask .mdi[data-v-84e98745] {\n  font-size: 28px;\n}\n\n/* browse dialog */\n.fg-search[data-v-84e98745] {\n  flex: 1;\n  min-width: 0;\n  max-width: 320px;\n  display: flex;\n}\n.fg-bgrid[data-v-84e98745] {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));\n  gap: 12px;\n  align-items: start;\n}\n.fg-bcard[data-v-84e98745] {\n  display: flex;\n  flex-direction: column;\n  height: 170px;\n  padding: 0;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 9px);\n  background: var(--zen-input, #1b1b20);\n  cursor: pointer;\n  overflow: hidden;\n  text-align: left;\n  color: inherit;\n  font: inherit;\n}\n.fg-bcard[data-v-84e98745]:hover {\n  border-color: var(--zen-accent, #6366f1);\n}\n.fg-bcard.sel[data-v-84e98745] {\n  border-color: var(--zen-accent, #6366f1);\n  box-shadow: 0 0 0 1px var(--zen-accent, #6366f1) inset;\n}\n.fg-bcard-img[data-v-84e98745] {\n  position: relative;\n  flex: 1 1 0;\n  min-height: 0;\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background: var(--zen-surface, #202026);\n  overflow: hidden;\n}\n.fg-bcard-img img[data-v-84e98745] {\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n  display: block;\n}\n.fg-bcard-tick[data-v-84e98745] {\n  position: absolute;\n  top: 5px;\n  right: 5px;\n  width: 22px;\n  height: 22px;\n  border-radius: 50%;\n  background: var(--zen-accent, #6366f1);\n  color: var(--zen-accent-text, #fff);\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 14px;\n}\n.fg-bcard-meta[data-v-84e98745] {\n  flex: none;\n  height: 38px;\n  box-sizing: border-box;\n  padding: 5px 8px;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  gap: 1px;\n  border-top: 1px solid var(--zen-border, #34343c);\n}\n.fg-bcard-name[data-v-84e98745] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12px;\n}\n.fg-bcard-dir[data-v-84e98745] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 10px;\n  color: var(--zen-muted, #9aa0aa);\n}\n.fg-bgrid-empty[data-v-84e98745] {\n  grid-column: 1 / -1;\n  text-align: center;\n  color: var(--zen-muted, #9aa0aa);\n  padding: 30px;\n}\n\n.sp[data-v-aa95cced] {\n  position: relative;\n  display: inline-flex;\n}\n.sp-panel[data-v-aa95cced] {\n  position: absolute;\n  top: calc(100% + 5px);\n  z-index: 50;\n  min-width: 212px;\n  max-width: min(340px, 92vw);\n  padding: 8px;\n  box-sizing: border-box;\n  background: var(--zen-surface, #202026);\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 8px);\n  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);\n  color: var(--zen-text, #e5e5ea);\n  cursor: default;\n}\n.sp-panel.right[data-v-aa95cced] {\n  right: 0;\n}\n.sp-panel.left[data-v-aa95cced] {\n  left: 0;\n}\n.sp-panel.up[data-v-aa95cced] {\n  top: auto;\n  bottom: calc(100% + 5px);\n}\n\n.fs[data-v-018dedc0] {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  padding: 2px;\n  box-sizing: border-box;\n  height: 100%;\n  min-height: 0;\n  font-size: 12px;\n  color: var(--zen-text, #e5e5ea);\n  /* Ideogram Studio radius hierarchy: panels at --zen-radius, controls tighter at --radius-sm. */\n  --fs-r: var(--zen-radius, 8px);\n  --fs-rs: var(--radius-sm, 5px);\n  --fs-sel: color-mix(in srgb, var(--zen-accent, #6366f1) 16%, transparent);\n}\n.fs-bar[data-v-018dedc0] {\n  flex: none;\n  display: flex;\n  align-items: center;\n  gap: 6px;\n}\n.fs-sp[data-v-018dedc0] {\n  flex: 1;\n}\n.fs-div[data-v-018dedc0] {\n  flex: none;\n  width: 1px;\n  height: 18px;\n  background: var(--zen-border, #34343c);\n  margin: 0 2px;\n}\n/* resolution trigger — Ideogram-style solid control */\n.fs-tool[data-v-018dedc0] {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n  min-height: 24px;\n  padding: 3px 8px;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--fs-rs);\n  background: var(--zen-input, #1b1b20);\n  color: var(--zen-text, #e5e5ea);\n  font: inherit;\n  font-size: 11px;\n  cursor: pointer;\n  font-variant-numeric: tabular-nums;\n  transition: border-color 0.1s ease;\n}\n.fs-tool.fs-tool-icon[data-v-018dedc0] {\n  min-height: 24px;\n  padding: 3px 6px;\n}\n.fs-tool[data-v-018dedc0]:hover,\n.fs-tool.on[data-v-018dedc0] {\n  border-color: var(--zen-accent, #6366f1);\n}\n.fs-tool.on[data-v-018dedc0] {\n  color: var(--zen-text, #e5e5ea);\n}\n.fs-tool .mdi[data-v-018dedc0] {\n  font-size: 13px;\n  color: var(--zen-muted, #9aa0aa);\n}\n\n/* StudioPopover content is INLINE (inside .fs), so --fs-* would resolve — but --zen-* is used\n   for consistency with the rest and is always available at :root. */\n.fs-pop[data-v-018dedc0] {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  padding: 4px;\n  min-width: 212px;\n}\n.fs-pop-sec[data-v-018dedc0] {\n  font-size: 9.5px;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: 0.04em;\n  color: var(--zen-muted, #9aa0aa);\n}\n.fs-pop-fuse[data-v-018dedc0] {\n  align-self: stretch;\n}\n.fs-pop-row[data-v-018dedc0] {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n}\n.fs-pop-note[data-v-018dedc0] {\n  margin: 0;\n  font-size: 10px;\n  line-height: 1.35;\n  color: var(--zen-muted, #9aa0aa);\n}\n.fs-pop-note b[data-v-018dedc0] {\n  color: var(--zen-text, #e5e5ea);\n}\n.fs-achips[data-v-018dedc0] {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 4px;\n}\n.fs-achip[data-v-018dedc0] {\n  min-width: 34px;\n  padding: 4px 7px;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 5px);\n  background: var(--zen-input, #1b1b20);\n  color: var(--zen-muted, #9aa0aa);\n  font: inherit;\n  font-size: 10.5px;\n  font-weight: 600;\n  cursor: pointer;\n}\n.fs-achip[data-v-018dedc0]:hover {\n  border-color: var(--zen-accent, #6366f1);\n  color: var(--zen-text, #e5e5ea);\n}\n.fs-achip.on[data-v-018dedc0] {\n  border-color: var(--zen-accent, #6366f1);\n  color: var(--zen-text, #e5e5ea);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 16%, var(--zen-input, #1b1b20));\n}\n.fs-color[data-v-018dedc0] {\n  display: inline-flex;\n  width: 28px;\n  height: 24px;\n}\n.fs-color input[data-v-018dedc0] {\n  width: 100%;\n  height: 100%;\n  padding: 0;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 5px);\n  background: var(--zen-input, #1b1b20);\n  cursor: pointer;\n}\n\n/* main two-pane */\n.fs-main[data-v-018dedc0] {\n  flex: 1 1 auto;\n  min-height: 0;\n  display: flex;\n  gap: 6px;\n}\n.fs-stagewrap[data-v-018dedc0] {\n  flex: 1 1 auto;\n  min-width: 0;\n  min-height: 0;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  overflow: hidden;\n}\n.fs-stage[data-v-018dedc0] {\n  position: relative;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 8px);\n  overflow: hidden;\n  background: var(--zen-input, #1b1b20);\n  touch-action: none;\n}\n.fs-bg[data-v-018dedc0] {\n  position: absolute;\n  inset: 0;\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  pointer-events: none;\n  user-select: none;\n}\n.fs-bg-color[data-v-018dedc0] {\n  object-fit: fill;\n}\n.fs-grid[data-v-018dedc0] {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n  background:\n    linear-gradient(color-mix(in srgb, var(--zen-text, #fff) 5%, transparent) 1px, transparent 1px),\n    linear-gradient(90deg, color-mix(in srgb, var(--zen-text, #fff) 5%, transparent) 1px, transparent 1px);\n  background-size: 12.5% 12.5%;\n}\n.fs-layer[data-v-018dedc0] {\n  position: absolute;\n  cursor: grab;\n  box-sizing: border-box;\n}\n/* A muted (hidden) layer must read as OFF at a glance — not just a faint ghost. Desaturate and\n   dim the picture, lay a dashed outline + diagonal hatch over it, and stamp a \"hidden\" badge. */\n.fs-layer.muted .fs-layer-img[data-v-018dedc0],\n.fs-layer.muted .fs-broken[data-v-018dedc0] {\n  filter: grayscale(1) brightness(0.5) contrast(0.95);\n  opacity: 0.5;\n}\n.fs-layer.muted[data-v-018dedc0]::after {\n  content: '';\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n  border: 1.5px dashed color-mix(in srgb, var(--zen-text, #fff) 60%, transparent);\n  border-radius: 2px;\n  background: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.35) 0 5px, rgba(0, 0, 0, 0) 5px 12px);\n}\n.fs-hidden-badge[data-v-018dedc0] {\n  position: absolute;\n  top: 3px;\n  left: 3px;\n  z-index: 2;\n  display: inline-flex;\n  align-items: center;\n  gap: 3px;\n  padding: 1px 5px 1px 4px;\n  font-size: 9px;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: 0.4px;\n  color: #fff;\n  background: rgba(0, 0, 0, 0.72);\n  border-radius: 3px;\n  pointer-events: none;\n}\n.fs-hidden-badge .mdi[data-v-018dedc0] {\n  font-size: 11px;\n}\n/* locked layers are click-through on the canvas (select/edit them from the sidebar) */\n.fs-layer.locked[data-v-018dedc0] {\n  pointer-events: none;\n}\n.fs-layer-img[data-v-018dedc0] {\n  width: 100%;\n  height: 100%;\n  display: block;\n  pointer-events: none;\n  user-select: none;\n}\n.fs-locked-badge[data-v-018dedc0] {\n  position: absolute;\n  top: 3px;\n  right: 3px;\n  font-size: 11px;\n  color: #fff;\n  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);\n  pointer-events: none;\n}\n/* selection box: floats above every layer so a covered layer stays grabbable */\n.fs-selbox[data-v-018dedc0] {\n  position: absolute;\n  z-index: 200;\n  border: 1.5px solid;\n  outline: 1px solid;\n  outline-offset: -2px;\n  border-radius: 2px;\n  box-sizing: border-box;\n  cursor: grab;\n}\n.fs-selbox[data-v-018dedc0]:active {\n  cursor: grabbing;\n}\n.fs-selbox-tag[data-v-018dedc0] {\n  position: absolute;\n  top: 2px;\n  left: 3px;\n  max-width: calc(100% - 6px);\n  padding: 0 3px;\n  font-size: 9.5px;\n  font-weight: 600;\n  color: #fff;\n  background: rgba(0, 0, 0, 0.55);\n  border-radius: 3px;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  pointer-events: none;\n}\n.fs-broken[data-v-018dedc0] {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n  font-size: 28px;\n  color: #e0a33a;\n  background: color-mix(in srgb, #e0a33a 12%, transparent);\n}\n.fs-h[data-v-018dedc0] {\n  position: absolute;\n  width: 10px;\n  height: 10px;\n  background: #fff;\n  border: 1px solid #333;\n  border-radius: 2px;\n  z-index: 20;\n}\n.fs-h-nw[data-v-018dedc0] { top: -5px; left: -5px; cursor: nwse-resize;\n}\n.fs-h-n[data-v-018dedc0]  { top: -5px; left: 50%; margin-left: -5px; cursor: ns-resize;\n}\n.fs-h-ne[data-v-018dedc0] { top: -5px; right: -5px; cursor: nesw-resize;\n}\n.fs-h-e[data-v-018dedc0]  { top: 50%; right: -5px; margin-top: -5px; cursor: ew-resize;\n}\n.fs-h-se[data-v-018dedc0] { bottom: -5px; right: -5px; cursor: nwse-resize;\n}\n.fs-h-s[data-v-018dedc0]  { bottom: -5px; left: 50%; margin-left: -5px; cursor: ns-resize;\n}\n.fs-h-sw[data-v-018dedc0] { bottom: -5px; left: -5px; cursor: nesw-resize;\n}\n.fs-h-w[data-v-018dedc0]  { top: 50%; left: -5px; margin-top: -5px; cursor: ew-resize;\n}\n.fs-empty[data-v-018dedc0] {\n  position: absolute;\n  inset: 0;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 5px;\n  color: var(--zen-muted, #9aa0aa);\n  text-align: center;\n}\n.fs-empty > .mdi[data-v-018dedc0] {\n  font-size: 28px;\n  opacity: 0.8;\n}\n.fs-empty small[data-v-018dedc0] {\n  font-size: 10px;\n  opacity: 0.7;\n}\n.fs-empty-add[data-v-018dedc0] {\n  margin-top: 6px;\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n  padding: 5px 12px;\n  border: 1px solid var(--zen-accent, #6366f1);\n  border-radius: var(--fs-rs);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 16%, transparent);\n  color: var(--zen-text, #e5e5ea);\n  font: inherit;\n  font-size: 11px;\n  font-weight: 600;\n  cursor: pointer;\n}\n\n/* layer sidebar */\n.fs-side[data-v-018dedc0] {\n  flex: none;\n  width: 194px;\n  display: flex;\n  flex-direction: column;\n  min-height: 0;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 8px);\n  background: color-mix(in srgb, var(--zen-text, #fff) 2%, transparent);\n  overflow: hidden;\n}\n.fs-side-head[data-v-018dedc0] {\n  flex: none;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 5px 8px;\n  font-size: 10px;\n  font-weight: 700;\n  letter-spacing: 0.04em;\n  text-transform: uppercase;\n  color: var(--zen-muted, #9aa0aa);\n  border-bottom: 1px solid var(--zen-border, #34343c);\n}\n.fs-side-n[data-v-018dedc0] {\n  padding: 0 5px;\n  border-radius: 8px;\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 22%, transparent);\n  color: var(--zen-text, #e5e5ea);\n  font-size: 10px;\n}\n.fs-list[data-v-018dedc0] {\n  flex: 1 1 0;\n  min-height: 0;\n  overflow-y: auto;\n  padding: 4px;\n  display: flex;\n  flex-direction: column;\n  gap: 3px;\n}\n.fs-row[data-v-018dedc0] {\n  display: flex;\n  flex-direction: column;\n  gap: 3px;\n  padding: 4px 4px 5px;\n  border: 1px solid transparent;\n  border-radius: var(--fs-rs);\n  background: var(--zen-input, #1b1b20);\n  cursor: pointer;\n}\n.fs-row[data-v-018dedc0]:hover {\n  border-color: color-mix(in srgb, var(--zen-accent, #6366f1) 50%, transparent);\n}\n.fs-row.sel[data-v-018dedc0] {\n  border-color: var(--zen-accent, #6366f1);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 16%, var(--zen-input, #1b1b20));\n}\n.fs-row.dragging[data-v-018dedc0] {\n  opacity: 0.4;\n}\n.fs-row.muted[data-v-018dedc0] {\n  opacity: 0.55;\n}\n.fs-rowtop[data-v-018dedc0] {\n  display: flex;\n  align-items: center;\n  gap: 3px;\n}\n.fs-rowbot[data-v-018dedc0] {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n  padding-left: 2px;\n}\n.fs-wt[data-v-018dedc0] {\n  flex: none;\n  font-size: 12px;\n  color: var(--zen-muted, #9aa0aa);\n}\n.fs-wslider[data-v-018dedc0] {\n  flex: 1;\n  min-width: 0;\n}\n.fs-wnum[data-v-018dedc0] {\n  flex: none;\n  width: 26px;\n  text-align: right;\n  font-size: 9.5px;\n  font-variant-numeric: tabular-nums;\n  color: var(--zen-muted, #9aa0aa);\n}\n.fs-grip[data-v-018dedc0] {\n  flex: none;\n  font-size: 14px;\n  color: var(--zen-muted, #9aa0aa);\n  cursor: grab;\n}\n.fs-grip[data-v-018dedc0]:active {\n  cursor: grabbing;\n}\n.fs-rowthumb[data-v-018dedc0] {\n  flex: none;\n  width: 26px;\n  height: 26px;\n  border-radius: 4px;\n  border: 1.5px solid;\n  overflow: hidden;\n  background: var(--zen-surface, #202026);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.fs-rowthumb img[data-v-018dedc0] {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n}\n.fs-rowthumb > .mdi[data-v-018dedc0] {\n  font-size: 14px;\n  color: #e0a33a;\n}\n.fs-rowname[data-v-018dedc0] {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 10.5px;\n}\n.fs-ract[data-v-018dedc0] {\n  flex: none;\n  width: 20px;\n  height: 20px;\n  padding: 0;\n  border: none;\n  border-radius: var(--fs-rs);\n  background: transparent;\n  color: var(--zen-muted, #9aa0aa);\n  font-size: 12px;\n  cursor: pointer;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n}\n.fs-ract[data-v-018dedc0]:hover {\n  background: color-mix(in srgb, var(--zen-text, #fff) 10%, transparent);\n  color: var(--zen-text, #e5e5ea);\n}\n.fs-ract.act[data-v-018dedc0] {\n  color: var(--zen-accent, #6366f1);\n}\n.fs-ract.danger[data-v-018dedc0]:hover {\n  background: color-mix(in srgb, #d9534f 22%, transparent);\n  color: #ff6b66;\n}\n.fs-list-empty[data-v-018dedc0] {\n  margin: 0;\n  padding: 12px 6px;\n  text-align: center;\n  font-size: 10px;\n  color: var(--zen-muted, #9aa0aa);\n}\n.fs-side-foot[data-v-018dedc0] {\n  flex: none;\n  display: flex;\n  align-items: center;\n  gap: 5px;\n  padding: 5px;\n  border-top: 1px solid var(--zen-border, #34343c);\n}\n/* solid control, matching Ideogram's UiButton (subtle fill, border, accent-border on hover) */\n.fs-add[data-v-018dedc0] {\n  flex: 1;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 5px;\n  min-height: 26px;\n  padding: 4px 10px;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--fs-rs);\n  background: var(--zen-input, #1b1b20);\n  color: var(--zen-text, #e5e5ea);\n  font: inherit;\n  font-size: 11px;\n  font-weight: 600;\n  cursor: pointer;\n  transition:\n    border-color 0.1s ease,\n    background 0.1s ease;\n}\n.fs-add[data-v-018dedc0]:hover:not(:disabled) {\n  border-color: var(--zen-accent, #6366f1);\n}\n.fs-add[data-v-018dedc0]:disabled {\n  opacity: 0.4;\n  cursor: default;\n}\n\n/* selected-layer controls, in the sidebar (vertical) */\n.fs-props[data-v-018dedc0] {\n  flex: none;\n  display: flex;\n  flex-direction: column;\n  gap: 5px;\n  padding: 6px;\n  border-top: 1px solid var(--zen-border, #34343c);\n}\n.fs-props-h[data-v-018dedc0] {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  font-size: 11px;\n  font-weight: 600;\n}\n.fs-dot[data-v-018dedc0] {\n  flex: none;\n  width: 11px;\n  height: 11px;\n  border-radius: 50%;\n}\n.fs-props-name[data-v-018dedc0] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.fs-props-row[data-v-018dedc0] {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n}\n.fs-props-sp[data-v-018dedc0] {\n  flex: 1;\n}\n.fs-pbtn[data-v-018dedc0] {\n  flex: none;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 24px;\n  height: 24px;\n  padding: 0;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--fs-rs);\n  background: var(--zen-input, #1b1b20);\n  color: var(--zen-muted, #9aa0aa);\n  cursor: pointer;\n  font-size: 13px;\n}\n.fs-pbtn[data-v-018dedc0]:hover {\n  color: var(--zen-text, #e5e5ea);\n  border-color: var(--zen-accent, #6366f1);\n}\n.fs-pbtn.on[data-v-018dedc0] {\n  color: var(--zen-accent, #6366f1);\n  border-color: var(--zen-accent, #6366f1);\n}\n.fs-select[data-v-018dedc0] {\n  width: 100%;\n  height: 24px;\n  padding: 0 4px;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--fs-rs);\n  background: var(--zen-input, #1b1b20);\n  color: var(--zen-text, #e5e5ea);\n  font: inherit;\n  font-size: 11px;\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.fs-prop-slider[data-v-018dedc0] {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  color: var(--zen-muted, #9aa0aa);\n}\n.fs-prop-slider .mdi[data-v-018dedc0] {\n  font-size: 13px;\n  flex: none;\n}\n.fs-prop-slider .fs-pslider[data-v-018dedc0] {\n  flex: 1;\n  min-width: 0;\n}\n.fs-prop-v[data-v-018dedc0] {\n  flex: none;\n  width: 26px;\n  text-align: right;\n  font-size: 9.5px;\n  font-variant-numeric: tabular-nums;\n}\n.fs-dropmask[data-v-018dedc0] {\n  position: absolute;\n  inset: 0;\n  z-index: 30;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  border: 2px dashed var(--zen-accent, #6366f1);\n  border-radius: var(--zen-radius, 9px);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 16%, rgba(0, 0, 0, 0.55));\n  color: var(--zen-text, #e5e5ea);\n  font-size: 11px;\n  font-weight: 600;\n  pointer-events: none;\n}\n.fs-dropmask .mdi[data-v-018dedc0] {\n  font-size: 28px;\n}\n\n/* browse dialog */\n.fs-search[data-v-018dedc0] {\n  flex: 1;\n  min-width: 0;\n  max-width: 320px;\n  display: flex;\n}\n.fs-bgrid[data-v-018dedc0] {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));\n  gap: 12px;\n  align-items: start;\n}\n.fs-bcard[data-v-018dedc0] {\n  display: flex;\n  flex-direction: column;\n  height: 160px;\n  padding: 0;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 9px);\n  background: var(--zen-input, #1b1b20);\n  cursor: pointer;\n  overflow: hidden;\n  text-align: left;\n  color: inherit;\n  font: inherit;\n}\n.fs-bcard[data-v-018dedc0]:hover,\n.fs-bcard.sel[data-v-018dedc0] {\n  border-color: var(--zen-accent, #6366f1);\n}\n.fs-bcard.sel[data-v-018dedc0] {\n  box-shadow: 0 0 0 1px var(--zen-accent, #6366f1) inset;\n}\n.fs-bcard-img[data-v-018dedc0] {\n  position: relative;\n  flex: 1 1 0;\n  min-height: 0;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background: var(--zen-surface, #202026);\n  overflow: hidden;\n}\n.fs-bcard-img img[data-v-018dedc0] {\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n  display: block;\n}\n.fs-bcard-tick[data-v-018dedc0] {\n  position: absolute;\n  top: 5px;\n  right: 5px;\n  width: 22px;\n  height: 22px;\n  border-radius: 50%;\n  background: var(--zen-accent, #6366f1);\n  color: var(--zen-accent-text, #fff);\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 14px;\n}\n.fs-bcard-meta[data-v-018dedc0] {\n  flex: none;\n  height: 32px;\n  box-sizing: border-box;\n  padding: 5px 8px;\n  display: flex;\n  align-items: center;\n  border-top: 1px solid var(--zen-border, #34343c);\n}\n.fs-bcard-name[data-v-018dedc0] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 11px;\n}\n.fs-bgrid-empty[data-v-018dedc0] {\n  grid-column: 1 / -1;\n  text-align: center;\n  color: var(--zen-muted, #9aa0aa);\n  padding: 30px;\n}\n\n/* preset library */\n.fs-lib[data-v-018dedc0] {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));\n  gap: 12px;\n  align-items: start;\n}\n.fs-libcard[data-v-018dedc0] {\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  padding: 0;\n  border: none;\n  background: none;\n  cursor: pointer;\n  color: inherit;\n  font: inherit;\n  text-align: left;\n}\n.fs-libcard-img[data-v-018dedc0] {\n  position: relative;\n  aspect-ratio: 1;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 9px);\n  background: var(--zen-surface, #202026);\n  overflow: hidden;\n}\n.fs-libcard:hover .fs-libcard-img[data-v-018dedc0] {\n  border-color: var(--zen-accent, #6366f1);\n}\n.fs-libcard-img img[data-v-018dedc0] {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  display: block;\n}\n.fs-libcard-img > .mdi[data-v-018dedc0] {\n  font-size: 32px;\n  color: var(--zen-muted, #9aa0aa);\n}\n.fs-libdel[data-v-018dedc0] {\n  position: absolute;\n  top: 5px;\n  right: 5px;\n  width: 20px;\n  height: 20px;\n  padding: 0;\n  border: none;\n  border-radius: 50%;\n  background: rgba(0, 0, 0, 0.6);\n  color: #fff;\n  font-size: 12px;\n  cursor: pointer;\n  opacity: 0;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  transition: opacity 0.12s ease;\n}\n.fs-libcard:hover .fs-libdel[data-v-018dedc0] {\n  opacity: 1;\n}\n.fs-libdel[data-v-018dedc0]:hover {\n  background: #d9534f;\n}\n.fs-libcard-name[data-v-018dedc0] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 11px;\n  color: var(--zen-text, #e5e5ea);\n}\n.fs-lib-empty[data-v-018dedc0] {\n  grid-column: 1 / -1;\n  text-align: center;\n  color: var(--zen-muted, #9aa0aa);\n  padding: 30px;\n}\n.fs-libsave-name[data-v-018dedc0] {\n  flex: 1;\n  min-width: 0;\n  max-width: 260px;\n}\n\n.fi[data-v-9dce09b3] {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  height: 100%;\n  min-height: 0;\n  padding: 2px;\n  box-sizing: border-box;\n  font-size: 12px;\n  color: var(--zen-text, #e5e5ea);\n  /* same radius hierarchy as Fusion Studio (panels vs controls). */\n  --fs-r: var(--zen-radius, 8px);\n  --fs-rs: var(--radius-sm, 5px);\n}\n.fi-empty[data-v-9dce09b3] {\n  height: 100%;\n  min-height: 120px;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 5px;\n  color: var(--zen-muted, #9aa0aa);\n  text-align: center;\n}\n.fi-empty > .mdi[data-v-9dce09b3] {\n  font-size: 30px;\n  opacity: 0.8;\n}\n.fi-empty small[data-v-9dce09b3] {\n  font-size: 10px;\n  opacity: 0.75;\n}\n.fi-bar[data-v-9dce09b3] {\n  flex: none;\n  display: flex;\n  align-items: center;\n  flex-wrap: wrap;\n  gap: 6px;\n}\n.fi-main[data-v-9dce09b3] {\n  flex: 1 1 auto;\n  min-height: 0;\n  display: flex;\n  gap: 6px;\n}\n.fi-gridwrap[data-v-9dce09b3] {\n  position: relative;\n  flex: 1 1 auto;\n  min-width: 0;\n  min-height: 0;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  overflow: hidden;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 8px);\n  background: #0e0e12;\n}\n.fi-caption[data-v-9dce09b3] {\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  padding: 3px 6px;\n  font-size: 9px;\n  line-height: 1.25;\n  text-align: center;\n  color: var(--zen-text, #e5e5ea);\n  background: linear-gradient(transparent, rgba(0, 0, 0, 0.72));\n  pointer-events: none;\n}\n.fi-canvas[data-v-9dce09b3] {\n  display: block;\n  image-rendering: pixelated;\n}\n.fi-side[data-v-9dce09b3] {\n  flex: none;\n  width: 190px;\n  display: flex;\n  flex-direction: column;\n  min-height: 0;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 8px);\n  background: color-mix(in srgb, var(--zen-text, #fff) 2%, transparent);\n  overflow: hidden;\n}\n.fi-side-head[data-v-9dce09b3] {\n  flex: none;\n  padding: 5px 8px;\n  font-size: 10px;\n  font-weight: 700;\n  letter-spacing: 0.04em;\n  text-transform: uppercase;\n  color: var(--zen-muted, #9aa0aa);\n  border-bottom: 1px solid var(--zen-border, #34343c);\n}\n.fi-bars[data-v-9dce09b3],\n.fi-legend[data-v-9dce09b3] {\n  flex: 1 1 0;\n  min-height: 0;\n  overflow-y: auto;\n  padding: 5px;\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n}\n.fi-brow[data-v-9dce09b3],\n.fi-lrow[data-v-9dce09b3] {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n  font-size: 10.5px;\n}\n.fi-lrow[data-v-9dce09b3] {\n  padding: 3px;\n  border: 1px solid transparent;\n  border-radius: var(--fs-rs);\n  background: none;\n  color: inherit;\n  font: inherit;\n  cursor: pointer;\n  text-align: left;\n}\n.fi-lrow[data-v-9dce09b3]:hover {\n  border-color: color-mix(in srgb, var(--zen-accent, #6366f1) 50%, transparent);\n}\n.fi-lrow.on[data-v-9dce09b3] {\n  border-color: var(--zen-accent, #6366f1);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 16%, transparent);\n}\n.fi-thumb[data-v-9dce09b3] {\n  flex: none;\n  width: 24px;\n  height: 24px;\n  border-radius: 4px;\n  border: 1.5px solid;\n  overflow: hidden;\n  background: var(--zen-surface, #202026);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.fi-thumb.sm[data-v-9dce09b3] {\n  width: 17px;\n  height: 17px;\n  border-radius: 3px;\n}\n.fi-thumb img[data-v-9dce09b3] {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  display: block;\n}\n.fi-thumb-fill[data-v-9dce09b3] {\n  width: 100%;\n  height: 100%;\n}\n.fi-blabel[data-v-9dce09b3] {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.fi-btrack[data-v-9dce09b3] {\n  flex: 1.4;\n  height: 6px;\n  border-radius: 3px;\n  background: color-mix(in srgb, var(--zen-text, #fff) 10%, transparent);\n  overflow: hidden;\n}\n.fi-bfill[data-v-9dce09b3] {\n  display: block;\n  height: 100%;\n  border-radius: 3px;\n}\n.fi-bval[data-v-9dce09b3] {\n  flex: none;\n  width: 26px;\n  text-align: right;\n  font-variant-numeric: tabular-nums;\n  color: var(--zen-muted, #9aa0aa);\n}\n.fi-lstr[data-v-9dce09b3] {\n  flex: none;\n  font-variant-numeric: tabular-nums;\n  font-size: 10px;\n  color: var(--zen-text, #e5e5ea);\n}\n.fi-lmeta[data-v-9dce09b3] {\n  flex: none;\n  min-width: 30px;\n  text-align: right;\n  font-variant-numeric: tabular-nums;\n  color: var(--zen-muted, #9aa0aa);\n}\n.fi-lhint[data-v-9dce09b3] {\n  flex: none;\n  margin: 0;\n  padding: 5px 7px;\n  font-size: 9.5px;\n  line-height: 1.3;\n  color: var(--zen-muted, #9aa0aa);\n  border-top: 1px solid var(--zen-border, #34343c);\n}\n.fi-lhint b[data-v-9dce09b3] {\n  color: var(--zen-text, #e5e5ea);\n}\n\n/* side-panel tabs */\n.fi-side-tabs[data-v-9dce09b3] {\n  flex: none;\n  display: flex;\n  gap: 3px;\n  padding: 4px;\n  border-bottom: 1px solid var(--zen-border, #34343c);\n}\n.fi-tab[data-v-9dce09b3] {\n  flex: 1;\n  padding: 3px 6px;\n  border: 1px solid transparent;\n  border-radius: var(--zen-radius, 5px);\n  background: none;\n  color: var(--zen-muted, #9aa0aa);\n  font: inherit;\n  font-size: 10px;\n  font-weight: 700;\n  letter-spacing: 0.03em;\n  text-transform: uppercase;\n  cursor: pointer;\n}\n.fi-tab[data-v-9dce09b3]:hover {\n  color: var(--zen-text, #e5e5ea);\n}\n.fi-tab.on[data-v-9dce09b3] {\n  color: var(--zen-text, #e5e5ea);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 16%, transparent);\n}\n\n/* settings tab */\n.fi-settings[data-v-9dce09b3] {\n  flex: 1 1 0;\n  min-height: 0;\n  overflow-y: auto;\n  padding: 4px 6px 6px;\n}\n.fi-sgroup[data-v-9dce09b3] {\n  margin-top: 5px;\n}\n.fi-sgroup-h[data-v-9dce09b3] {\n  font-size: 9px;\n  font-weight: 700;\n  letter-spacing: 0.05em;\n  text-transform: uppercase;\n  color: var(--zen-accent, #6366f1);\n  margin-bottom: 2px;\n}\n.fi-srow[data-v-9dce09b3] {\n  display: flex;\n  justify-content: space-between;\n  gap: 6px;\n  font-size: 10.5px;\n  padding: 1px 0;\n}\n.fi-srow.dim[data-v-9dce09b3] {\n  opacity: 0.4;\n}\n.fi-sk[data-v-9dce09b3] {\n  color: var(--zen-muted, #9aa0aa);\n}\n.fi-svv[data-v-9dce09b3] {\n  color: var(--zen-text, #e5e5ea);\n  font-variant-numeric: tabular-nums;\n  text-align: right;\n}\n\n/* natural content flow — the node auto-grows to fit (see mountWidget), so rows are never\n   scrolled and the Add button simply follows the last row. */\n.ls[data-v-eb7918f8] {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  padding: 2px;\n  box-sizing: border-box;\n  font-size: 12px;\n  color: var(--zen-text, #e5e5ea);\n}\n.ls-mid[data-v-eb7918f8] {\n  display: flex;\n  flex-direction: column;\n}\n.ls-rows[data-v-eb7918f8] {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n.ls-empty[data-v-eb7918f8] {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 5px;\n  padding: 14px 8px;\n  text-align: center;\n  color: var(--zen-muted, #9aa0aa);\n  border: 1px dashed var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 8px);\n  background: color-mix(in srgb, var(--zen-text, #fff) 3%, transparent);\n}\n.ls-empty > .mdi[data-v-eb7918f8] {\n  font-size: 24px;\n  opacity: 0.8;\n}\n.ls-empty > span[data-v-eb7918f8] {\n  font-size: 11px;\n}\n.ls-row[data-v-eb7918f8] {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n}\n.ls-row.off[data-v-eb7918f8] {\n  opacity: 0.5;\n}\n.ls-row.dragging[data-v-eb7918f8] {\n  opacity: 0.4;\n}\n.ls-row.over[data-v-eb7918f8] {\n  outline: 2px solid var(--zen-accent, #6366f1);\n  outline-offset: -1px;\n  border-radius: var(--zen-radius, 6px);\n}\n.ls-grip[data-v-eb7918f8] {\n  flex: none;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  padding: 2px;\n  cursor: grab;\n  color: var(--zen-muted, #9aa0aa);\n  font-size: 16px;\n}\n.ls-grip[data-v-eb7918f8]:active {\n  cursor: grabbing;\n}\n.ls-grip[data-v-eb7918f8]:hover {\n  color: var(--zen-text, #e5e5ea);\n}\n.ls-pick[data-v-eb7918f8] {\n  flex: 1;\n  min-width: 0;\n}\n/* fixed width so every row's combo lines up regardless of the strength digits */\n.ls-str[data-v-eb7918f8] {\n  flex: none;\n  width: 84px;\n}\n.ls-foot[data-v-eb7918f8] {\n  flex: none;\n  display: flex;\n  align-items: center;\n  gap: 6px;\n}\n.ls-add[data-v-eb7918f8] {\n  flex: 1;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  padding: 7px;\n  border: 1px dashed var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 7px);\n  background: transparent;\n  color: var(--zen-muted, #9aa0aa);\n  font: inherit;\n  font-size: 11px;\n  font-weight: 600;\n  cursor: pointer;\n  transition:\n    border-color 0.12s ease,\n    color 0.12s ease,\n    background 0.12s ease;\n}\n.ls-add[data-v-eb7918f8]:hover {\n  border-color: var(--zen-accent, #6366f1);\n  color: var(--zen-text, #e5e5ea);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 8%, transparent);\n}\n.ls-add .mdi[data-v-eb7918f8] {\n  font-size: 15px;\n}\n.ls-add-n[data-v-eb7918f8] {\n  margin-left: 4px;\n  padding: 0 5px;\n  border-radius: var(--zen-radius, 8px);\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 22%, transparent);\n  color: var(--zen-text, #e5e5ea);\n  font-size: 10px;\n  font-weight: 700;\n}\n\n/* browse-modal folder navigation */\n.ls-crumbs[data-v-eb7918f8] {\n  display: flex;\n  align-items: center;\n  flex-wrap: wrap;\n  gap: 2px;\n  padding-bottom: 10px;\n}\n.ls-crumb[data-v-eb7918f8] {\n  background: none;\n  border: none;\n  cursor: pointer;\n  font: inherit;\n  font-size: 12px;\n  padding: 2px 6px;\n  border-radius: var(--zen-radius, 5px);\n  color: var(--zen-muted, #9aa0aa);\n}\n.ls-crumb[data-v-eb7918f8]:hover {\n  color: var(--zen-text, #e5e5ea);\n  background: color-mix(in srgb, var(--zen-text, #fff) 6%, transparent);\n}\n.ls-crumb.on[data-v-eb7918f8] {\n  color: var(--zen-text, #e5e5ea);\n  font-weight: 600;\n}\n.ls-crumbs .mdi[data-v-eb7918f8] {\n  color: var(--zen-muted, #9aa0aa);\n  font-size: 14px;\n}\n.ls-folder .ls-card-img[data-v-eb7918f8] {\n  background: color-mix(in srgb, var(--zen-accent, #6366f1) 8%, var(--zen-surface, #202026));\n}\n.ls-folder .ls-card-img > .mdi[data-v-eb7918f8] {\n  font-size: 40px;\n  color: var(--zen-accent, #6366f1);\n}\n.ls-sel[data-v-eb7918f8] {\n  display: flex;\n  align-items: center;\n  gap: 7px;\n  min-width: 0;\n}\n.ls-sel-name[data-v-eb7918f8] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n/* a chosen LoRA that no longer exists on disk */\n.ls-sel.missing .ls-sel-name[data-v-eb7918f8] {\n  color: var(--zen-danger, #f5665f);\n}\n.ls-thumb.warn[data-v-eb7918f8] {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--zen-danger, #f5665f);\n  background: color-mix(in srgb, var(--zen-danger, #f5665f) 14%, transparent);\n  border-color: color-mix(in srgb, var(--zen-danger, #f5665f) 45%, transparent);\n  font-size: 12px;\n}\n.ls-thumb[data-v-eb7918f8] {\n  flex: none;\n  box-sizing: border-box;\n  width: 40px;\n  height: 40px;\n  object-fit: contain;\n  border-radius: var(--zen-radius, 6px);\n  background: var(--zen-input, #1b1b20);\n  border: 1px solid var(--zen-border, #34343c);\n}\n.ls-thumb.sm[data-v-eb7918f8] {\n  width: 18px;\n  height: 18px;\n  border-radius: var(--zen-radius, 5px);\n}\n.ls-thumb.ph[data-v-eb7918f8] {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--zen-muted, #9aa0aa);\n  font-size: 20px;\n}\n.ls-thumb.sm.ph[data-v-eb7918f8] {\n  font-size: 11px;\n}\n.ls-opt-txt[data-v-eb7918f8] {\n  flex: 1;\n  min-width: 0;\n  display: flex;\n  flex-direction: column;\n  gap: 1px;\n  line-height: 1.25;\n}\n.ls-opt-name[data-v-eb7918f8] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12.5px;\n}\n.ls-opt-dir[data-v-eb7918f8] {\n  font-size: 10px;\n  color: var(--zen-muted, #9aa0aa);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.ls-star[data-v-eb7918f8] {\n  flex: none;\n  border: none;\n  background: none;\n  cursor: pointer;\n  color: var(--zen-muted, #9aa0aa);\n  font-size: 15px;\n  padding: 2px;\n  display: inline-flex;\n}\n.ls-star.on[data-v-eb7918f8],\n.ls-star[data-v-eb7918f8]:hover {\n  color: #f5b301;\n}\n\n/* browser dialog */\n.ls-search[data-v-eb7918f8] {\n  flex: 1;\n  min-width: 0;\n  max-width: 320px;\n  display: flex;\n}\n.ls-grid[data-v-eb7918f8] {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));\n  gap: 12px;\n  align-items: start;\n}\n/* every card is a fixed size: fixed-height image + fixed-height meta, so neither the\n   image dimensions nor the text length can change a card's footprint. */\n.ls-card[data-v-eb7918f8] {\n  display: flex;\n  flex-direction: column;\n  height: 170px;\n  padding: 0;\n  border: 1px solid var(--zen-border, #34343c);\n  border-radius: var(--zen-radius, 9px);\n  background: var(--zen-input, #1b1b20);\n  cursor: pointer;\n  overflow: hidden;\n  text-align: left;\n  color: inherit;\n  font: inherit;\n}\n.ls-card[data-v-eb7918f8]:hover {\n  border-color: var(--zen-accent, #6366f1);\n}\n.ls-card.sel[data-v-eb7918f8] {\n  border-color: var(--zen-accent, #6366f1);\n  box-shadow: 0 0 0 1px var(--zen-accent, #6366f1) inset;\n}\n.ls-card-img[data-v-eb7918f8] {\n  position: relative;\n  flex: 1 1 0;\n  min-height: 0;\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background: var(--zen-surface, #202026);\n  overflow: hidden;\n}\n.ls-card-img img[data-v-eb7918f8] {\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n  display: block;\n}\n.ls-card-img > .mdi[data-v-eb7918f8] {\n  font-size: 32px;\n  color: var(--zen-muted, #9aa0aa);\n}\n.ls-card-star[data-v-eb7918f8] {\n  position: absolute;\n  top: 5px;\n  right: 5px;\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n  background: rgba(0, 0, 0, 0.5);\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  color: #fff;\n  font-size: 14px;\n}\n.ls-card-star.on[data-v-eb7918f8] {\n  color: #f5b301;\n}\n/* fixed-height meta so every card is identical regardless of folder/name length */\n.ls-card-meta[data-v-eb7918f8] {\n  flex: none;\n  height: 38px;\n  box-sizing: border-box;\n  padding: 5px 8px;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  gap: 1px;\n  border-top: 1px solid var(--zen-border, #34343c);\n}\n.ls-card-name[data-v-eb7918f8] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12px;\n}\n.ls-card-dir[data-v-eb7918f8] {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 10px;\n  color: var(--zen-muted, #9aa0aa);\n}\n.ls-grid-empty[data-v-eb7918f8] {\n  grid-column: 1 / -1;\n  text-align: center;\n  color: var(--zen-muted, #9aa0aa);\n  padding: 30px;\n}\n/* ZenKit ↔ ComfyUI theme bridge — the runtime-free way to theme @zenkit/ui.\n *\n * @zenkit/ui components read --zen-* tokens. WITH the ZenKit runtime installed,\n * @zenkit/core sets those from the active theme pack (the derivation in @zenkit/theme's\n * zen.ts → zenAliases). Consumers that use @zenkit/ui WITHOUT the runtime import this file\n * instead: it maps the same --zen-* set straight onto ComfyUI's native theme variables, so\n * the components follow the user's selected ComfyUI theme with zero JS.\n *\n * Declared at :root so teleported overlays (ZenPopover / ZenCombo menus, ZenModal) — which\n * mount outside any component subtree — pick the tokens up too. The right-hand fallbacks keep\n * every token sane if ComfyUI renames or drops a variable. Kept in lockstep with zen.ts: the\n * same 10 tokens, sourced from the host instead of a pack. (The other --zen-* tokens the\n * components use — glass, mono, scrollbar, switch-radius — resolve through inline fallbacks\n * that chain back to these, so this set is sufficient on its own.)\n *\n * Import once, near your extension entry:  import '@zenkit/ui/comfy-bridge.css'\n */\n:root {\n  --zen-bg: var(--comfy-menu-bg, #1a1a1f);\n  --zen-surface: var(--comfy-menu-secondary-bg, #202026);\n  --zen-surface-2: var(--comfy-menu-secondary-bg, #26262d);\n  --zen-input: var(--comfy-input-bg, #1b1b20);\n  --zen-border: var(--border-color, #34343c);\n  --zen-text: var(--input-text, var(--fg-color, #e5e5ea));\n  --zen-muted: var(--descrip-text, #9aa0aa);\n  --zen-accent: var(--p-primary-color, #6366f1);\n  --zen-accent-text: var(--p-button-text-primary-color, #fff);\n  --zen-radius: var(--border-radius-base, 7px);\n}\n";document.head.appendChild(s);})();import { app } from "../../../scripts/app.js";
+import { api } from "../../../scripts/api.js";
 /**
 * @vue/shared v3.5.39
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
@@ -7066,7 +7067,7 @@ function registerNodes(name, defs) {
 function defineNode(def2) {
   return def2;
 }
-const _sfc_main$b = /* @__PURE__ */ defineComponent({
+const _sfc_main$f = /* @__PURE__ */ defineComponent({
   __name: "ZenScroll",
   props: {
     horizontal: { type: Boolean, default: false }
@@ -7088,13 +7089,13 @@ const _export_sfc = (sfc, props) => {
   }
   return target;
 };
-const ZenScroll = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["__scopeId", "data-v-2eaaf1dd"]]);
-const _hoisted_1$a = ["disabled"];
-const _hoisted_2$8 = {
+const ZenScroll = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["__scopeId", "data-v-38b756b6"]]);
+const _hoisted_1$d = ["disabled"];
+const _hoisted_2$b = {
   key: 1,
   class: "lbl"
 };
-const _sfc_main$a = /* @__PURE__ */ defineComponent({
+const _sfc_main$e = /* @__PURE__ */ defineComponent({
   __name: "ZenButton",
   props: {
     variant: { default: "default" },
@@ -7113,16 +7114,16 @@ const _sfc_main$a = /* @__PURE__ */ defineComponent({
           key: 0,
           class: normalizeClass(__props.icon)
         }, null, 2)) : createCommentVNode("", true),
-        _ctx.$slots.default ? (openBlock(), createElementBlock("span", _hoisted_2$8, [
+        _ctx.$slots.default ? (openBlock(), createElementBlock("span", _hoisted_2$b, [
           renderSlot(_ctx.$slots, "default", {}, void 0, true)
         ])) : createCommentVNode("", true)
-      ], 10, _hoisted_1$a);
+      ], 10, _hoisted_1$d);
     };
   }
 });
-const ZenButton = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["__scopeId", "data-v-ca361f6f"]]);
-const _hoisted_1$9 = ["disabled"];
-const _sfc_main$9 = /* @__PURE__ */ defineComponent({
+const ZenButton = /* @__PURE__ */ _export_sfc(_sfc_main$e, [["__scopeId", "data-v-7242ad73"]]);
+const _hoisted_1$c = ["disabled"];
+const _sfc_main$d = /* @__PURE__ */ defineComponent({
   __name: "ZenIconButton",
   props: {
     icon: {},
@@ -7139,14 +7140,14 @@ const _sfc_main$9 = /* @__PURE__ */ defineComponent({
         createBaseVNode("i", {
           class: normalizeClass(__props.icon)
         }, null, 2)
-      ], 10, _hoisted_1$9);
+      ], 10, _hoisted_1$c);
     };
   }
 });
-const ZenIconButton = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["__scopeId", "data-v-e73501c0"]]);
-const _hoisted_1$8 = ["rows", "placeholder", "disabled", "value"];
-const _hoisted_2$7 = ["type", "placeholder", "disabled", "min", "max", "step", "value"];
-const _sfc_main$8 = /* @__PURE__ */ defineComponent({
+const ZenIconButton = /* @__PURE__ */ _export_sfc(_sfc_main$d, [["__scopeId", "data-v-fc152c1e"]]);
+const _hoisted_1$b = ["rows", "placeholder", "disabled", "value"];
+const _hoisted_2$a = ["type", "placeholder", "disabled", "min", "max", "step", "value"];
+const _sfc_main$c = /* @__PURE__ */ defineComponent({
   __name: "ZenInput",
   props: {
     modelValue: {},
@@ -7181,7 +7182,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent({
         disabled: __props.disabled,
         value: __props.modelValue,
         onInput
-      }, null, 42, _hoisted_1$8)) : (openBlock(), createElementBlock("input", {
+      }, null, 42, _hoisted_1$b)) : (openBlock(), createElementBlock("input", {
         key: 1,
         class: normalizeClass(["zen-input", { sm: __props.sm }]),
         type: __props.type,
@@ -7192,15 +7193,15 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent({
         step: __props.step,
         value: __props.modelValue,
         onInput
-      }, null, 42, _hoisted_2$7));
+      }, null, 42, _hoisted_2$a));
     };
   }
 });
-const ZenInput = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["__scopeId", "data-v-ec969410"]]);
-const _hoisted_1$7 = ["aria-disabled"];
-const _hoisted_2$6 = ["value", "disabled", "onKeydown"];
-const _hoisted_3$5 = ["aria-disabled"];
-const _sfc_main$7 = /* @__PURE__ */ defineComponent({
+const ZenInput = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["__scopeId", "data-v-262ee20d"]]);
+const _hoisted_1$a = ["aria-disabled"];
+const _hoisted_2$9 = ["value", "disabled", "onKeydown"];
+const _hoisted_3$7 = ["aria-disabled"];
+const _sfc_main$b = /* @__PURE__ */ defineComponent({
   __name: "ZenNumber",
   props: {
     modelValue: {},
@@ -7221,18 +7222,18 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
     const hover = /* @__PURE__ */ ref(0);
     const prec = computed(() => props.precision ?? (String(props.step).split(".")[1]?.length ?? 0));
     const display = computed(() => (Number.isFinite(props.modelValue) ? props.modelValue : 0).toFixed(prec.value));
-    function clamp(v) {
+    function clamp2(v) {
       if (props.min != null) v = Math.max(props.min, v);
       if (props.max != null) v = Math.min(props.max, v);
       const p2 = Math.pow(10, prec.value);
       return Math.round(v * p2) / p2;
     }
     function set(v) {
-      if (Number.isFinite(v)) emit2("update:modelValue", clamp(v));
+      if (Number.isFinite(v)) emit2("update:modelValue", clamp2(v));
     }
     function bump(dir) {
       if (props.disabled) return;
-      const v = clamp((props.modelValue || 0) + dir * props.step);
+      const v = clamp2((props.modelValue || 0) + dir * props.step);
       set(v);
       if (focused.value) text.value = v.toFixed(prec.value);
     }
@@ -7305,7 +7306,7 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
             class: "mdi mdi-minus",
             "aria-hidden": "true"
           }, null, -1)
-        ])], 42, _hoisted_1$7)) : createCommentVNode("", true),
+        ])], 42, _hoisted_1$a)) : createCommentVNode("", true),
         createBaseVNode("div", {
           class: "zn-val",
           onPointerdown: onDown,
@@ -7329,7 +7330,7 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
               _cache2[6] || (_cache2[6] = withKeys(withModifiers(($event) => el.value?.blur(), ["prevent"]), ["enter"])),
               withKeys(withModifiers(revert, ["prevent"]), ["esc"])
             ]
-          }, null, 42, _hoisted_2$6)
+          }, null, 42, _hoisted_2$9)
         ], 32),
         !__props.bare ? (openBlock(), createElementBlock("span", {
           key: 1,
@@ -7348,40 +7349,40 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
             class: "mdi mdi-plus",
             "aria-hidden": "true"
           }, null, -1)
-        ])], 42, _hoisted_3$5)) : createCommentVNode("", true)
+        ])], 42, _hoisted_3$7)) : createCommentVNode("", true)
       ], 34);
     };
   }
 });
-const ZenNumber = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["__scopeId", "data-v-45cda24e"]]);
-const _hoisted_1$6 = ["disabled"];
-const _hoisted_2$5 = { class: "zc-current" };
-const _hoisted_3$4 = {
+const ZenNumber = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["__scopeId", "data-v-55261609"]]);
+const _hoisted_1$9 = ["disabled"];
+const _hoisted_2$8 = { class: "zc-current" };
+const _hoisted_3$6 = {
   key: 0,
   class: "zc-search"
 };
-const _hoisted_4$3 = {
+const _hoisted_4$5 = {
   key: 1,
   class: "zc-search-actions"
 };
-const _hoisted_5$3 = ["onMouseenter", "onClick"];
-const _hoisted_6$2 = { class: "zc-opt-lbl" };
-const _hoisted_7$2 = {
+const _hoisted_5$5 = ["onMouseenter", "onClick"];
+const _hoisted_6$4 = { class: "zc-opt-lbl" };
+const _hoisted_7$4 = {
   key: 0,
   class: "zc-sep"
 };
-const _hoisted_8$2 = ["onMouseenter", "onClick"];
-const _hoisted_9$2 = { class: "zc-opt-lbl" };
-const _hoisted_10$2 = {
+const _hoisted_8$4 = ["onMouseenter", "onClick"];
+const _hoisted_9$4 = { class: "zc-opt-lbl" };
+const _hoisted_10$4 = {
   key: 2,
   class: "zc-empty"
 };
-const _hoisted_11$2 = {
+const _hoisted_11$4 = {
   key: 1,
   class: "zc-footer"
 };
 const OVERSCAN = 4;
-const _sfc_main$6 = /* @__PURE__ */ defineComponent({
+const _sfc_main$a = /* @__PURE__ */ defineComponent({
   __name: "ZenCombo",
   props: {
     modelValue: {},
@@ -7558,13 +7559,13 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
           disabled: __props.disabled,
           onClick: _cache2[0] || (_cache2[0] = ($event) => open.value ? close() : openMenu())
         }, [
-          createBaseVNode("span", _hoisted_2$5, [
+          createBaseVNode("span", _hoisted_2$8, [
             renderSlot(_ctx.$slots, "selected", { item: current.value }, () => [
               createTextVNode(toDisplayString(current.value ? labelOf(current.value) : __props.placeholder), 1)
             ], true)
           ]),
           _cache2[3] || (_cache2[3] = createBaseVNode("i", { class: "zc-caret mdi mdi-chevron-down" }, null, -1))
-        ], 8, _hoisted_1$6),
+        ], 8, _hoisted_1$9),
         (openBlock(), createBlock(Teleport, { to: "body" }, [
           open.value ? (openBlock(), createElementBlock("div", {
             key: 0,
@@ -7574,7 +7575,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
             style: normalizeStyle([menuStyle.value, __props.grid && __props.gridMin ? { "--zc-grid-min": __props.gridMin + "px" } : {}]),
             onKeydown: onKey
           }, [
-            __props.searchable ? (openBlock(), createElementBlock("div", _hoisted_3$4, [
+            __props.searchable ? (openBlock(), createElementBlock("div", _hoisted_3$6, [
               _cache2[5] || (_cache2[5] = createBaseVNode("i", { class: "mdi mdi-magnify" }, null, -1)),
               withDirectives(createBaseVNode("input", {
                 ref_key: "searchRef",
@@ -7594,7 +7595,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
               }, [..._cache2[4] || (_cache2[4] = [
                 createBaseVNode("i", { class: "mdi mdi-close" }, null, -1)
               ])])) : createCommentVNode("", true),
-              _ctx.$slots.search ? (openBlock(), createElementBlock("span", _hoisted_4$3, [
+              _ctx.$slots.search ? (openBlock(), createElementBlock("span", _hoisted_4$5, [
                 renderSlot(_ctx.$slots, "search", {}, void 0, true)
               ])) : createCommentVNode("", true)
             ])) : createCommentVNode("", true),
@@ -7627,16 +7628,16 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
                         active: w.index === active.value,
                         pinned: pinnedSet.value.has(w.item.value)
                       }, () => [
-                        createBaseVNode("span", _hoisted_6$2, toDisplayString(labelOf(w.item)), 1)
+                        createBaseVNode("span", _hoisted_6$4, toDisplayString(labelOf(w.item)), 1)
                       ], true)
-                    ], 46, _hoisted_5$3);
+                    ], 46, _hoisted_5$5);
                   }), 128))
                 ], 4)
               ], 4)) : (openBlock(true), createElementBlock(Fragment, { key: 1 }, renderList(filtered.value, (it, i) => {
                 return openBlock(), createElementBlock(Fragment, {
                   key: String(it.value)
                 }, [
-                  !query.value && firstUnpinnedIndex.value > 0 && i === firstUnpinnedIndex.value ? (openBlock(), createElementBlock("div", _hoisted_7$2)) : createCommentVNode("", true),
+                  !query.value && firstUnpinnedIndex.value > 0 && i === firstUnpinnedIndex.value ? (openBlock(), createElementBlock("div", _hoisted_7$4)) : createCommentVNode("", true),
                   createBaseVNode("div", {
                     class: normalizeClass(["zc-opt", { active: i === active.value, sel: it.value === __props.modelValue, pinned: pinnedSet.value.has(it.value) }]),
                     onMouseenter: ($event) => active.value = i,
@@ -7647,14 +7648,14 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
                       active: i === active.value,
                       pinned: pinnedSet.value.has(it.value)
                     }, () => [
-                      createBaseVNode("span", _hoisted_9$2, toDisplayString(labelOf(it)), 1)
+                      createBaseVNode("span", _hoisted_9$4, toDisplayString(labelOf(it)), 1)
                     ], true)
-                  ], 42, _hoisted_8$2)
+                  ], 42, _hoisted_8$4)
                 ], 64);
               }), 128)),
-              !filtered.value.length ? (openBlock(), createElementBlock("div", _hoisted_10$2, toDisplayString(__props.emptyText), 1)) : createCommentVNode("", true)
+              !filtered.value.length ? (openBlock(), createElementBlock("div", _hoisted_10$4, toDisplayString(__props.emptyText), 1)) : createCommentVNode("", true)
             ], 36),
-            _ctx.$slots.footer ? (openBlock(), createElementBlock("div", _hoisted_11$2, [
+            _ctx.$slots.footer ? (openBlock(), createElementBlock("div", _hoisted_11$4, [
               renderSlot(_ctx.$slots, "footer", { close }, void 0, true)
             ])) : createCommentVNode("", true)
           ], 38)) : createCommentVNode("", true)
@@ -7663,10 +7664,10 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const ZenCombo = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["__scopeId", "data-v-1c65dbd1"]]);
-const _hoisted_1$5 = ["aria-checked", "disabled"];
-const _hoisted_2$4 = { class: "knob" };
-const _sfc_main$5 = /* @__PURE__ */ defineComponent({
+const ZenCombo = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["__scopeId", "data-v-cf4f46d5"]]);
+const _hoisted_1$8 = ["aria-checked", "disabled"];
+const _hoisted_2$7 = { class: "knob" };
+const _sfc_main$9 = /* @__PURE__ */ defineComponent({
   __name: "ZenSwitch",
   props: {
     modelValue: { type: Boolean },
@@ -7685,24 +7686,24 @@ const _sfc_main$5 = /* @__PURE__ */ defineComponent({
         disabled: __props.disabled,
         onClick: _cache2[0] || (_cache2[0] = ($event) => emit2("update:modelValue", !__props.modelValue))
       }, [
-        createBaseVNode("span", _hoisted_2$4, [
+        createBaseVNode("span", _hoisted_2$7, [
           __props.onIcon || __props.offIcon ? (openBlock(), createElementBlock("i", {
             key: 0,
             class: normalizeClass(__props.modelValue ? __props.onIcon : __props.offIcon)
           }, null, 2)) : createCommentVNode("", true)
         ])
-      ], 10, _hoisted_1$5);
+      ], 10, _hoisted_1$8);
     };
   }
 });
-const ZenSwitch = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["__scopeId", "data-v-0bd24040"]]);
-const _hoisted_1$4 = {
+const ZenSwitch = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["__scopeId", "data-v-b969721c"]]);
+const _hoisted_1$7 = {
   class: "zen-tg",
   role: "tablist"
 };
-const _hoisted_2$3 = ["title", "aria-selected", "onClick"];
-const _hoisted_3$3 = { key: 1 };
-const _sfc_main$4 = /* @__PURE__ */ defineComponent({
+const _hoisted_2$6 = ["title", "aria-selected", "onClick"];
+const _hoisted_3$5 = { key: 1 };
+const _sfc_main$8 = /* @__PURE__ */ defineComponent({
   __name: "ZenToggleGroup",
   props: {
     modelValue: {},
@@ -7712,7 +7713,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
   setup(__props, { emit: __emit }) {
     const emit2 = __emit;
     return (_ctx, _cache2) => {
-      return openBlock(), createElementBlock("div", _hoisted_1$4, [
+      return openBlock(), createElementBlock("div", _hoisted_1$7, [
         (openBlock(true), createElementBlock(Fragment, null, renderList(__props.options, (o) => {
           return openBlock(), createElementBlock("button", {
             key: String(o.value),
@@ -7726,16 +7727,16 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
               key: 0,
               class: normalizeClass(o.icon)
             }, null, 2)) : createCommentVNode("", true),
-            o.label ? (openBlock(), createElementBlock("span", _hoisted_3$3, toDisplayString(o.label), 1)) : createCommentVNode("", true)
-          ], 10, _hoisted_2$3);
+            o.label ? (openBlock(), createElementBlock("span", _hoisted_3$5, toDisplayString(o.label), 1)) : createCommentVNode("", true)
+          ], 10, _hoisted_2$6);
         }), 128))
       ]);
     };
   }
 });
-const ZenToggleGroup = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["__scopeId", "data-v-30ea6574"]]);
-const _hoisted_1$3 = ["min", "max", "step", "value", "disabled"];
-const _sfc_main$3 = /* @__PURE__ */ defineComponent({
+const ZenToggleGroup = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["__scopeId", "data-v-b8484c32"]]);
+const _hoisted_1$6 = ["min", "max", "step", "value", "disabled"];
+const _sfc_main$7 = /* @__PURE__ */ defineComponent({
   __name: "ZenSlider",
   props: {
     modelValue: {},
@@ -7761,23 +7762,191 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
         value: __props.modelValue,
         disabled: __props.disabled,
         onInput
-      }, null, 40, _hoisted_1$3);
+      }, null, 40, _hoisted_1$6);
     };
   }
 });
-const ZenSlider = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["__scopeId", "data-v-a2688f55"]]);
-const _hoisted_1$2 = { class: "zm-head" };
-const _hoisted_2$2 = {
+const ZenSlider = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["__scopeId", "data-v-10c7ff78"]]);
+const MIN_DIMENSION = 64;
+const MAX_DIMENSION = 8192;
+function clamp(value, lo, hi) {
+  return Math.min(hi, Math.max(lo, value));
+}
+function clampDimension(value, lo = MIN_DIMENSION, hi = MAX_DIMENSION) {
+  return clamp(Math.round(value), lo, hi);
+}
+function snap(value, step) {
+  if (!Number.isFinite(step) || step <= 1) return Math.round(value);
+  return Math.round(value / step) * step;
+}
+function gcd(a, b) {
+  let x = Math.abs(a);
+  let y = Math.abs(b);
+  while (y > 0) {
+    const r = x % y;
+    x = y;
+    y = r;
+  }
+  return x || 1;
+}
+function aspectRatio(width, height) {
+  if (!width || !height) return "—";
+  const g = gcd(Math.round(width), Math.round(height));
+  const aw = Math.round(width / g);
+  const ah = Math.round(height / g);
+  if (aw <= 32 && ah <= 32) return `${aw}:${ah}`;
+  return `${(width / height).toFixed(2)} : 1`;
+}
+function megapixels(width, height) {
+  return width * height / 1e6;
+}
+function scaleToMegapixels(width, height, targetMp, step = 1) {
+  const cur = width * height;
+  if (cur <= 0 || targetMp <= 0) return { width, height };
+  const factor = Math.sqrt(targetMp * 1e6 / cur);
+  return {
+    width: clampDimension(snap(width * factor, step)),
+    height: clampDimension(snap(height * factor, step))
+  };
+}
+const _hoisted_1$5 = { class: "zen-dims" };
+const _hoisted_2$5 = {
+  key: 3,
+  class: "zd-aspect",
+  title: "Aspect ratio"
+};
+const _sfc_main$6 = /* @__PURE__ */ defineComponent({
+  __name: "ZenDimensions",
+  props: {
+    modelValue: {},
+    min: { default: MIN_DIMENSION },
+    max: { default: MAX_DIMENSION },
+    step: { default: 8 },
+    lockAspect: { type: Boolean, default: false },
+    showLock: { type: Boolean, default: true },
+    showSwap: { type: Boolean, default: false },
+    showMp: { type: Boolean, default: false },
+    showAspect: { type: Boolean, default: false }
+  },
+  emits: ["update:modelValue", "update:lockAspect"],
+  setup(__props, { emit: __emit }) {
+    const props = __props;
+    const emit2 = __emit;
+    const w = computed(() => clampDimension(props.modelValue?.width ?? 1024, props.min, props.max));
+    const h = computed(() => clampDimension(props.modelValue?.height ?? 1024, props.min, props.max));
+    const ratio = computed(() => aspectRatio(w.value, h.value));
+    const mpNum = computed(() => Number(megapixels(w.value, h.value).toFixed(2)));
+    const lockedRatio = /* @__PURE__ */ ref(w.value / Math.max(1, h.value));
+    let selfEdit = false;
+    function baseline() {
+      lockedRatio.value = w.value / Math.max(1, h.value);
+    }
+    watch(() => [props.modelValue?.width, props.modelValue?.height], () => {
+      if (selfEdit) {
+        selfEdit = false;
+        return;
+      }
+      baseline();
+    });
+    watch(() => props.lockAspect, (on) => {
+      if (on) baseline();
+    });
+    function commit(nw, nh, keepRatio) {
+      selfEdit = keepRatio;
+      emit2("update:modelValue", {
+        width: clampDimension(snap(nw, props.step), props.min, props.max),
+        height: clampDimension(snap(nh, props.step), props.min, props.max)
+      });
+    }
+    function setW(v) {
+      const nw = clampDimension(snap(v, props.step), props.min, props.max);
+      commit(nw, props.lockAspect ? nw / (lockedRatio.value || 1) : h.value, props.lockAspect);
+    }
+    function setH(v) {
+      const nh = clampDimension(snap(v, props.step), props.min, props.max);
+      commit(props.lockAspect ? nh * (lockedRatio.value || 1) : w.value, nh, props.lockAspect);
+    }
+    function scaleToMp(target) {
+      if (!Number.isFinite(target) || target <= 0) return;
+      const r = scaleToMegapixels(w.value, h.value, target, props.step);
+      commit(r.width, r.height, true);
+    }
+    function swap() {
+      commit(h.value, w.value, false);
+    }
+    function toggleLock() {
+      emit2("update:lockAspect", !props.lockAspect);
+    }
+    return (_ctx, _cache2) => {
+      return openBlock(), createElementBlock("div", _hoisted_1$5, [
+        createVNode(ZenNumber, {
+          bare: "",
+          class: "zd-n",
+          "model-value": w.value,
+          min: __props.min,
+          max: __props.max,
+          step: __props.step,
+          precision: 0,
+          title: "Width",
+          "onUpdate:modelValue": setW
+        }, null, 8, ["model-value", "min", "max", "step"]),
+        _cache2[1] || (_cache2[1] = createBaseVNode("span", { class: "zd-x" }, "×", -1)),
+        createVNode(ZenNumber, {
+          bare: "",
+          class: "zd-n",
+          "model-value": h.value,
+          min: __props.min,
+          max: __props.max,
+          step: __props.step,
+          precision: 0,
+          title: "Height",
+          "onUpdate:modelValue": setH
+        }, null, 8, ["model-value", "min", "max", "step"]),
+        __props.showLock ? (openBlock(), createBlock(ZenIconButton, {
+          key: 0,
+          active: __props.lockAspect,
+          icon: __props.lockAspect ? "mdi mdi-link-variant" : "mdi mdi-link-variant-off",
+          title: "Lock aspect ratio",
+          onClick: toggleLock
+        }, null, 8, ["active", "icon"])) : createCommentVNode("", true),
+        __props.showSwap ? (openBlock(), createBlock(ZenIconButton, {
+          key: 1,
+          icon: "mdi mdi-swap-horizontal",
+          title: "Swap width / height",
+          onClick: swap
+        })) : createCommentVNode("", true),
+        __props.showMp ? (openBlock(), createElementBlock(Fragment, { key: 2 }, [
+          createVNode(ZenNumber, {
+            bare: "",
+            class: "zd-mp",
+            "model-value": mpNum.value,
+            min: 0.1,
+            max: 64,
+            step: 0.25,
+            precision: 2,
+            title: "Megapixels — scales W/H, keeps aspect",
+            "onUpdate:modelValue": scaleToMp
+          }, null, 8, ["model-value"]),
+          _cache2[0] || (_cache2[0] = createBaseVNode("span", { class: "zd-unit" }, "MP", -1))
+        ], 64)) : createCommentVNode("", true),
+        __props.showAspect ? (openBlock(), createElementBlock("span", _hoisted_2$5, toDisplayString(ratio.value), 1)) : createCommentVNode("", true)
+      ]);
+    };
+  }
+});
+const ZenDimensions = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["__scopeId", "data-v-f9393177"]]);
+const _hoisted_1$4 = { class: "zm-head" };
+const _hoisted_2$4 = {
   key: 0,
   class: "zm-title"
 };
-const _hoisted_3$2 = { class: "zm-head-mid" };
-const _hoisted_4$2 = { class: "zm-body zen-scroll" };
-const _hoisted_5$2 = {
+const _hoisted_3$4 = { class: "zm-head-mid" };
+const _hoisted_4$4 = { class: "zm-body zen-scroll" };
+const _hoisted_5$4 = {
   key: 0,
   class: "zm-foot"
 };
-const _sfc_main$2 = /* @__PURE__ */ defineComponent({
+const _sfc_main$5 = /* @__PURE__ */ defineComponent({
   __name: "ZenModal",
   props: {
     open: { type: Boolean },
@@ -7814,9 +7983,9 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
             class: "zen-modal",
             style: normalizeStyle({ width: __props.width, height: __props.height })
           }, [
-            createBaseVNode("div", _hoisted_1$2, [
-              __props.title ? (openBlock(), createElementBlock("span", _hoisted_2$2, toDisplayString(__props.title), 1)) : createCommentVNode("", true),
-              createBaseVNode("div", _hoisted_3$2, [
+            createBaseVNode("div", _hoisted_1$4, [
+              __props.title ? (openBlock(), createElementBlock("span", _hoisted_2$4, toDisplayString(__props.title), 1)) : createCommentVNode("", true),
+              createBaseVNode("div", _hoisted_3$4, [
                 renderSlot(_ctx.$slots, "header")
               ]),
               createBaseVNode("button", {
@@ -7827,10 +7996,10 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
                 createBaseVNode("i", { class: "mdi mdi-close" }, null, -1)
               ])])
             ]),
-            createBaseVNode("div", _hoisted_4$2, [
+            createBaseVNode("div", _hoisted_4$4, [
               renderSlot(_ctx.$slots, "default")
             ]),
-            _ctx.$slots.footer ? (openBlock(), createElementBlock("div", _hoisted_5$2, [
+            _ctx.$slots.footer ? (openBlock(), createElementBlock("div", _hoisted_5$4, [
               renderSlot(_ctx.$slots, "footer")
             ])) : createCommentVNode("", true)
           ], 4)
@@ -7887,66 +8056,101 @@ async function uploadImage(file) {
 function shortName(ref2) {
   return ref2.split("/").pop() || ref2;
 }
-const _hoisted_1$1 = {
+async function listStages() {
+  try {
+    const d = await (await fetch("/nynxz/experimental/stages")).json();
+    return Array.isArray(d.stages) ? d.stages : [];
+  } catch {
+    return [];
+  }
+}
+async function saveStage(name, stage, thumb, overwrite = true) {
+  try {
+    const d = await (await fetch("/nynxz/experimental/stages/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, stage, thumb, overwrite })
+    })).json();
+    return d?.ok ? String(d.stem) : null;
+  } catch {
+    return null;
+  }
+}
+async function deleteStage(stem) {
+  try {
+    const d = await (await fetch("/nynxz/experimental/stages/delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ stem })
+    })).json();
+    return !!d?.ok;
+  } catch {
+    return false;
+  }
+}
+function stageThumbUrl(stem, mtime = 0) {
+  return `/nynxz/experimental/stage_thumb?stem=${encodeURIComponent(stem)}&v=${mtime}`;
+}
+const _hoisted_1$3 = {
   key: 0,
   class: "fg-dropmask"
 };
-const _hoisted_2$1 = {
+const _hoisted_2$3 = {
   key: 0,
   class: "fg-grid"
 };
-const _hoisted_3$1 = ["onDragover", "onDrop"];
-const _hoisted_4$1 = ["onDragstart"];
-const _hoisted_5$1 = ["src", "onError"];
-const _hoisted_6$1 = {
+const _hoisted_3$3 = ["onDragover", "onDrop"];
+const _hoisted_4$3 = ["onDragstart"];
+const _hoisted_5$3 = ["src", "onError"];
+const _hoisted_6$3 = {
   key: 1,
   class: "mdi mdi-image-broken-variant fg-ph warn",
   title: "This file is gone from the folder"
 };
-const _hoisted_7$1 = ["title"];
-const _hoisted_8$1 = { class: "fg-acts" };
-const _hoisted_9$1 = ["title", "onClick"];
-const _hoisted_10$1 = ["title", "onClick"];
-const _hoisted_11$1 = ["onClick"];
-const _hoisted_12$1 = {
+const _hoisted_7$3 = ["title"];
+const _hoisted_8$3 = { class: "fg-acts" };
+const _hoisted_9$3 = ["title", "onClick"];
+const _hoisted_10$3 = ["title", "onClick"];
+const _hoisted_11$3 = ["onClick"];
+const _hoisted_12$3 = {
   key: 2,
   class: "fg-mutemark"
 };
-const _hoisted_13$1 = { class: "fg-meta" };
-const _hoisted_14$1 = ["title"];
-const _hoisted_15$1 = { class: "fg-foot" };
-const _hoisted_16$1 = {
+const _hoisted_13$3 = { class: "fg-meta" };
+const _hoisted_14$3 = ["title"];
+const _hoisted_15$3 = { class: "fg-foot" };
+const _hoisted_16$3 = {
   key: 1,
   class: "fg-empty"
 };
-const _hoisted_17$1 = {
+const _hoisted_17$3 = {
   key: 1,
   class: "fg-warn"
 };
-const _hoisted_18$1 = { class: "fg-bar" };
-const _hoisted_19$1 = ["disabled"];
-const _hoisted_20$1 = {
+const _hoisted_18$3 = { class: "fg-bar" };
+const _hoisted_19$3 = ["disabled"];
+const _hoisted_20$3 = {
   key: 0,
   class: "fg-add-n"
 };
-const _hoisted_21$1 = { class: "fg-search" };
-const _hoisted_22$1 = { class: "fg-bgrid" };
-const _hoisted_23$1 = ["onClick"];
-const _hoisted_24$1 = { class: "fg-bcard-img" };
-const _hoisted_25$1 = ["src"];
-const _hoisted_26$1 = {
+const _hoisted_21$3 = { class: "fg-search" };
+const _hoisted_22$2 = { class: "fg-bgrid" };
+const _hoisted_23$2 = ["onClick"];
+const _hoisted_24$2 = { class: "fg-bcard-img" };
+const _hoisted_25$2 = ["src"];
+const _hoisted_26$2 = {
   key: 0,
   class: "fg-bcard-tick"
 };
-const _hoisted_27$1 = { class: "fg-bcard-meta" };
-const _hoisted_28$1 = ["title"];
-const _hoisted_29$1 = { class: "fg-bcard-dir" };
-const _hoisted_30$1 = {
+const _hoisted_27$2 = { class: "fg-bcard-meta" };
+const _hoisted_28$2 = ["title"];
+const _hoisted_29$2 = { class: "fg-bcard-dir" };
+const _hoisted_30$2 = {
   key: 0,
   class: "fg-bgrid-empty"
 };
 const DEFAULT_FIT = "contain";
-const _sfc_main$1 = /* @__PURE__ */ defineComponent({
+const _sfc_main$4 = /* @__PURE__ */ defineComponent({
   __name: "FusionGrid",
   props: {
     widget: {},
@@ -8211,7 +8415,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
         onDragleave: onDragLeave,
         onDrop: withModifiers(onDrop, ["prevent"])
       }, [
-        dragOver.value ? (openBlock(), createElementBlock("div", _hoisted_1$1, [..._cache2[3] || (_cache2[3] = [
+        dragOver.value ? (openBlock(), createElementBlock("div", _hoisted_1$3, [..._cache2[3] || (_cache2[3] = [
           createBaseVNode("i", { class: "mdi mdi-tray-arrow-down" }, null, -1),
           createBaseVNode("span", null, "Drop images to add", -1)
         ])])) : createCommentVNode("", true),
@@ -8225,7 +8429,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
           onPointerleave: disarmScroll
         }, {
           default: withCtx(() => [
-            rows.value.length ? (openBlock(), createElementBlock("div", _hoisted_2$1, [
+            rows.value.length ? (openBlock(), createElementBlock("div", _hoisted_2$3, [
               (openBlock(true), createElementBlock(Fragment, null, renderList(rows.value, (row, i) => {
                 return openBlock(), createElementBlock("div", {
                   key: row.id,
@@ -8249,12 +8453,12 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                       style: normalizeStyle({ objectFit: fitCss(row.fit) }),
                       loading: "lazy",
                       onError: ($event) => onImgError(row)
-                    }, null, 44, _hoisted_5$1)) : (openBlock(), createElementBlock("i", _hoisted_6$1)),
+                    }, null, 44, _hoisted_5$3)) : (openBlock(), createElementBlock("i", _hoisted_6$3)),
                     createBaseVNode("span", {
                       class: "fg-idx",
                       title: `Source ${i + 1} — drag to reorder`
-                    }, toDisplayString(i + 1), 9, _hoisted_7$1),
-                    createBaseVNode("div", _hoisted_8$1, [
+                    }, toDisplayString(i + 1), 9, _hoisted_7$3),
+                    createBaseVNode("div", _hoisted_8$3, [
                       createBaseVNode("button", {
                         class: "fg-act",
                         title: FIT_META[row.fit].label + " (click to change)",
@@ -8263,7 +8467,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                         createBaseVNode("i", {
                           class: normalizeClass(["mdi", FIT_META[row.fit].icon])
                         }, null, 2)
-                      ], 8, _hoisted_9$1),
+                      ], 8, _hoisted_9$3),
                       createBaseVNode("button", {
                         class: "fg-act",
                         title: row.on ? "Mute this image" : "Unmute this image",
@@ -8272,23 +8476,23 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                         createBaseVNode("i", {
                           class: normalizeClass(["mdi", row.on ? "mdi-eye-outline" : "mdi-eye-off-outline"])
                         }, null, 2)
-                      ], 8, _hoisted_10$1),
+                      ], 8, _hoisted_10$3),
                       createBaseVNode("button", {
                         class: "fg-act danger",
                         title: "Remove",
                         onClick: withModifiers(($event) => removeRow(i), ["stop"])
                       }, [..._cache2[4] || (_cache2[4] = [
                         createBaseVNode("i", { class: "mdi mdi-close" }, null, -1)
-                      ])], 8, _hoisted_11$1)
+                      ])], 8, _hoisted_11$3)
                     ]),
-                    !row.on ? (openBlock(), createElementBlock("span", _hoisted_12$1, [..._cache2[5] || (_cache2[5] = [
+                    !row.on ? (openBlock(), createElementBlock("span", _hoisted_12$3, [..._cache2[5] || (_cache2[5] = [
                       createBaseVNode("i", { class: "mdi mdi-eye-off" }, null, -1)
                     ])])) : createCommentVNode("", true),
-                    createBaseVNode("div", _hoisted_13$1, [
+                    createBaseVNode("div", _hoisted_13$3, [
                       createBaseVNode("span", {
                         class: "fg-name",
                         title: row.ref
-                      }, toDisplayString(unref(shortName)(row.ref)), 9, _hoisted_14$1),
+                      }, toDisplayString(unref(shortName)(row.ref)), 9, _hoisted_14$3),
                       createBaseVNode("span", {
                         class: normalizeClass(["fg-pct", { dim: !row.on }])
                       }, toDisplayString(row.on ? Math.round(share(row)) + "%" : "muted"), 3)
@@ -8297,8 +8501,8 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                       class: "fg-share",
                       style: normalizeStyle({ width: share(row) + "%" })
                     }, null, 4)
-                  ], 40, _hoisted_4$1),
-                  createBaseVNode("div", _hoisted_15$1, [
+                  ], 40, _hoisted_4$3),
+                  createBaseVNode("div", _hoisted_15$3, [
                     createVNode(unref(ZenSlider), {
                       class: "fg-slider",
                       "model-value": row.strength,
@@ -8319,9 +8523,9 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                       "onUpdate:modelValue": ($event) => setStrength(i, $event)
                     }, null, 8, ["model-value", "disabled", "onUpdate:modelValue"])
                   ])
-                ], 42, _hoisted_3$1);
+                ], 42, _hoisted_3$3);
               }), 128))
-            ])) : (openBlock(), createElementBlock("div", _hoisted_16$1, [..._cache2[6] || (_cache2[6] = [
+            ])) : (openBlock(), createElementBlock("div", _hoisted_16$3, [..._cache2[6] || (_cache2[6] = [
               createBaseVNode("i", { class: "mdi mdi-image-multiple-outline" }, null, -1),
               createBaseVNode("span", null, "Drop images here", -1),
               createBaseVNode("small", null, "One is enough — more will blend", -1)
@@ -8329,11 +8533,11 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
           ]),
           _: 1
         }, 512),
-        rows.value.length && !enabledCount.value ? (openBlock(), createElementBlock("div", _hoisted_17$1, [..._cache2[7] || (_cache2[7] = [
+        rows.value.length && !enabledCount.value ? (openBlock(), createElementBlock("div", _hoisted_17$3, [..._cache2[7] || (_cache2[7] = [
           createBaseVNode("i", { class: "mdi mdi-alert-outline" }, null, -1),
           createBaseVNode("span", null, "Every image is muted — fusion needs at least one", -1)
         ])])) : createCommentVNode("", true),
-        createBaseVNode("div", _hoisted_18$1, [
+        createBaseVNode("div", _hoisted_18$3, [
           createBaseVNode("button", {
             class: "fg-add",
             disabled: busy.value,
@@ -8343,8 +8547,8 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
               class: normalizeClass(["mdi", busy.value ? "mdi-loading mdi-spin" : "mdi-plus"])
             }, null, 2),
             createTextVNode(" " + toDisplayString(busy.value ? "Uploading…" : "Add images") + " ", 1),
-            rows.value.length ? (openBlock(), createElementBlock("span", _hoisted_20$1, toDisplayString(rows.value.length), 1)) : createCommentVNode("", true)
-          ], 8, _hoisted_19$1),
+            rows.value.length ? (openBlock(), createElementBlock("span", _hoisted_20$3, toDisplayString(rows.value.length), 1)) : createCommentVNode("", true)
+          ], 8, _hoisted_19$3),
           createVNode(unref(ZenIconButton), {
             icon: "mdi mdi-view-grid-outline",
             title: "Browse images",
@@ -8373,7 +8577,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
           style: { "display": "none" },
           onChange: onUpload
         }, null, 544),
-        createVNode(unref(_sfc_main$2), {
+        createVNode(unref(_sfc_main$5), {
           open: browse.value,
           "onUpdate:open": _cache2[2] || (_cache2[2] = ($event) => browse.value = $event),
           title: `${srcType.value} images`,
@@ -8381,7 +8585,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
           height: "78vh"
         }, {
           header: withCtx(() => [
-            createBaseVNode("span", _hoisted_21$1, [
+            createBaseVNode("span", _hoisted_21$3, [
               createVNode(unref(ZenInput), {
                 modelValue: bq.value,
                 "onUpdate:modelValue": _cache2[0] || (_cache2[0] = ($event) => bq.value = $event),
@@ -8430,32 +8634,32 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
             }, 8, ["disabled"])
           ]),
           default: withCtx(() => [
-            createBaseVNode("div", _hoisted_22$1, [
+            createBaseVNode("div", _hoisted_22$2, [
               (openBlock(true), createElementBlock(Fragment, null, renderList(browseItems.value, (it) => {
                 return openBlock(), createElementBlock("button", {
                   key: it.type + ":" + it.name,
                   class: normalizeClass(["fg-bcard", { sel: picked.value.has(it.name) }]),
                   onClick: ($event) => togglePick(it.name)
                 }, [
-                  createBaseVNode("div", _hoisted_24$1, [
+                  createBaseVNode("div", _hoisted_24$2, [
                     createBaseVNode("img", {
                       src: unref(thumbUrl)(it.name, it.type),
                       loading: "lazy"
-                    }, null, 8, _hoisted_25$1),
-                    picked.value.has(it.name) ? (openBlock(), createElementBlock("span", _hoisted_26$1, [..._cache2[9] || (_cache2[9] = [
+                    }, null, 8, _hoisted_25$2),
+                    picked.value.has(it.name) ? (openBlock(), createElementBlock("span", _hoisted_26$2, [..._cache2[9] || (_cache2[9] = [
                       createBaseVNode("i", { class: "mdi mdi-check" }, null, -1)
                     ])])) : createCommentVNode("", true)
                   ]),
-                  createBaseVNode("div", _hoisted_27$1, [
+                  createBaseVNode("div", _hoisted_27$2, [
                     createBaseVNode("span", {
                       class: "fg-bcard-name",
                       title: it.name
-                    }, toDisplayString(unref(shortName)(it.name)), 9, _hoisted_28$1),
-                    createBaseVNode("span", _hoisted_29$1, toDisplayString(it.subfolder || "—"), 1)
+                    }, toDisplayString(unref(shortName)(it.name)), 9, _hoisted_28$2),
+                    createBaseVNode("span", _hoisted_29$2, toDisplayString(it.subfolder || "—"), 1)
                   ])
-                ], 10, _hoisted_23$1);
+                ], 10, _hoisted_23$2);
               }), 128)),
-              !browseItems.value.length ? (openBlock(), createElementBlock("p", _hoisted_30$1, "No images in " + toDisplayString(srcType.value) + "/.", 1)) : createCommentVNode("", true)
+              !browseItems.value.length ? (openBlock(), createElementBlock("p", _hoisted_30$2, "No images in " + toDisplayString(srcType.value) + "/.", 1)) : createCommentVNode("", true)
             ])
           ]),
           _: 1
@@ -8464,8 +8668,1877 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const FusionGrid = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-84e98745"]]);
-const fusionNode = defineNode({
+const FusionGrid = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["__scopeId", "data-v-84e98745"]]);
+const _sfc_main$3 = /* @__PURE__ */ defineComponent({
+  __name: "StudioPopover",
+  props: {
+    align: { default: "left" },
+    up: { type: Boolean, default: false }
+  },
+  setup(__props) {
+    const open = /* @__PURE__ */ ref(false);
+    const root = /* @__PURE__ */ ref(null);
+    function onDoc(e) {
+      if (root.value && !root.value.contains(e.target)) close();
+    }
+    function onKey(e) {
+      if (e.key === "Escape") close();
+    }
+    function bind() {
+      document.addEventListener("pointerdown", onDoc, true);
+      document.addEventListener("keydown", onKey);
+    }
+    function unbind() {
+      document.removeEventListener("pointerdown", onDoc, true);
+      document.removeEventListener("keydown", onKey);
+    }
+    function close() {
+      open.value = false;
+      unbind();
+    }
+    function toggle() {
+      open.value = !open.value;
+      if (open.value) bind();
+      else unbind();
+    }
+    onBeforeUnmount(unbind);
+    return (_ctx, _cache2) => {
+      return openBlock(), createElementBlock("span", {
+        ref_key: "root",
+        ref: root,
+        class: "sp"
+      }, [
+        createBaseVNode("span", {
+          class: "sp-trigger",
+          onClick: toggle
+        }, [
+          renderSlot(_ctx.$slots, "trigger", { active: open.value }, void 0, true)
+        ]),
+        open.value ? (openBlock(), createElementBlock("div", {
+          key: 0,
+          class: normalizeClass(["sp-panel", [__props.align, { up: __props.up }]]),
+          onPointerdown: _cache2[0] || (_cache2[0] = withModifiers(() => {
+          }, ["stop"]))
+        }, [
+          renderSlot(_ctx.$slots, "default", { close }, void 0, true)
+        ], 34)) : createCommentVNode("", true)
+      ], 512);
+    };
+  }
+});
+const StudioPopover = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["__scopeId", "data-v-aa95cced"]]);
+const _hoisted_1$2 = {
+  key: 0,
+  class: "fs-dropmask"
+};
+const _hoisted_2$2 = { class: "fs-pop" };
+const _hoisted_3$2 = { class: "fs-achips" };
+const _hoisted_4$2 = ["onClick"];
+const _hoisted_5$2 = { class: "fs-pop" };
+const _hoisted_6$2 = { class: "fs-pop-note" };
+const _hoisted_7$2 = { class: "fs-pop-row" };
+const _hoisted_8$2 = {
+  class: "fs-color",
+  title: "Background colour"
+};
+const _hoisted_9$2 = ["value"];
+const _hoisted_10$2 = { class: "fs-main" };
+const _hoisted_11$2 = ["src"];
+const _hoisted_12$2 = ["data-idx"];
+const _hoisted_13$2 = ["src", "data-idx", "onError"];
+const _hoisted_14$2 = ["data-idx"];
+const _hoisted_15$2 = {
+  key: 2,
+  class: "mdi mdi-lock fs-locked-badge"
+};
+const _hoisted_16$2 = {
+  key: 3,
+  class: "fs-hidden-badge"
+};
+const _hoisted_17$2 = ["data-idx"];
+const _hoisted_18$2 = { class: "fs-selbox-tag" };
+const _hoisted_19$2 = ["data-idx", "data-handle"];
+const _hoisted_20$2 = {
+  key: 3,
+  class: "fs-empty"
+};
+const _hoisted_21$2 = { class: "fs-side-head" };
+const _hoisted_22$1 = { class: "fs-side-n" };
+const _hoisted_23$1 = { class: "fs-list" };
+const _hoisted_24$1 = ["onClick", "onDrop"];
+const _hoisted_25$1 = { class: "fs-rowtop" };
+const _hoisted_26$1 = ["onDragstart"];
+const _hoisted_27$1 = ["src"];
+const _hoisted_28$1 = {
+  key: 1,
+  class: "mdi mdi-image-broken-variant"
+};
+const _hoisted_29$1 = ["title"];
+const _hoisted_30$1 = ["title", "onClick"];
+const _hoisted_31$1 = ["title", "onClick"];
+const _hoisted_32$1 = ["title", "onClick"];
+const _hoisted_33$1 = ["onClick"];
+const _hoisted_34$1 = { class: "fs-wnum" };
+const _hoisted_35 = {
+  key: 0,
+  class: "fs-list-empty"
+};
+const _hoisted_36 = { class: "fs-props-h" };
+const _hoisted_37 = ["title"];
+const _hoisted_38 = { class: "fs-props-row" };
+const _hoisted_39 = ["value"];
+const _hoisted_40 = ["value"];
+const _hoisted_41 = {
+  class: "fs-prop-slider",
+  title: "Opacity"
+};
+const _hoisted_42 = { class: "fs-prop-v" };
+const _hoisted_43 = {
+  class: "fs-prop-slider",
+  title: "Soft edge"
+};
+const _hoisted_44 = { class: "fs-prop-v" };
+const _hoisted_45 = { class: "fs-side-foot" };
+const _hoisted_46 = ["disabled"];
+const _hoisted_47 = { class: "fs-search" };
+const _hoisted_48 = { class: "fs-bgrid" };
+const _hoisted_49 = ["onClick"];
+const _hoisted_50 = { class: "fs-bcard-img" };
+const _hoisted_51 = ["src"];
+const _hoisted_52 = {
+  key: 0,
+  class: "fs-bcard-tick"
+};
+const _hoisted_53 = { class: "fs-bcard-meta" };
+const _hoisted_54 = ["title"];
+const _hoisted_55 = {
+  key: 0,
+  class: "fs-bgrid-empty"
+};
+const _hoisted_56 = { class: "fs-lib" };
+const _hoisted_57 = ["onClick"];
+const _hoisted_58 = { class: "fs-libcard-img" };
+const _hoisted_59 = ["src"];
+const _hoisted_60 = {
+  key: 1,
+  class: "mdi mdi-layers-outline"
+};
+const _hoisted_61 = ["onClick"];
+const _hoisted_62 = ["title"];
+const _hoisted_63 = {
+  key: 0,
+  class: "fs-lib-empty"
+};
+const MIN = 0.02;
+const _sfc_main$2 = /* @__PURE__ */ defineComponent({
+  __name: "FusionStage",
+  props: {
+    widget: {},
+    node: {}
+  },
+  setup(__props) {
+    const props = __props;
+    const FITS = ["contain", "cover", "stretch"];
+    const BLENDS = ["normal", "multiply", "screen", "overlay", "soft_light", "hard_light", "darken", "lighten", "difference", "exclusion", "add", "subtract", "color_dodge", "color_burn"];
+    const ASPECTS = [
+      { label: "1:1", r: 1 },
+      { label: "4:3", r: 4 / 3 },
+      { label: "3:4", r: 3 / 4 },
+      { label: "3:2", r: 3 / 2 },
+      { label: "2:3", r: 2 / 3 },
+      { label: "16:9", r: 16 / 9 },
+      { label: "9:16", r: 9 / 16 }
+    ];
+    const FIT_OPTS = [
+      { value: "contain", label: "", icon: "mdi mdi-fit-to-page-outline", title: "Contain" },
+      { value: "cover", label: "", icon: "mdi mdi-crop", title: "Cover" },
+      { value: "stretch", label: "", icon: "mdi mdi-arrow-expand-all", title: "Stretch" }
+    ];
+    const FUSE_OPTS = [
+      { value: "layers", label: "Layers", title: "Each layer = a region-tagged fusion source" },
+      { value: "flattened", label: "Flat", title: "The composite as one fusion source" },
+      { value: "off", label: "Off", title: "Pass the upstream fusion_input through" }
+    ];
+    const SRC_OPTS = [
+      { value: "input", label: "Input" },
+      { value: "output", label: "Output" },
+      { value: "temp", label: "Temp" }
+    ];
+    const TYPES = ["input", "temp", "output"];
+    const PALETTE = ["#6366f1", "#ec4899", "#22c55e", "#f59e0b", "#06b6d4", "#a855f7", "#ef4444", "#84cc16"];
+    const HANDLES = ["nw", "n", "ne", "e", "se", "s", "sw", "w"];
+    const clamp2 = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+    const clamp01 = (v) => clamp2(v, 0, 1);
+    function num(v, fallback) {
+      const n = +v;
+      return Number.isFinite(n) ? n : fallback;
+    }
+    let seq = 0;
+    function nextId() {
+      return `l${Date.now().toString(36)}${(seq++).toString(36)}`;
+    }
+    function normLayer(r, i) {
+      const o = r ?? {};
+      return {
+        id: String(o.id ?? nextId()),
+        ref: String(o.ref ?? ""),
+        type: TYPES.includes(o.type) ? o.type : "input",
+        x: clamp01(num(o.x, 0.1)),
+        y: clamp01(num(o.y, 0.1)),
+        w: clamp2(num(o.w, 0.4), MIN, 1),
+        h: clamp2(num(o.h, 0.4), MIN, 1),
+        fit: FITS.includes(o.fit) ? o.fit : "contain",
+        opacity: clamp01(num(o.opacity, 1)),
+        blend: BLENDS.includes(String(o.blend)) ? String(o.blend) : "normal",
+        feather: clamp2(num(o.feather, 0), 0, 0.5),
+        flip_h: o.flip_h === true,
+        flip_v: o.flip_v === true,
+        matte: o.matte !== false,
+        on: o.on !== false,
+        locked: o.locked === true,
+        strength: Math.max(0, num(o.strength, 1)),
+        label: String(o.label ?? o.ref ?? `layer ${i + 1}`)
+      };
+    }
+    function parse(v) {
+      const o = v ?? {};
+      const canvas = o.canvas ?? {};
+      const bg = o.background ?? {};
+      const arr = Array.isArray(o.layers) ? o.layers : [];
+      return {
+        canvasW: Math.max(64, Math.min(4096, Math.round(num(canvas.width, 1024)))),
+        canvasH: Math.max(64, Math.min(4096, Math.round(num(canvas.height, 1024)))),
+        bgRef: String(bg.ref ?? ""),
+        bgType: TYPES.includes(bg.type) ? bg.type : "input",
+        bgColor: /^#[0-9a-fA-F]{6}$/.test(String(bg.color)) ? String(bg.color) : "#000000",
+        layers: arr.map((r, i) => normLayer(r, i)),
+        fuseAs: ["layers", "flattened", "off"].includes(o.fuse_as) ? o.fuse_as : "layers"
+      };
+    }
+    const init = parse(props.widget?.value);
+    const canvasW = /* @__PURE__ */ ref(init.canvasW);
+    const canvasH = /* @__PURE__ */ ref(init.canvasH);
+    const bgRef = /* @__PURE__ */ ref(init.bgRef);
+    const bgType = /* @__PURE__ */ ref(init.bgType);
+    const bgColor = /* @__PURE__ */ ref(init.bgColor);
+    const bgMissing = /* @__PURE__ */ ref(false);
+    const layers = /* @__PURE__ */ ref(init.layers);
+    const fuseAs = /* @__PURE__ */ ref(init.fuseAs);
+    const selected = /* @__PURE__ */ ref(init.layers.length ? 0 : -1);
+    const wrapEl = /* @__PURE__ */ ref(null);
+    const stageEl = /* @__PURE__ */ ref(null);
+    const fileInput = /* @__PURE__ */ ref(null);
+    const stageW = /* @__PURE__ */ ref(280);
+    const stageH = /* @__PURE__ */ ref(280);
+    const missing = /* @__PURE__ */ ref(/* @__PURE__ */ new Set());
+    const busy = /* @__PURE__ */ ref(false);
+    const dragOver = /* @__PURE__ */ ref(false);
+    const sel = computed(() => layers.value[selected.value] ?? null);
+    const listRows = computed(() => layers.value.map((l, i) => ({ l, i })).reverse());
+    const color = (i) => PALETTE[i % PALETTE.length];
+    function fitCss(fit2) {
+      return fit2 === "stretch" ? "fill" : fit2;
+    }
+    function layerStyle(_i, l) {
+      return {
+        left: `${l.x * 100}%`,
+        top: `${l.y * 100}%`,
+        width: `${l.w * 100}%`,
+        height: `${l.h * 100}%`,
+        zIndex: _i + 1
+      };
+    }
+    const selboxStyle = computed(() => {
+      const l = sel.value;
+      if (!l) return {};
+      const c = color(selected.value);
+      return {
+        left: `${l.x * 100}%`,
+        top: `${l.y * 100}%`,
+        width: `${l.w * 100}%`,
+        height: `${l.h * 100}%`,
+        borderColor: c,
+        color: c
+      };
+    });
+    function snapshot() {
+      return {
+        version: 1,
+        canvas: { width: canvasW.value, height: canvasH.value },
+        background: { ref: bgRef.value, type: bgType.value, color: bgColor.value },
+        layers: layers.value.map((l) => ({ ...l })),
+        fuse_as: fuseAs.value
+      };
+    }
+    function commit() {
+      if (props.widget) {
+        const snap2 = snapshot();
+        props.widget.value = snap2;
+        try {
+          props.widget.callback?.(snap2);
+        } catch {
+        }
+      }
+      props.node?.graph?.setDirtyCanvas?.(true, true);
+      scheduleCheckpoint();
+    }
+    const undoStack = /* @__PURE__ */ ref([]);
+    const redoStack = /* @__PURE__ */ ref([]);
+    let baseline = "";
+    let restoring = false;
+    let histTimer;
+    const canUndo = computed(() => undoStack.value.length > 0);
+    const canRedo = computed(() => redoStack.value.length > 0);
+    function snapStr() {
+      return JSON.stringify(snapshot());
+    }
+    function scheduleCheckpoint() {
+      if (restoring) return;
+      if (histTimer) window.clearTimeout(histTimer);
+      histTimer = window.setTimeout(checkpoint, 350);
+    }
+    function checkpoint() {
+      if (histTimer) {
+        window.clearTimeout(histTimer);
+        histTimer = void 0;
+      }
+      const s = snapStr();
+      if (s === baseline) return;
+      undoStack.value = [...undoStack.value, baseline].slice(-60);
+      redoStack.value = [];
+      baseline = s;
+    }
+    function restoreFrom(s) {
+      restoring = true;
+      try {
+        const p2 = parse(JSON.parse(s));
+        canvasW.value = p2.canvasW;
+        canvasH.value = p2.canvasH;
+        bgRef.value = p2.bgRef;
+        bgType.value = p2.bgType;
+        bgColor.value = p2.bgColor;
+        bgMissing.value = false;
+        missing.value = /* @__PURE__ */ new Set();
+        layers.value = p2.layers;
+        fuseAs.value = p2.fuseAs;
+        if (selected.value >= p2.layers.length) selected.value = p2.layers.length - 1;
+        commit();
+        fit();
+      } finally {
+        restoring = false;
+      }
+    }
+    function undo() {
+      checkpoint();
+      if (!undoStack.value.length) return;
+      redoStack.value = [...redoStack.value, baseline];
+      baseline = undoStack.value[undoStack.value.length - 1];
+      undoStack.value = undoStack.value.slice(0, -1);
+      restoreFrom(baseline);
+    }
+    function redo() {
+      if (!redoStack.value.length) return;
+      undoStack.value = [...undoStack.value, baseline];
+      baseline = redoStack.value[redoStack.value.length - 1];
+      redoStack.value = redoStack.value.slice(0, -1);
+      restoreFrom(baseline);
+    }
+    function onImgError(l) {
+      missing.value = new Set(missing.value).add(l.ref);
+    }
+    function writeLayer(i, patch) {
+      const next = layers.value.slice();
+      if (!next[i]) return;
+      next[i] = { ...next[i], ...patch };
+      layers.value = next;
+      commit();
+    }
+    function setField(i, key, v) {
+      if (key === "fit") writeLayer(i, { fit: FITS.includes(v) ? v : "contain" });
+      else if (key === "blend") writeLayer(i, { blend: String(v) });
+      else if (key === "opacity" || key === "feather" || key === "strength") writeLayer(i, { [key]: num(v, key === "strength" ? 1 : 0) });
+    }
+    function toggleOn(i) {
+      writeLayer(i, { on: !(layers.value[i]?.on ?? true) });
+    }
+    function toggleMatte(i) {
+      writeLayer(i, { matte: !(layers.value[i]?.matte ?? false) });
+    }
+    function toggleLock(i) {
+      writeLayer(i, { locked: !(layers.value[i]?.locked ?? false) });
+    }
+    function toggleFlip(i, axis) {
+      writeLayer(i, { [axis]: !(layers.value[i]?.[axis] ?? false) });
+    }
+    function flipTransform(l) {
+      return `scaleX(${l.flip_h ? -1 : 1}) scaleY(${l.flip_v ? -1 : 1})`;
+    }
+    function removeLayer(i) {
+      const next = layers.value.slice();
+      next.splice(i, 1);
+      layers.value = next;
+      if (selected.value >= next.length) selected.value = next.length - 1;
+      commit();
+    }
+    function reorder(from, to) {
+      if (to < 0 || to >= layers.value.length || from === to) return;
+      const next = layers.value.slice();
+      const moved = next.splice(from, 1)[0];
+      next.splice(to, 0, moved);
+      layers.value = next;
+      selected.value = to;
+      commit();
+    }
+    const aspectLabel = computed(() => {
+      const r = canvasW.value / Math.max(1, canvasH.value);
+      return ASPECTS.find((a) => Math.abs(a.r - r) < 0.02)?.label ?? "";
+    });
+    function setDims(v) {
+      canvasW.value = Math.max(64, Math.min(4096, Math.round(num(v.width, canvasW.value))));
+      canvasH.value = Math.max(64, Math.min(4096, Math.round(num(v.height, canvasH.value))));
+      fit();
+      commit();
+    }
+    function setAspect(r) {
+      const area = Math.max(1, canvasW.value * canvasH.value);
+      canvasW.value = Math.max(64, Math.min(4096, Math.round(Math.sqrt(area * r) / 8) * 8));
+      canvasH.value = Math.max(64, Math.min(4096, Math.round(canvasW.value / r / 8) * 8));
+      fit();
+      commit();
+    }
+    function setFuseAs(v) {
+      fuseAs.value = ["layers", "flattened", "off"].includes(v) ? v : "layers";
+      commit();
+    }
+    function setColor(v) {
+      bgColor.value = /^#[0-9a-fA-F]{6}$/.test(v) ? v : "#000000";
+      commit();
+    }
+    function clearBg() {
+      bgRef.value = "";
+      bgMissing.value = false;
+      commit();
+    }
+    const rowDrag = /* @__PURE__ */ ref(-1);
+    function startRowDrag(i, e) {
+      rowDrag.value = i;
+      selected.value = i;
+      if (e.dataTransfer) {
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", String(i));
+      }
+    }
+    function onRowDrop(to, e) {
+      e.preventDefault();
+      const from = rowDrag.value;
+      rowDrag.value = -1;
+      if (from >= 0 && from !== to) reorder(from, to);
+    }
+    let dragState = null;
+    function stageNorm(e) {
+      const rect = stageEl.value?.getBoundingClientRect();
+      if (!rect || rect.width === 0 || rect.height === 0) return { nx: 0, ny: 0 };
+      return { nx: clamp2((e.clientX - rect.left) / rect.width, 0, 1), ny: clamp2((e.clientY - rect.top) / rect.height, 0, 1) };
+    }
+    function onDown(e) {
+      e.stopPropagation();
+      const el = e.target;
+      const idxAttr = el.dataset.idx;
+      if (idxAttr == null) {
+        selected.value = -1;
+        return;
+      }
+      e.preventDefault();
+      const idx = +idxAttr;
+      selected.value = idx;
+      const l = layers.value[idx];
+      if (!l || !l.on || l.locked) return;
+      const { nx, ny } = stageNorm(e);
+      dragState = { idx, handle: el.dataset.handle ?? null, offX: nx - l.x, offY: ny - l.y };
+      try {
+        stageEl.value?.setPointerCapture(e.pointerId);
+      } catch {
+      }
+    }
+    function onMove(e) {
+      if (!dragState) return;
+      const { nx, ny } = stageNorm(e);
+      const l = layers.value[dragState.idx];
+      if (!l) return;
+      if (!dragState.handle) {
+        writeLayer(dragState.idx, { x: clamp2(nx - dragState.offX, 0, 1 - l.w), y: clamp2(ny - dragState.offY, 0, 1 - l.h) });
+        return;
+      }
+      let { x, y, w, h } = l;
+      const hd = dragState.handle;
+      if (hd.includes("e")) w = clamp2(nx - x, MIN, 1 - x);
+      if (hd.includes("s")) h = clamp2(ny - y, MIN, 1 - y);
+      if (hd.includes("w")) {
+        const right = x + w;
+        x = clamp2(nx, 0, right - MIN);
+        w = right - x;
+      }
+      if (hd.includes("n")) {
+        const bottom = y + h;
+        y = clamp2(ny, 0, bottom - MIN);
+        h = bottom - y;
+      }
+      writeLayer(dragState.idx, { x, y, w, h });
+    }
+    function onUp(e) {
+      dragState = null;
+      if (e) {
+        try {
+          stageEl.value?.releasePointerCapture(e.pointerId);
+        } catch {
+        }
+      }
+    }
+    function fit() {
+      const wrap = wrapEl.value;
+      if (!wrap) return;
+      const bw = wrap.clientWidth;
+      const bh = wrap.clientHeight;
+      if (bw <= 0 || bh <= 0) return;
+      const asp = canvasW.value > 0 && canvasH.value > 0 ? canvasW.value / canvasH.value : 1;
+      let cw = bw;
+      let ch = bw / asp;
+      if (ch > bh) {
+        ch = bh;
+        cw = bh * asp;
+      }
+      stageW.value = Math.max(1, Math.floor(cw));
+      stageH.value = Math.max(1, Math.floor(ch));
+    }
+    function triggerUpload() {
+      fileInput.value?.click();
+    }
+    async function onUpload(e) {
+      const input = e.target;
+      await addFiles([...input.files ?? []]);
+      input.value = "";
+    }
+    function defaultBox(i) {
+      const off = i % 4 * 0.1;
+      return { x: 0.1 + off, y: 0.1 + off, w: 0.4, h: 0.4 };
+    }
+    function setBg(ref2, type) {
+      bgRef.value = ref2;
+      bgType.value = type;
+      bgMissing.value = false;
+    }
+    function addRef(ref2, type = "input") {
+      const i = layers.value.length;
+      const box = defaultBox(i);
+      layers.value = [...layers.value, normLayer({ id: nextId(), ref: ref2, type, ...box, matte: true, label: shortName(ref2) }, i)];
+      selected.value = layers.value.length - 1;
+    }
+    async function addFiles(files) {
+      const imgs = files.filter((f) => f.type.startsWith("image/"));
+      if (!imgs.length) return;
+      busy.value = true;
+      try {
+        const existing = await listImages("input", true);
+        const already = /* @__PURE__ */ new Map();
+        for (const it of existing) {
+          const key = `${shortName(it.name)} ${it.size ?? ""}`;
+          if (!already.has(key) || shortName(it.name) === it.name) already.set(key, it.name);
+        }
+        for (const file of imgs) {
+          const key = `${file.name} ${file.size}`;
+          const hit = already.get(key);
+          if (hit) {
+            addRef(hit, "input");
+            continue;
+          }
+          const up = await uploadImage(file);
+          if (up) {
+            addRef(up.ref, up.type);
+            already.set(key, up.ref);
+          } else console.error("[Nynxz] fusion stage upload failed", file.name);
+        }
+        commit();
+      } finally {
+        busy.value = false;
+      }
+    }
+    function onDragOver(e) {
+      if (rowDrag.value >= 0) return;
+      if (!e.dataTransfer?.types?.includes("Files")) return;
+      dragOver.value = true;
+    }
+    function onDragLeave(e) {
+      const to = e.relatedTarget;
+      if (to && e.currentTarget?.contains(to)) return;
+      dragOver.value = false;
+    }
+    async function onDrop(e) {
+      dragOver.value = false;
+      if (rowDrag.value >= 0) return;
+      await addFiles([...e.dataTransfer?.files ?? []]);
+    }
+    const browse = /* @__PURE__ */ ref(false);
+    const bgPick = /* @__PURE__ */ ref(false);
+    const images = /* @__PURE__ */ ref([]);
+    const srcType = /* @__PURE__ */ ref("input");
+    const bq = /* @__PURE__ */ ref("");
+    const picked = /* @__PURE__ */ ref(/* @__PURE__ */ new Set());
+    const browseItems = computed(() => {
+      const q = bq.value.trim().toLowerCase();
+      return images.value.filter((it) => !q || it.name.toLowerCase().includes(q));
+    });
+    async function ensureImages(force = false) {
+      images.value = await listImages(srcType.value, force);
+    }
+    function openBrowse() {
+      bgPick.value = false;
+      picked.value = /* @__PURE__ */ new Set();
+      bq.value = "";
+      browse.value = true;
+      void ensureImages();
+    }
+    function openBgBrowse() {
+      bgPick.value = true;
+      picked.value = /* @__PURE__ */ new Set();
+      bq.value = "";
+      browse.value = true;
+      void ensureImages();
+    }
+    watch(browse, (open) => {
+      if (!open) bgPick.value = false;
+    });
+    function setSrc(v) {
+      srcType.value = v;
+      picked.value = /* @__PURE__ */ new Set();
+      void ensureImages();
+    }
+    function onPick(name) {
+      if (bgPick.value) {
+        const it = images.value.find((x) => x.name === name);
+        setBg(name, it?.type ?? srcType.value);
+        commit();
+        browse.value = false;
+        return;
+      }
+      const next = new Set(picked.value);
+      if (next.has(name)) next.delete(name);
+      else next.add(name);
+      picked.value = next;
+    }
+    function addPicked() {
+      for (const it of images.value) if (picked.value.has(it.name)) addRef(it.name, it.type);
+      commit();
+      browse.value = false;
+    }
+    const library = /* @__PURE__ */ ref(false);
+    const stages = /* @__PURE__ */ ref([]);
+    const saveName = /* @__PURE__ */ ref("");
+    const saving = /* @__PURE__ */ ref(false);
+    async function refreshStages() {
+      stages.value = await listStages();
+    }
+    function openLibrary() {
+      library.value = true;
+      saveName.value = "";
+      void refreshStages();
+    }
+    function makeThumb() {
+      try {
+        const w = 240;
+        const h = Math.max(1, Math.round(w * canvasH.value / Math.max(1, canvasW.value)));
+        const cv = document.createElement("canvas");
+        cv.width = w;
+        cv.height = h;
+        const ctx = cv.getContext("2d");
+        if (!ctx) return void 0;
+        ctx.fillStyle = bgColor.value;
+        ctx.fillRect(0, 0, w, h);
+        layers.value.forEach((l, i) => {
+          const c = color(i);
+          const x = l.x * w;
+          const y = l.y * h;
+          const bw = l.w * w;
+          const bh = l.h * h;
+          ctx.globalAlpha = l.on ? 0.5 : 0.2;
+          ctx.fillStyle = c;
+          ctx.fillRect(x, y, bw, bh);
+          ctx.globalAlpha = 1;
+          ctx.strokeStyle = c;
+          ctx.lineWidth = 2;
+          ctx.strokeRect(x, y, bw, bh);
+        });
+        return cv.toDataURL("image/jpeg", 0.8);
+      } catch {
+        return void 0;
+      }
+    }
+    async function doSave() {
+      const name = saveName.value.trim();
+      if (!name || saving.value) return;
+      saving.value = true;
+      try {
+        await saveStage(name, snapshot(), makeThumb());
+        saveName.value = "";
+        await refreshStages();
+      } finally {
+        saving.value = false;
+      }
+    }
+    function loadStage(st) {
+      const p2 = parse(st.stage);
+      canvasW.value = p2.canvasW;
+      canvasH.value = p2.canvasH;
+      bgRef.value = p2.bgRef;
+      bgType.value = p2.bgType;
+      bgColor.value = p2.bgColor;
+      bgMissing.value = false;
+      missing.value = /* @__PURE__ */ new Set();
+      layers.value = p2.layers;
+      fuseAs.value = p2.fuseAs;
+      selected.value = p2.layers.length ? 0 : -1;
+      commit();
+      fit();
+      library.value = false;
+    }
+    async function delStage(st) {
+      await deleteStage(st.stem);
+      await refreshStages();
+    }
+    let ro;
+    onMounted(() => {
+      baseline = snapStr();
+      fit();
+      if (wrapEl.value && typeof ResizeObserver !== "undefined") {
+        ro = new ResizeObserver(() => fit());
+        ro.observe(wrapEl.value);
+      }
+      [0, 80, 300].forEach((t) => window.setTimeout(fit, t));
+    });
+    onBeforeUnmount(() => {
+      onUp();
+      ro?.disconnect();
+      if (histTimer) window.clearTimeout(histTimer);
+    });
+    return (_ctx, _cache2) => {
+      return openBlock(), createElementBlock("div", {
+        class: normalizeClass(["fs", { dropping: dragOver.value }]),
+        onDragover: withModifiers(onDragOver, ["prevent", "stop"]),
+        onDragleave: onDragLeave,
+        onDrop: withModifiers(onDrop, ["prevent", "stop"])
+      }, [
+        dragOver.value ? (openBlock(), createElementBlock("div", _hoisted_1$2, [..._cache2[20] || (_cache2[20] = [
+          createBaseVNode("i", { class: "mdi mdi-tray-arrow-down" }, null, -1),
+          createBaseVNode("span", null, "Drop images to add layers", -1)
+        ])])) : createCommentVNode("", true),
+        createBaseVNode("div", {
+          class: "fs-bar",
+          onPointerdown: _cache2[2] || (_cache2[2] = withModifiers(() => {
+          }, ["stop"]))
+        }, [
+          createVNode(unref(ZenIconButton), {
+            icon: "mdi mdi-undo",
+            disabled: !canUndo.value,
+            title: "Undo (Ctrl+Z)",
+            onClick: undo
+          }, null, 8, ["disabled"]),
+          createVNode(unref(ZenIconButton), {
+            icon: "mdi mdi-redo",
+            disabled: !canRedo.value,
+            title: "Redo (Ctrl+Shift+Z)",
+            onClick: redo
+          }, null, 8, ["disabled"]),
+          _cache2[31] || (_cache2[31] = createBaseVNode("span", { class: "fs-div" }, null, -1)),
+          createVNode(StudioPopover, { align: "left" }, {
+            trigger: withCtx(({ active }) => [
+              createBaseVNode("button", {
+                class: normalizeClass(["fs-tool", { on: active }]),
+                title: "Canvas resolution"
+              }, [
+                _cache2[21] || (_cache2[21] = createBaseVNode("i", { class: "mdi mdi-aspect-ratio" }, null, -1)),
+                createTextVNode(" " + toDisplayString(canvasW.value) + "×" + toDisplayString(canvasH.value) + " ", 1),
+                _cache2[22] || (_cache2[22] = createBaseVNode("i", { class: "mdi mdi-chevron-down" }, null, -1))
+              ], 2)
+            ]),
+            default: withCtx(() => [
+              createBaseVNode("div", _hoisted_2$2, [
+                _cache2[23] || (_cache2[23] = createBaseVNode("div", { class: "fs-pop-sec" }, "Aspect ratio", -1)),
+                createBaseVNode("div", _hoisted_3$2, [
+                  (openBlock(), createElementBlock(Fragment, null, renderList(ASPECTS, (a) => {
+                    return createBaseVNode("button", {
+                      key: a.label,
+                      class: normalizeClass(["fs-achip", { on: aspectLabel.value === a.label }]),
+                      onClick: ($event) => setAspect(a.r)
+                    }, toDisplayString(a.label), 11, _hoisted_4$2);
+                  }), 64))
+                ]),
+                _cache2[24] || (_cache2[24] = createBaseVNode("div", { class: "fs-pop-sec" }, "Size", -1)),
+                createVNode(unref(ZenDimensions), {
+                  "model-value": { width: canvasW.value, height: canvasH.value },
+                  min: 64,
+                  max: 4096,
+                  step: 8,
+                  "show-swap": "",
+                  "show-mp": "",
+                  "show-aspect": "",
+                  "onUpdate:modelValue": setDims
+                }, null, 8, ["model-value"])
+              ])
+            ]),
+            _: 1
+          }),
+          _cache2[32] || (_cache2[32] = createBaseVNode("span", { class: "fs-sp" }, null, -1)),
+          createVNode(unref(ZenIconButton), {
+            icon: "mdi mdi-bookmark-multiple-outline",
+            title: "Preset library",
+            onClick: openLibrary
+          }),
+          createVNode(StudioPopover, { align: "right" }, {
+            trigger: withCtx(({ active }) => [
+              createBaseVNode("button", {
+                class: normalizeClass(["fs-tool fs-tool-icon", { on: active }]),
+                title: "Fusion & background settings"
+              }, [..._cache2[25] || (_cache2[25] = [
+                createBaseVNode("i", { class: "mdi mdi-tune-variant" }, null, -1)
+              ])], 2)
+            ]),
+            default: withCtx(({ close }) => [
+              createBaseVNode("div", _hoisted_5$2, [
+                _cache2[29] || (_cache2[29] = createBaseVNode("div", { class: "fs-pop-sec" }, "Fuse output", -1)),
+                createVNode(unref(ZenToggleGroup), {
+                  class: "fs-pop-fuse",
+                  "model-value": fuseAs.value,
+                  options: FUSE_OPTS,
+                  "onUpdate:modelValue": _cache2[0] || (_cache2[0] = ($event) => setFuseAs($event))
+                }, null, 8, ["model-value"]),
+                createBaseVNode("p", _hoisted_6$2, [
+                  fuseAs.value === "layers" ? (openBlock(), createElementBlock(Fragment, { key: 0 }, [
+                    _cache2[26] || (_cache2[26] = createTextVNode("Each layer becomes a spatial region — needs ", -1)),
+                    _cache2[27] || (_cache2[27] = createBaseVNode("b", null, "Region Strength", -1)),
+                    _cache2[28] || (_cache2[28] = createTextVNode(" > 0 on the encode node.", -1))
+                  ], 64)) : fuseAs.value === "flattened" ? (openBlock(), createElementBlock(Fragment, { key: 1 }, [
+                    createTextVNode("The flattened composite, as one fusion source.")
+                  ], 64)) : (openBlock(), createElementBlock(Fragment, { key: 2 }, [
+                    createTextVNode("Passes the upstream fusion input straight through.")
+                  ], 64))
+                ]),
+                _cache2[30] || (_cache2[30] = createBaseVNode("div", { class: "fs-pop-sec" }, "Background", -1)),
+                createBaseVNode("div", _hoisted_7$2, [
+                  createVNode(unref(ZenButton), {
+                    variant: "ghost",
+                    sm: "",
+                    icon: "mdi mdi-image-outline",
+                    onClick: ($event) => {
+                      close();
+                      openBgBrowse();
+                    }
+                  }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString(bgRef.value ? "Change" : "Image"), 1)
+                    ]),
+                    _: 1
+                  }, 8, ["onClick"]),
+                  createBaseVNode("label", _hoisted_8$2, [
+                    createBaseVNode("input", {
+                      type: "color",
+                      value: bgColor.value,
+                      onInput: _cache2[1] || (_cache2[1] = ($event) => setColor($event.target.value))
+                    }, null, 40, _hoisted_9$2)
+                  ]),
+                  bgRef.value ? (openBlock(), createBlock(unref(ZenIconButton), {
+                    key: 0,
+                    icon: "mdi mdi-image-off-outline",
+                    title: "Clear image",
+                    onClick: clearBg
+                  })) : createCommentVNode("", true)
+                ])
+              ])
+            ]),
+            _: 1
+          })
+        ], 32),
+        createBaseVNode("div", _hoisted_10$2, [
+          createBaseVNode("div", {
+            ref_key: "wrapEl",
+            ref: wrapEl,
+            class: "fs-stagewrap"
+          }, [
+            createBaseVNode("div", {
+              ref_key: "stageEl",
+              ref: stageEl,
+              class: "fs-stage",
+              style: normalizeStyle({ width: stageW.value + "px", height: stageH.value + "px" }),
+              onPointerdown: onDown,
+              onPointermove: onMove,
+              onPointerup: onUp,
+              onPointercancel: onUp
+            }, [
+              bgRef.value && !bgMissing.value ? (openBlock(), createElementBlock("img", {
+                key: 0,
+                class: "fs-bg",
+                src: unref(thumbUrl)(bgRef.value, bgType.value),
+                draggable: "false",
+                alt: "background",
+                onError: _cache2[3] || (_cache2[3] = ($event) => bgMissing.value = true)
+              }, null, 40, _hoisted_11$2)) : (openBlock(), createElementBlock("div", {
+                key: 1,
+                class: "fs-bg fs-bg-color",
+                style: normalizeStyle({ background: bgColor.value })
+              }, null, 4)),
+              _cache2[38] || (_cache2[38] = createBaseVNode("div", { class: "fs-grid" }, null, -1)),
+              (openBlock(true), createElementBlock(Fragment, null, renderList(layers.value, (l, i) => {
+                return openBlock(), createElementBlock("div", {
+                  key: l.id,
+                  class: normalizeClass(["fs-layer", { muted: !l.on, locked: l.locked }]),
+                  style: normalizeStyle(layerStyle(i, l)),
+                  "data-idx": i
+                }, [
+                  !missing.value.has(l.ref) ? (openBlock(), createElementBlock("img", {
+                    key: 0,
+                    class: "fs-layer-img",
+                    src: unref(thumbUrl)(l.ref, l.type),
+                    style: normalizeStyle({ objectFit: fitCss(l.fit), opacity: l.opacity, transform: flipTransform(l) }),
+                    draggable: "false",
+                    loading: "lazy",
+                    "data-idx": i,
+                    onError: ($event) => onImgError(l)
+                  }, null, 44, _hoisted_13$2)) : (openBlock(), createElementBlock("i", {
+                    key: 1,
+                    class: "mdi mdi-image-broken-variant fs-broken",
+                    "data-idx": i,
+                    title: "File is gone from the folder"
+                  }, null, 8, _hoisted_14$2)),
+                  l.locked ? (openBlock(), createElementBlock("i", _hoisted_15$2)) : createCommentVNode("", true),
+                  !l.on ? (openBlock(), createElementBlock("span", _hoisted_16$2, [..._cache2[33] || (_cache2[33] = [
+                    createBaseVNode("i", { class: "mdi mdi-eye-off" }, null, -1),
+                    createTextVNode("hidden", -1)
+                  ])])) : createCommentVNode("", true)
+                ], 14, _hoisted_12$2);
+              }), 128)),
+              sel.value && sel.value.on && !sel.value.locked ? (openBlock(), createElementBlock("div", {
+                key: 2,
+                class: "fs-selbox",
+                style: normalizeStyle(selboxStyle.value),
+                "data-idx": selected.value
+              }, [
+                createBaseVNode("span", _hoisted_18$2, toDisplayString(sel.value.label), 1),
+                (openBlock(), createElementBlock(Fragment, null, renderList(HANDLES, (hd) => {
+                  return createBaseVNode("i", {
+                    key: hd,
+                    class: normalizeClass(["fs-h", "fs-h-" + hd]),
+                    "data-idx": selected.value,
+                    "data-handle": hd
+                  }, null, 10, _hoisted_19$2);
+                }), 64))
+              ], 12, _hoisted_17$2)) : createCommentVNode("", true),
+              !layers.value.length ? (openBlock(), createElementBlock("div", _hoisted_20$2, [
+                _cache2[35] || (_cache2[35] = createBaseVNode("i", { class: "mdi mdi-image-plus-outline" }, null, -1)),
+                _cache2[36] || (_cache2[36] = createBaseVNode("span", null, "Add images to build a scene", -1)),
+                _cache2[37] || (_cache2[37] = createBaseVNode("small", null, "each layer becomes a fusion region", -1)),
+                createBaseVNode("button", {
+                  class: "fs-empty-add",
+                  onClick: triggerUpload
+                }, [..._cache2[34] || (_cache2[34] = [
+                  createBaseVNode("i", { class: "mdi mdi-plus" }, null, -1),
+                  createTextVNode(" Add images", -1)
+                ])])
+              ])) : createCommentVNode("", true)
+            ], 36)
+          ], 512),
+          createBaseVNode("div", {
+            class: "fs-side",
+            onPointerdown: _cache2[14] || (_cache2[14] = withModifiers(() => {
+            }, ["stop"]))
+          }, [
+            createBaseVNode("div", _hoisted_21$2, [
+              _cache2[39] || (_cache2[39] = createBaseVNode("span", null, "Layers", -1)),
+              createBaseVNode("span", _hoisted_22$1, toDisplayString(layers.value.length), 1)
+            ]),
+            createBaseVNode("div", _hoisted_23$1, [
+              (openBlock(true), createElementBlock(Fragment, null, renderList(listRows.value, (row) => {
+                return openBlock(), createElementBlock("div", {
+                  key: row.l.id,
+                  class: normalizeClass(["fs-row", { sel: selected.value === row.i, dragging: rowDrag.value === row.i, muted: !row.l.on }]),
+                  onClick: ($event) => selected.value = row.i,
+                  onDragover: _cache2[6] || (_cache2[6] = withModifiers(() => {
+                  }, ["prevent"])),
+                  onDrop: ($event) => onRowDrop(row.i, $event)
+                }, [
+                  createBaseVNode("div", _hoisted_25$1, [
+                    createBaseVNode("i", {
+                      class: "mdi mdi-drag-vertical fs-grip",
+                      draggable: "true",
+                      title: "Drag to reorder",
+                      onDragstart: ($event) => startRowDrag(row.i, $event),
+                      onDragend: _cache2[4] || (_cache2[4] = ($event) => rowDrag.value = -1)
+                    }, null, 40, _hoisted_26$1),
+                    createBaseVNode("span", {
+                      class: "fs-rowthumb",
+                      style: normalizeStyle({ borderColor: color(row.i) })
+                    }, [
+                      !missing.value.has(row.l.ref) ? (openBlock(), createElementBlock("img", {
+                        key: 0,
+                        src: unref(thumbUrl)(row.l.ref, row.l.type),
+                        style: normalizeStyle({ transform: flipTransform(row.l) }),
+                        loading: "lazy"
+                      }, null, 12, _hoisted_27$1)) : (openBlock(), createElementBlock("i", _hoisted_28$1))
+                    ], 4),
+                    createBaseVNode("span", {
+                      class: "fs-rowname",
+                      title: row.l.label
+                    }, toDisplayString(row.l.label), 9, _hoisted_29$1),
+                    createBaseVNode("button", {
+                      class: normalizeClass(["fs-ract", { act: row.l.locked }]),
+                      title: row.l.locked ? "Locked — click to unlock (click-through on canvas)" : "Lock — makes it click-through on the canvas",
+                      onClick: withModifiers(($event) => toggleLock(row.i), ["stop"])
+                    }, [
+                      createBaseVNode("i", {
+                        class: normalizeClass(["mdi", row.l.locked ? "mdi-lock" : "mdi-lock-open-variant-outline"])
+                      }, null, 2)
+                    ], 10, _hoisted_30$1),
+                    createBaseVNode("button", {
+                      class: normalizeClass(["fs-ract", { act: row.l.matte }]),
+                      title: row.l.matte ? `Cutout on — uses the image's transparency` : "Cutout off — place the full image",
+                      onClick: withModifiers(($event) => toggleMatte(row.i), ["stop"])
+                    }, [..._cache2[40] || (_cache2[40] = [
+                      createBaseVNode("i", { class: "mdi mdi-scissors-cutting" }, null, -1)
+                    ])], 10, _hoisted_31$1),
+                    createBaseVNode("button", {
+                      class: "fs-ract",
+                      title: row.l.on ? "Hide layer" : "Show layer",
+                      onClick: withModifiers(($event) => toggleOn(row.i), ["stop"])
+                    }, [
+                      createBaseVNode("i", {
+                        class: normalizeClass(["mdi", row.l.on ? "mdi-eye-outline" : "mdi-eye-off-outline"])
+                      }, null, 2)
+                    ], 8, _hoisted_32$1),
+                    createBaseVNode("button", {
+                      class: "fs-ract danger",
+                      title: "Remove layer",
+                      onClick: withModifiers(($event) => removeLayer(row.i), ["stop"])
+                    }, [..._cache2[41] || (_cache2[41] = [
+                      createBaseVNode("i", { class: "mdi mdi-close" }, null, -1)
+                    ])], 8, _hoisted_33$1)
+                  ]),
+                  createBaseVNode("div", {
+                    class: "fs-rowbot",
+                    onClick: _cache2[5] || (_cache2[5] = withModifiers(() => {
+                    }, ["stop"]))
+                  }, [
+                    _cache2[42] || (_cache2[42] = createBaseVNode("i", {
+                      class: "mdi mdi-weight fs-wt",
+                      title: "Fusion strength"
+                    }, null, -1)),
+                    createVNode(unref(ZenSlider), {
+                      class: "fs-wslider",
+                      "model-value": row.l.strength,
+                      min: 0,
+                      max: 4,
+                      step: 0.05,
+                      "onUpdate:modelValue": ($event) => setField(row.i, "strength", $event)
+                    }, null, 8, ["model-value", "onUpdate:modelValue"]),
+                    createBaseVNode("span", _hoisted_34$1, toDisplayString(row.l.strength.toFixed(2)), 1)
+                  ])
+                ], 42, _hoisted_24$1);
+              }), 128)),
+              !layers.value.length ? (openBlock(), createElementBlock("p", _hoisted_35, "No layers yet.")) : createCommentVNode("", true)
+            ]),
+            sel.value ? (openBlock(), createElementBlock("div", {
+              key: 0,
+              class: "fs-props",
+              onClick: _cache2[13] || (_cache2[13] = withModifiers(() => {
+              }, ["stop"]))
+            }, [
+              createBaseVNode("div", _hoisted_36, [
+                createBaseVNode("span", {
+                  class: "fs-dot",
+                  style: normalizeStyle({ background: color(selected.value) })
+                }, null, 4),
+                createBaseVNode("span", {
+                  class: "fs-props-name",
+                  title: sel.value.label
+                }, toDisplayString(sel.value.label), 9, _hoisted_37)
+              ]),
+              createBaseVNode("div", _hoisted_38, [
+                createVNode(unref(ZenToggleGroup), {
+                  "model-value": sel.value.fit,
+                  options: FIT_OPTS,
+                  "onUpdate:modelValue": _cache2[7] || (_cache2[7] = ($event) => setField(selected.value, "fit", $event))
+                }, null, 8, ["model-value"]),
+                _cache2[45] || (_cache2[45] = createBaseVNode("span", { class: "fs-props-sp" }, null, -1)),
+                createBaseVNode("button", {
+                  class: normalizeClass(["fs-pbtn", { on: sel.value.flip_h }]),
+                  title: "Flip horizontal",
+                  onClick: _cache2[8] || (_cache2[8] = ($event) => toggleFlip(selected.value, "flip_h"))
+                }, [..._cache2[43] || (_cache2[43] = [
+                  createBaseVNode("i", { class: "mdi mdi-flip-horizontal" }, null, -1)
+                ])], 2),
+                createBaseVNode("button", {
+                  class: normalizeClass(["fs-pbtn", { on: sel.value.flip_v }]),
+                  title: "Flip vertical",
+                  onClick: _cache2[9] || (_cache2[9] = ($event) => toggleFlip(selected.value, "flip_v"))
+                }, [..._cache2[44] || (_cache2[44] = [
+                  createBaseVNode("i", { class: "mdi mdi-flip-vertical" }, null, -1)
+                ])], 2)
+              ]),
+              createBaseVNode("select", {
+                class: "fs-select",
+                value: sel.value.blend,
+                title: "Blend mode",
+                onChange: _cache2[10] || (_cache2[10] = ($event) => setField(selected.value, "blend", $event.target.value))
+              }, [
+                (openBlock(), createElementBlock(Fragment, null, renderList(BLENDS, (b) => {
+                  return createBaseVNode("option", {
+                    key: b,
+                    value: b
+                  }, toDisplayString(b.replace("_", " ")), 9, _hoisted_40);
+                }), 64))
+              ], 40, _hoisted_39),
+              createBaseVNode("label", _hoisted_41, [
+                _cache2[46] || (_cache2[46] = createBaseVNode("i", { class: "mdi mdi-opacity" }, null, -1)),
+                createVNode(unref(ZenSlider), {
+                  class: "fs-pslider",
+                  "model-value": sel.value.opacity,
+                  min: 0,
+                  max: 1,
+                  step: 0.02,
+                  "onUpdate:modelValue": _cache2[11] || (_cache2[11] = ($event) => setField(selected.value, "opacity", $event))
+                }, null, 8, ["model-value"]),
+                createBaseVNode("span", _hoisted_42, toDisplayString(Math.round(sel.value.opacity * 100)), 1)
+              ]),
+              createBaseVNode("label", _hoisted_43, [
+                _cache2[47] || (_cache2[47] = createBaseVNode("i", { class: "mdi mdi-blur" }, null, -1)),
+                createVNode(unref(ZenSlider), {
+                  class: "fs-pslider",
+                  "model-value": sel.value.feather,
+                  min: 0,
+                  max: 0.5,
+                  step: 0.01,
+                  "onUpdate:modelValue": _cache2[12] || (_cache2[12] = ($event) => setField(selected.value, "feather", $event))
+                }, null, 8, ["model-value"]),
+                createBaseVNode("span", _hoisted_44, toDisplayString(sel.value.feather.toFixed(2)), 1)
+              ])
+            ])) : createCommentVNode("", true),
+            createBaseVNode("div", _hoisted_45, [
+              createBaseVNode("button", {
+                class: "fs-add",
+                disabled: busy.value,
+                onClick: triggerUpload
+              }, [
+                createBaseVNode("i", {
+                  class: normalizeClass(["mdi", busy.value ? "mdi-loading mdi-spin" : "mdi-plus"])
+                }, null, 2),
+                _cache2[48] || (_cache2[48] = createTextVNode(" Add", -1))
+              ], 8, _hoisted_46),
+              createVNode(unref(ZenIconButton), {
+                icon: "mdi mdi-view-grid-outline",
+                title: "Browse images",
+                onClick: openBrowse
+              })
+            ])
+          ], 32)
+        ]),
+        createBaseVNode("input", {
+          ref_key: "fileInput",
+          ref: fileInput,
+          type: "file",
+          accept: "image/*",
+          multiple: "",
+          style: { "display": "none" },
+          onChange: onUpload
+        }, null, 544),
+        createVNode(unref(_sfc_main$5), {
+          open: browse.value,
+          "onUpdate:open": _cache2[17] || (_cache2[17] = ($event) => browse.value = $event),
+          title: bgPick.value ? "Pick background" : "Add layers",
+          width: "880px",
+          height: "78vh"
+        }, {
+          header: withCtx(() => [
+            createBaseVNode("span", _hoisted_47, [
+              createVNode(unref(ZenInput), {
+                modelValue: bq.value,
+                "onUpdate:modelValue": _cache2[15] || (_cache2[15] = ($event) => bq.value = $event),
+                placeholder: "Search images…",
+                sm: ""
+              }, null, 8, ["modelValue"])
+            ]),
+            createVNode(unref(ZenToggleGroup), {
+              "model-value": srcType.value,
+              options: SRC_OPTS,
+              "onUpdate:modelValue": setSrc
+            }, null, 8, ["model-value"]),
+            createVNode(unref(ZenButton), {
+              variant: "ghost",
+              sm: "",
+              icon: "mdi mdi-upload",
+              onClick: triggerUpload
+            }, {
+              default: withCtx(() => [..._cache2[49] || (_cache2[49] = [
+                createTextVNode("Upload", -1)
+              ])]),
+              _: 1
+            })
+          ]),
+          footer: withCtx(() => [
+            createVNode(unref(ZenButton), {
+              variant: "ghost",
+              sm: "",
+              onClick: _cache2[16] || (_cache2[16] = ($event) => browse.value = false)
+            }, {
+              default: withCtx(() => [
+                createTextVNode(toDisplayString(bgPick.value ? "Cancel" : "Done"), 1)
+              ]),
+              _: 1
+            }),
+            !bgPick.value ? (openBlock(), createBlock(unref(ZenButton), {
+              key: 0,
+              variant: "primary",
+              sm: "",
+              disabled: !picked.value.size,
+              onClick: addPicked
+            }, {
+              default: withCtx(() => [
+                createTextVNode("Add " + toDisplayString(picked.value.size || "") + " layer" + toDisplayString(picked.value.size === 1 ? "" : "s"), 1)
+              ]),
+              _: 1
+            }, 8, ["disabled"])) : createCommentVNode("", true)
+          ]),
+          default: withCtx(() => [
+            createBaseVNode("div", _hoisted_48, [
+              (openBlock(true), createElementBlock(Fragment, null, renderList(browseItems.value, (it) => {
+                return openBlock(), createElementBlock("button", {
+                  key: it.type + ":" + it.name,
+                  class: normalizeClass(["fs-bcard", { sel: picked.value.has(it.name) }]),
+                  onClick: ($event) => onPick(it.name)
+                }, [
+                  createBaseVNode("div", _hoisted_50, [
+                    createBaseVNode("img", {
+                      src: unref(thumbUrl)(it.name, it.type),
+                      loading: "lazy"
+                    }, null, 8, _hoisted_51),
+                    picked.value.has(it.name) ? (openBlock(), createElementBlock("span", _hoisted_52, [..._cache2[50] || (_cache2[50] = [
+                      createBaseVNode("i", { class: "mdi mdi-check" }, null, -1)
+                    ])])) : createCommentVNode("", true)
+                  ]),
+                  createBaseVNode("div", _hoisted_53, [
+                    createBaseVNode("span", {
+                      class: "fs-bcard-name",
+                      title: it.name
+                    }, toDisplayString(unref(shortName)(it.name)), 9, _hoisted_54)
+                  ])
+                ], 10, _hoisted_49);
+              }), 128)),
+              !browseItems.value.length ? (openBlock(), createElementBlock("p", _hoisted_55, "No images in " + toDisplayString(srcType.value) + "/.", 1)) : createCommentVNode("", true)
+            ])
+          ]),
+          _: 1
+        }, 8, ["open", "title"]),
+        createVNode(unref(_sfc_main$5), {
+          open: library.value,
+          "onUpdate:open": _cache2[19] || (_cache2[19] = ($event) => library.value = $event),
+          title: "Stage presets",
+          width: "760px",
+          height: "72vh"
+        }, {
+          footer: withCtx(() => [
+            createVNode(unref(ZenInput), {
+              modelValue: saveName.value,
+              "onUpdate:modelValue": _cache2[18] || (_cache2[18] = ($event) => saveName.value = $event),
+              class: "fs-libsave-name",
+              placeholder: "Preset name…",
+              sm: "",
+              onKeydown: withKeys(doSave, ["enter"])
+            }, null, 8, ["modelValue"]),
+            createVNode(unref(ZenButton), {
+              variant: "primary",
+              sm: "",
+              disabled: !saveName.value.trim() || saving.value,
+              onClick: doSave
+            }, {
+              default: withCtx(() => [
+                createTextVNode(toDisplayString(saving.value ? "Saving…" : "Save current"), 1)
+              ]),
+              _: 1
+            }, 8, ["disabled"])
+          ]),
+          default: withCtx(() => [
+            createBaseVNode("div", _hoisted_56, [
+              (openBlock(true), createElementBlock(Fragment, null, renderList(stages.value, (st) => {
+                return openBlock(), createElementBlock("button", {
+                  key: st.stem,
+                  class: "fs-libcard",
+                  onClick: ($event) => loadStage(st)
+                }, [
+                  createBaseVNode("div", _hoisted_58, [
+                    st.has_thumb ? (openBlock(), createElementBlock("img", {
+                      key: 0,
+                      src: unref(stageThumbUrl)(st.stem, st.mtime),
+                      loading: "lazy",
+                      alt: ""
+                    }, null, 8, _hoisted_59)) : (openBlock(), createElementBlock("i", _hoisted_60)),
+                    createBaseVNode("button", {
+                      class: "fs-libdel",
+                      title: "Delete preset",
+                      onClick: withModifiers(($event) => delStage(st), ["stop"])
+                    }, [..._cache2[51] || (_cache2[51] = [
+                      createBaseVNode("i", { class: "mdi mdi-close" }, null, -1)
+                    ])], 8, _hoisted_61)
+                  ]),
+                  createBaseVNode("span", {
+                    class: "fs-libcard-name",
+                    title: st.name
+                  }, toDisplayString(st.name), 9, _hoisted_62)
+                ], 8, _hoisted_57);
+              }), 128)),
+              !stages.value.length ? (openBlock(), createElementBlock("p", _hoisted_63, "No saved presets yet — build a stage and save it below.")) : createCommentVNode("", true)
+            ])
+          ]),
+          _: 1
+        }, 8, ["open"])
+      ], 34);
+    };
+  }
+});
+const FusionStage = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["__scopeId", "data-v-018dedc0"]]);
+const _hoisted_1$1 = { class: "fi" };
+const _hoisted_2$1 = {
+  key: 0,
+  class: "fi-empty"
+};
+const _hoisted_3$1 = { class: "fi-main" };
+const _hoisted_4$1 = {
+  key: 0,
+  class: "fi-caption"
+};
+const _hoisted_5$1 = { class: "fi-side-tabs" };
+const _hoisted_6$1 = {
+  key: 0,
+  class: "fi-settings"
+};
+const _hoisted_7$1 = { class: "fi-sgroup-h" };
+const _hoisted_8$1 = { class: "fi-sk" };
+const _hoisted_9$1 = { class: "fi-svv" };
+const _hoisted_10$1 = { class: "fi-side-head" };
+const _hoisted_11$1 = { class: "fi-bars" };
+const _hoisted_12$1 = ["src"];
+const _hoisted_13$1 = ["title"];
+const _hoisted_14$1 = { class: "fi-btrack" };
+const _hoisted_15$1 = { class: "fi-bval" };
+const _hoisted_16$1 = { class: "fi-legend" };
+const _hoisted_17$1 = ["title", "onClick"];
+const _hoisted_18$1 = ["src"];
+const _hoisted_19$1 = ["title"];
+const _hoisted_20$1 = {
+  class: "fi-lstr",
+  title: "strength you set on the slider"
+};
+const _hoisted_21$1 = {
+  class: "fi-lmeta",
+  title: "this source's share of the grid"
+};
+const _sfc_main$1 = /* @__PURE__ */ defineComponent({
+  __name: "FusionInspector",
+  props: {
+    widget: {},
+    node: {}
+  },
+  setup(__props) {
+    const props = __props;
+    const VIEWS = ["dominant", "per-source", "contest", "blend", "isolate"];
+    const VIEW_OPTS = [
+      { value: "dominant", label: "Dominant", title: "Winner colour per cell, dimmed by how contested it is" },
+      { value: "per-source", label: "Per-source", title: "One small panel per source — that source’s weight as a ramp, nothing mixed" },
+      { value: "contest", label: "Contest", title: "Where the blend is contested — the ONLY cells where strength / feather / blend have any effect (bright = contested, dark = one source owns it)" },
+      { value: "blend", label: "Blend", title: "Weighted average of all source colours" },
+      { value: "isolate", label: "Isolate", title: "One source’s weight as a ramp (pick it in the legend)" }
+    ];
+    function parse(v) {
+      const o = v;
+      if (!o || typeof o !== "object" || !Array.isArray(o.weights) || !o.num_sources) return null;
+      const g = Array.isArray(o.grid) ? o.grid : [0, 0];
+      return {
+        grid: [Number(g[0]) || 0, Number(g[1]) || 0],
+        num_sources: Number(o.num_sources) || 0,
+        sources: Array.isArray(o.sources) ? o.sources : [],
+        weights: o.weights,
+        settings: o.settings && typeof o.settings === "object" ? o.settings : {},
+        has_regions: !!o.has_regions
+      };
+    }
+    const payload = /* @__PURE__ */ ref(parse(props.widget?.value));
+    const view = /* @__PURE__ */ ref("dominant");
+    const sideTab = /* @__PURE__ */ ref("legend");
+    const selected = /* @__PURE__ */ ref(0);
+    const hovered = /* @__PURE__ */ ref(-1);
+    const wrapEl = /* @__PURE__ */ ref(null);
+    const canvasEl = /* @__PURE__ */ ref(null);
+    const cssW = /* @__PURE__ */ ref(0);
+    const cssH = /* @__PURE__ */ ref(0);
+    const gridH = computed(() => payload.value?.grid[0] ?? 0);
+    const gridW = computed(() => payload.value?.grid[1] ?? 0);
+    const cellRow = computed(() => gridW.value ? Math.floor(hovered.value / gridW.value) : 0);
+    const cellCol = computed(() => gridW.value ? hovered.value % gridW.value : 0);
+    function setView(v) {
+      view.value = VIEWS.includes(v) ? v : "dominant";
+      if (view.value === "per-source") hovered.value = -1;
+    }
+    function isolate(i) {
+      selected.value = i;
+      view.value = "isolate";
+      sideTab.value = "legend";
+    }
+    const settingGroups = computed(() => {
+      const p2 = payload.value;
+      if (!p2) return [];
+      const s = p2.settings;
+      const num = (k, d = 0) => Number.isFinite(Number(s[k])) ? Number(s[k]) : d;
+      const str = (k, d = "") => s[k] == null ? d : String(s[k]);
+      const method = str("fusion_method", "spatial-checkerboard");
+      const cMode = str("content_mode", "none");
+      const yMode = str("style_mode", "none");
+      const f2 = (k) => num(k).toFixed(2);
+      return [
+        { title: "Pattern", rows: [
+          { k: "method", v: method.replace("spatial-", "") },
+          { k: "block", v: String(num("block_size")), dim: method !== "spatial-block-interleave" },
+          { k: "dither", v: f2("dither_ratio"), dim: method !== "spatial-dither-random" },
+          { k: "jitter", v: f2("pattern_jitter"), dim: num("pattern_jitter") <= 0 }
+        ] },
+        { title: "Blend", rows: [
+          { k: "blend", v: f2("blend_strength"), dim: num("blend_strength") <= 0 },
+          { k: "feather", v: f2("feather"), dim: num("feather") <= 0 },
+          { k: "norm", v: s.preserve_norm ? "on" : "off", dim: !s.preserve_norm }
+        ] },
+        { title: "Content", rows: [
+          { k: "mode", v: cMode, dim: cMode === "none" },
+          { k: "strength", v: f2("content_strength"), dim: cMode === "none" || num("content_strength") <= 0 }
+        ] },
+        { title: "Style", rows: [
+          { k: "mode", v: yMode, dim: yMode === "none" },
+          { k: "strength", v: f2("style_strength"), dim: yMode === "none" || num("style_strength") <= 0 }
+        ] },
+        { title: "Regions", rows: [
+          { k: "strength", v: f2("region_strength"), dim: num("region_strength") <= 0 },
+          { k: "in input", v: p2.has_regions ? "yes" : "no", dim: !p2.has_regions }
+        ] },
+        { title: "Variation", rows: [
+          { k: "seed", v: String(num("seed")) },
+          { k: "roll", v: f2("strength_roll"), dim: num("strength_roll") <= 0 }
+        ] },
+        { title: "Grid", rows: [
+          { k: "size", v: String(num("visual_size")) },
+          { k: "aspect", v: str("visual_aspect", "auto") },
+          { k: "tokens", v: `${p2.grid[1]}×${p2.grid[0]}` },
+          { k: "sources", v: String(p2.num_sources) }
+        ] }
+      ];
+    });
+    const cellBreakdown = computed(() => {
+      const p2 = payload.value;
+      if (!p2 || hovered.value < 0) return [];
+      const rows = p2.sources.map((s, i) => ({
+        i,
+        label: s.label,
+        color: s.color,
+        thumb: s.thumb,
+        w: p2.weights[i]?.[hovered.value] ?? 0
+      }));
+      const max = Math.max(1e-6, ...rows.map((r) => r.w));
+      return rows.map((r) => ({ ...r, pct: r.w / max * 100 })).sort((a, b) => b.w - a.w);
+    });
+    function hexRgb(hex) {
+      const s = hex.replace("#", "");
+      return [parseInt(s.slice(0, 2), 16), parseInt(s.slice(2, 4), 16), parseInt(s.slice(4, 6), 16)];
+    }
+    let srcRgb = [];
+    function colorAt(token) {
+      const p2 = payload.value;
+      const n = p2.num_sources;
+      if (view.value === "isolate") {
+        const amt = Math.min(1, Math.max(0, p2.weights[selected.value]?.[token] ?? 0));
+        const c2 = srcRgb[selected.value] ?? [0, 0, 0];
+        return [c2[0] * amt, c2[1] * amt, c2[2] * amt];
+      }
+      if (view.value === "blend") {
+        let r = 0, g = 0, b = 0;
+        for (let i = 0; i < n; i++) {
+          const w = p2.weights[i]?.[token] ?? 0;
+          const c2 = srcRgb[i];
+          r += w * c2[0];
+          g += w * c2[1];
+          b += w * c2[2];
+        }
+        return [r, g, b];
+      }
+      if (view.value === "contest") {
+        let max = 0;
+        for (let i = 0; i < n; i++) {
+          const w = p2.weights[i]?.[token] ?? 0;
+          if (w > max) max = w;
+        }
+        const t = Math.pow(Math.min(1, Math.max(0, 1 - max)), 0.65);
+        return [20 + (251 - 20) * t, 20 + (191 - 20) * t, 24 + (36 - 24) * t];
+      }
+      let owner = 0, share = 0;
+      for (let i = 0; i < n; i++) {
+        const w = p2.weights[i]?.[token] ?? 0;
+        if (w > share) {
+          share = w;
+          owner = i;
+        }
+      }
+      const conf = 0.22 + 0.78 * Math.min(1, Math.max(0, share));
+      const c = srcRgb[owner] ?? [0, 0, 0];
+      return [c[0] * conf, c[1] * conf, c[2] * conf];
+    }
+    function fit() {
+      const wrap = wrapEl.value;
+      const p2 = payload.value;
+      if (!wrap || !p2 || !gridW.value || !gridH.value) return;
+      const availW = wrap.clientWidth;
+      const availH = wrap.clientHeight;
+      if (availW <= 0 || availH <= 0) return;
+      if (view.value === "per-source") {
+        cssW.value = availW;
+        cssH.value = availH;
+        return;
+      }
+      const cell = Math.max(3, Math.floor(Math.min(availW / gridW.value, availH / gridH.value)));
+      cssW.value = cell * gridW.value;
+      cssH.value = cell * gridH.value;
+    }
+    function draw() {
+      const p2 = payload.value;
+      const canvas = canvasEl.value;
+      if (!p2 || !canvas || !cssW.value || !cssH.value) return;
+      srcRgb = p2.sources.map((s) => hexRgb(s.color));
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.round(cssW.value * dpr);
+      canvas.height = Math.round(cssH.value * dpr);
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, cssW.value, cssH.value);
+      if (view.value === "per-source") {
+        drawPanels(ctx);
+        return;
+      }
+      const w = gridW.value;
+      const h = gridH.value;
+      const cw = cssW.value / w;
+      const ch = cssH.value / h;
+      for (let row = 0; row < h; row++) {
+        for (let col = 0; col < w; col++) {
+          const [r, g, b] = colorAt(row * w + col);
+          ctx.fillStyle = `rgb(${Math.round(r)},${Math.round(g)},${Math.round(b)})`;
+          ctx.fillRect(col * cw, row * ch, Math.ceil(cw), Math.ceil(ch));
+        }
+      }
+      if (cw >= 10) {
+        ctx.strokeStyle = "rgba(0,0,0,0.55)";
+        ctx.lineWidth = 1;
+        for (let gx = 1; gx < w; gx++) {
+          ctx.beginPath();
+          ctx.moveTo(gx * cw, 0);
+          ctx.lineTo(gx * cw, cssH.value);
+          ctx.stroke();
+        }
+        for (let gy = 1; gy < h; gy++) {
+          ctx.beginPath();
+          ctx.moveTo(0, gy * ch);
+          ctx.lineTo(cssW.value, gy * ch);
+          ctx.stroke();
+        }
+      }
+      if (hovered.value >= 0) {
+        const col = hovered.value % w;
+        const row = Math.floor(hovered.value / w);
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(col * cw + 1, row * ch + 1, cw - 2, ch - 2);
+      }
+    }
+    function trunc(label, widthPx) {
+      const max = Math.max(2, Math.floor(widthPx / 6));
+      return label.length > max ? label.slice(0, max - 1) + "…" : label;
+    }
+    function panelLayout(n, availW, availH, aspect, pad, titleH) {
+      let best = { cols: Math.max(1, Math.ceil(Math.sqrt(n))), rows: Math.ceil(n / Math.max(1, Math.ceil(Math.sqrt(n)))), area: -1 };
+      for (let cols = 1; cols <= n; cols++) {
+        const rows = Math.ceil(n / cols);
+        const cellW = (availW - pad * (cols + 1)) / cols;
+        const areaH = (availH - pad * (rows + 1)) / rows - titleH;
+        if (cellW <= 0 || areaH <= 0) continue;
+        let dw = cellW;
+        let dh = dw / aspect;
+        if (dh > areaH) {
+          dh = areaH;
+          dw = dh * aspect;
+        }
+        const area = dw * dh;
+        if (area > best.area) best = { cols, rows, area };
+      }
+      return best;
+    }
+    function drawPanels(ctx) {
+      const p2 = payload.value;
+      if (!p2) return;
+      const n = p2.num_sources;
+      const w = gridW.value;
+      const h = gridH.value;
+      const aspect = w / h;
+      const pad = 6;
+      const titleH = 13;
+      const { cols, rows } = panelLayout(n, cssW.value, cssH.value, aspect, pad, titleH);
+      const cellW = (cssW.value - pad * (cols + 1)) / cols;
+      const cellH = (cssH.value - pad * (rows + 1)) / rows;
+      const areaH = Math.max(1, cellH - titleH);
+      ctx.font = "600 10px sans-serif";
+      ctx.textBaseline = "alphabetic";
+      for (let s = 0; s < n; s++) {
+        const cx = pad + s % cols * (cellW + pad);
+        const cy = pad + Math.floor(s / cols) * (cellH + pad);
+        let dw = cellW;
+        let dh = dw / aspect;
+        if (dh > areaH) {
+          dh = areaH;
+          dw = dh * aspect;
+        }
+        const dx = cx + (cellW - dw) / 2;
+        const dy = cy + titleH;
+        ctx.fillStyle = p2.sources[s]?.color ?? "#888";
+        ctx.fillText(trunc(p2.sources[s]?.label ?? `src ${s + 1}`, dw), dx + 1, cy + 10);
+        const cw = dw / w;
+        const ch = dh / h;
+        const c = srcRgb[s] ?? [0, 0, 0];
+        for (let row = 0; row < h; row++) {
+          for (let col = 0; col < w; col++) {
+            const amt = Math.min(1, Math.max(0, p2.weights[s]?.[row * w + col] ?? 0));
+            ctx.fillStyle = `rgb(${Math.round(c[0] * amt)},${Math.round(c[1] * amt)},${Math.round(c[2] * amt)})`;
+            ctx.fillRect(dx + col * cw, dy + row * ch, Math.ceil(cw), Math.ceil(ch));
+          }
+        }
+        ctx.strokeStyle = "rgba(255,255,255,0.14)";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(dx + 0.5, dy + 0.5, dw - 1, dh - 1);
+      }
+    }
+    function onHover(e) {
+      const canvas = canvasEl.value;
+      const p2 = payload.value;
+      if (!canvas || !p2 || view.value === "per-source") return;
+      const rect = canvas.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return;
+      const col = Math.min(gridW.value - 1, Math.max(0, Math.floor((e.clientX - rect.left) / rect.width * gridW.value)));
+      const row = Math.min(gridH.value - 1, Math.max(0, Math.floor((e.clientY - rect.top) / rect.height * gridH.value)));
+      hovered.value = row * gridW.value + col;
+    }
+    function apply2(v) {
+      const p2 = Array.isArray(v) ? v[0] : v;
+      payload.value = parse(p2);
+      if (selected.value >= (payload.value?.num_sources ?? 0)) selected.value = 0;
+    }
+    let ro;
+    let onExec;
+    onMounted(() => {
+      if (props.widget) {
+        props.widget.callback = (v) => apply2(v);
+      }
+      try {
+        onExec = (e) => {
+          const d = e?.detail;
+          if (!d || String(d.node) !== String(props.node?.id)) return;
+          if (d.output && "fusion_inspect" in d.output) apply2(d.output.fusion_inspect);
+        };
+        api.addEventListener("executed", onExec);
+      } catch {
+      }
+      fit();
+      draw();
+      if (wrapEl.value && typeof ResizeObserver !== "undefined") {
+        ro = new ResizeObserver(() => {
+          fit();
+          draw();
+        });
+        ro.observe(wrapEl.value);
+      }
+      [0, 80, 300].forEach((t) => window.setTimeout(() => {
+        fit();
+        draw();
+      }, t));
+    });
+    watch([payload, view, selected, hovered], () => {
+      fit();
+      draw();
+    });
+    onBeforeUnmount(() => {
+      ro?.disconnect();
+      if (onExec) {
+        try {
+          api.removeEventListener("executed", onExec);
+        } catch {
+        }
+      }
+    });
+    return (_ctx, _cache2) => {
+      return openBlock(), createElementBlock("div", _hoisted_1$1, [
+        !payload.value || !payload.value.num_sources ? (openBlock(), createElementBlock("div", _hoisted_2$1, [..._cache2[7] || (_cache2[7] = [
+          createBaseVNode("i", { class: "mdi mdi-chart-scatter-plot" }, null, -1),
+          createBaseVNode("span", null, "Run the fusion to inspect it", -1),
+          createBaseVNode("small", null, [
+            createTextVNode("wire the encode node's "),
+            createBaseVNode("b", null, "fusion_inspect"),
+            createTextVNode(" output here, then queue")
+          ], -1)
+        ])])) : (openBlock(), createElementBlock(Fragment, { key: 1 }, [
+          createBaseVNode("div", {
+            class: "fi-bar",
+            onPointerdown: _cache2[1] || (_cache2[1] = withModifiers(() => {
+            }, ["stop"]))
+          }, [
+            createVNode(unref(ZenToggleGroup), {
+              "model-value": view.value,
+              options: VIEW_OPTS,
+              "onUpdate:modelValue": _cache2[0] || (_cache2[0] = ($event) => setView($event))
+            }, null, 8, ["model-value"])
+          ], 32),
+          createBaseVNode("div", _hoisted_3$1, [
+            createBaseVNode("div", {
+              ref_key: "wrapEl",
+              ref: wrapEl,
+              class: "fi-gridwrap"
+            }, [
+              createBaseVNode("canvas", {
+                ref_key: "canvasEl",
+                ref: canvasEl,
+                class: "fi-canvas",
+                style: normalizeStyle({ width: cssW.value + "px", height: cssH.value + "px" }),
+                onPointermove: onHover,
+                onPointerleave: _cache2[2] || (_cache2[2] = ($event) => hovered.value = -1),
+                onPointerdown: _cache2[3] || (_cache2[3] = withModifiers(() => {
+                }, ["stop"]))
+              }, null, 36),
+              view.value === "contest" ? (openBlock(), createElementBlock("div", _hoisted_4$1, "bright = contested (strength · feather · blend act here) · dark = one source owns it")) : createCommentVNode("", true)
+            ], 512),
+            createBaseVNode("div", {
+              class: "fi-side",
+              onPointerdown: _cache2[6] || (_cache2[6] = withModifiers(() => {
+              }, ["stop"]))
+            }, [
+              createBaseVNode("div", _hoisted_5$1, [
+                createBaseVNode("button", {
+                  class: normalizeClass(["fi-tab", { on: sideTab.value === "legend" }]),
+                  onClick: _cache2[4] || (_cache2[4] = ($event) => sideTab.value = "legend")
+                }, "Sources", 2),
+                createBaseVNode("button", {
+                  class: normalizeClass(["fi-tab", { on: sideTab.value === "settings" }]),
+                  onClick: _cache2[5] || (_cache2[5] = ($event) => sideTab.value = "settings")
+                }, "Settings", 2)
+              ]),
+              sideTab.value === "settings" ? (openBlock(), createElementBlock("div", _hoisted_6$1, [
+                (openBlock(true), createElementBlock(Fragment, null, renderList(settingGroups.value, (g) => {
+                  return openBlock(), createElementBlock("div", {
+                    key: g.title,
+                    class: "fi-sgroup"
+                  }, [
+                    createBaseVNode("div", _hoisted_7$1, toDisplayString(g.title), 1),
+                    (openBlock(true), createElementBlock(Fragment, null, renderList(g.rows, (r) => {
+                      return openBlock(), createElementBlock("div", {
+                        key: r.k,
+                        class: normalizeClass(["fi-srow", { dim: r.dim }])
+                      }, [
+                        createBaseVNode("span", _hoisted_8$1, toDisplayString(r.k), 1),
+                        createBaseVNode("span", _hoisted_9$1, toDisplayString(r.v), 1)
+                      ], 2);
+                    }), 128))
+                  ]);
+                }), 128))
+              ])) : (openBlock(), createElementBlock(Fragment, { key: 1 }, [
+                hovered.value >= 0 ? (openBlock(), createElementBlock(Fragment, { key: 0 }, [
+                  createBaseVNode("div", _hoisted_10$1, "Cell " + toDisplayString(cellRow.value) + "," + toDisplayString(cellCol.value), 1),
+                  createBaseVNode("div", _hoisted_11$1, [
+                    (openBlock(true), createElementBlock(Fragment, null, renderList(cellBreakdown.value, (r) => {
+                      return openBlock(), createElementBlock("div", {
+                        key: r.i,
+                        class: "fi-brow"
+                      }, [
+                        createBaseVNode("span", {
+                          class: "fi-thumb sm",
+                          style: normalizeStyle({ borderColor: r.color })
+                        }, [
+                          r.thumb ? (openBlock(), createElementBlock("img", {
+                            key: 0,
+                            src: r.thumb,
+                            alt: ""
+                          }, null, 8, _hoisted_12$1)) : (openBlock(), createElementBlock("span", {
+                            key: 1,
+                            class: "fi-thumb-fill",
+                            style: normalizeStyle({ background: r.color })
+                          }, null, 4))
+                        ], 4),
+                        createBaseVNode("span", {
+                          class: "fi-blabel",
+                          title: r.label
+                        }, toDisplayString(r.label), 9, _hoisted_13$1),
+                        createBaseVNode("span", _hoisted_14$1, [
+                          createBaseVNode("span", {
+                            class: "fi-bfill",
+                            style: normalizeStyle({ width: r.pct + "%", background: r.color })
+                          }, null, 4)
+                        ]),
+                        createBaseVNode("span", _hoisted_15$1, toDisplayString(r.w.toFixed(2)), 1)
+                      ]);
+                    }), 128))
+                  ])
+                ], 64)) : (openBlock(), createElementBlock(Fragment, { key: 1 }, [
+                  createBaseVNode("div", _hoisted_16$1, [
+                    (openBlock(true), createElementBlock(Fragment, null, renderList(payload.value.sources, (s, i) => {
+                      return openBlock(), createElementBlock("button", {
+                        key: i,
+                        class: normalizeClass(["fi-lrow", { on: view.value === "isolate" && selected.value === i }]),
+                        title: `Isolate ${s.label}`,
+                        onClick: ($event) => isolate(i)
+                      }, [
+                        createBaseVNode("span", {
+                          class: "fi-thumb",
+                          style: normalizeStyle({ borderColor: s.color })
+                        }, [
+                          s.thumb ? (openBlock(), createElementBlock("img", {
+                            key: 0,
+                            src: s.thumb,
+                            alt: ""
+                          }, null, 8, _hoisted_18$1)) : (openBlock(), createElementBlock("span", {
+                            key: 1,
+                            class: "fi-thumb-fill",
+                            style: normalizeStyle({ background: s.color })
+                          }, null, 4))
+                        ], 4),
+                        createBaseVNode("span", {
+                          class: "fi-blabel",
+                          title: s.label
+                        }, toDisplayString(s.label), 9, _hoisted_19$1),
+                        createBaseVNode("span", _hoisted_20$1, "×" + toDisplayString(s.strength.toFixed(1)), 1),
+                        createBaseVNode("span", _hoisted_21$1, toDisplayString(Math.round(s.share * 100)) + "%", 1)
+                      ], 10, _hoisted_17$1);
+                    }), 128))
+                  ]),
+                  _cache2[8] || (_cache2[8] = createBaseVNode("p", { class: "fi-lhint" }, [
+                    createBaseVNode("b", null, "×"),
+                    createTextVNode(" strength you set · "),
+                    createBaseVNode("b", null, "%"),
+                    createTextVNode(" its share of the grid")
+                  ], -1))
+                ], 64))
+              ], 64))
+            ], 32)
+          ])
+        ], 64))
+      ]);
+    };
+  }
+});
+const FusionInspector = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-9dce09b3"]]);
+const fusionInputNode = defineNode({
   is: "nynxz.experimental.FusionInput",
   minSize: [340, 340],
   widgets: [
@@ -8484,6 +10557,52 @@ const fusionNode = defineNode({
   // installed, no-op otherwise.
   slotLinks: [{ output: "fusion_input", spawn: "nynxz.experimental.QwenFusionEncode" }]
 });
+const fusionImagesNode = defineNode({
+  is: "nynxz.experimental.FusionImages",
+  slotLinks: [{ output: "fusion_input", spawn: "nynxz.experimental.QwenFusionEncode" }]
+});
+const fusionStudioNode = defineNode({
+  is: "nynxz.experimental.FusionStudio",
+  minSize: [660, 520],
+  widgets: [
+    {
+      name: "stage",
+      type: "NYNXZ_FUSION_STAGE",
+      component: FusionStage,
+      minHeight: 320,
+      fill: true,
+      default: {}
+    }
+  ],
+  slotLinks: [{ output: "fusion_input", spawn: "nynxz.experimental.QwenFusionEncode" }]
+});
+const fusionInspectorNode = defineNode({
+  is: "nynxz.experimental.FusionInspector",
+  minSize: [460, 380],
+  hideOutputImages: true,
+  widgets: [
+    {
+      name: "inspector",
+      type: "NYNXZ_INSPECTOR",
+      component: FusionInspector,
+      minHeight: 260,
+      fill: true,
+      serialize: false,
+      default: {}
+    }
+  ],
+  // On execute, map the node's ui `fusion_inspect` payload into the inspector widget → re-render.
+  // ComfyUI wraps every ui value in a list, so unwrap [0] back to the payload dict.
+  output: {
+    widget: "inspector",
+    from: (o) => Array.isArray(o.fusion_inspect) ? o.fusion_inspect[0] : o.fusion_inspect
+  }
+});
+const qwenFusionEncodeNode = defineNode({
+  is: "nynxz.experimental.QwenFusionEncode",
+  slotLinks: [{ output: "fusion_inspect", spawn: "nynxz.experimental.FusionInspector" }]
+});
+const fusionNodes = [fusionInputNode, fusionImagesNode, fusionStudioNode, fusionInspectorNode, qwenFusionEncodeNode];
 let _lorasCache = null;
 function listLoras(force = false) {
   if (force || !_lorasCache) _lorasCache = fetchLoras();
@@ -8538,59 +10657,62 @@ const _hoisted_3 = {
   key: 0,
   class: "ls-rows"
 };
-const _hoisted_4 = { class: "ls-sel" };
-const _hoisted_5 = ["src", "onError"];
-const _hoisted_6 = {
-  key: 1,
+const _hoisted_4 = ["onDragover", "onDrop"];
+const _hoisted_5 = ["onDragstart"];
+const _hoisted_6 = ["title"];
+const _hoisted_7 = ["src", "onError"];
+const _hoisted_8 = {
+  key: 2,
   class: "mdi mdi-cube-outline ls-thumb sm ph"
 };
-const _hoisted_7 = { class: "ls-sel-name" };
-const _hoisted_8 = ["src"];
-const _hoisted_9 = {
+const _hoisted_9 = { class: "ls-sel-name" };
+const _hoisted_10 = ["src"];
+const _hoisted_11 = {
   key: 1,
   class: "mdi mdi-cube-outline ls-thumb ph"
 };
-const _hoisted_10 = { class: "ls-opt-txt" };
-const _hoisted_11 = { class: "ls-opt-name" };
-const _hoisted_12 = {
+const _hoisted_12 = { class: "ls-opt-txt" };
+const _hoisted_13 = { class: "ls-opt-name" };
+const _hoisted_14 = {
   key: 0,
   class: "ls-opt-dir"
 };
-const _hoisted_13 = ["title", "onClick"];
-const _hoisted_14 = {
+const _hoisted_15 = ["title", "onClick"];
+const _hoisted_16 = {
   key: 1,
   class: "ls-empty"
 };
-const _hoisted_15 = { class: "ls-foot" };
-const _hoisted_16 = {
+const _hoisted_17 = { class: "ls-foot" };
+const _hoisted_18 = {
   key: 0,
   class: "ls-add-n"
 };
-const _hoisted_17 = { class: "ls-search" };
-const _hoisted_18 = {
+const _hoisted_19 = { class: "ls-search" };
+const _hoisted_20 = {
   key: 0,
   class: "ls-crumbs"
 };
-const _hoisted_19 = ["onClick"];
-const _hoisted_20 = { class: "ls-grid" };
 const _hoisted_21 = ["onClick"];
-const _hoisted_22 = { class: "ls-card-meta" };
-const _hoisted_23 = ["title"];
-const _hoisted_24 = ["onClick"];
-const _hoisted_25 = { class: "ls-card-img" };
-const _hoisted_26 = ["src"];
-const _hoisted_27 = {
+const _hoisted_22 = { class: "ls-grid" };
+const _hoisted_23 = ["onClick"];
+const _hoisted_24 = { class: "ls-card-meta" };
+const _hoisted_25 = ["title"];
+const _hoisted_26 = ["onClick"];
+const _hoisted_27 = { class: "ls-card-img" };
+const _hoisted_28 = ["src"];
+const _hoisted_29 = {
   key: 1,
   class: "mdi mdi-cube-outline"
 };
-const _hoisted_28 = ["onClick"];
-const _hoisted_29 = { class: "ls-card-meta" };
-const _hoisted_30 = ["title"];
-const _hoisted_31 = { class: "ls-card-dir" };
-const _hoisted_32 = {
+const _hoisted_30 = ["onClick"];
+const _hoisted_31 = { class: "ls-card-meta" };
+const _hoisted_32 = ["title"];
+const _hoisted_33 = { class: "ls-card-dir" };
+const _hoisted_34 = {
   key: 0,
   class: "ls-grid-empty"
 };
+const ORDER_KEY = "nynxzLoraOrder";
 const _sfc_main = /* @__PURE__ */ defineComponent({
   __name: "LoraStack",
   props: {
@@ -8601,7 +10723,13 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     const props = __props;
     const loras = /* @__PURE__ */ ref([]);
     const favorites = /* @__PURE__ */ ref([]);
-    const rows = /* @__PURE__ */ ref(parseRows(props.widget?.value));
+    let idSeq = 0;
+    function nextId() {
+      return ++idSeq;
+    }
+    const rows = /* @__PURE__ */ ref(loadRows());
+    const dragIndex = /* @__PURE__ */ ref(-1);
+    const dropIndex = /* @__PURE__ */ ref(-1);
     const browse = /* @__PURE__ */ ref(false);
     const browseTarget = /* @__PURE__ */ ref(-1);
     const bq = /* @__PURE__ */ ref("");
@@ -8621,6 +10749,13 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       const n = +v;
       return Number.isFinite(n) ? n : fallback;
     }
+    function normalizeRows(arr) {
+      return arr.filter((r) => r && typeof r === "object").map((r) => {
+        const id = Number.isFinite(+r.id) ? +r.id : nextId();
+        if (id > idSeq) idSeq = id;
+        return { id, on: r.on !== false, name: String(r.name ?? ""), strength: num(r.strength, 1) };
+      });
+    }
     function parseRows(v) {
       let arr = v;
       if (typeof arr === "string") {
@@ -8631,11 +10766,12 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
         }
       }
       if (!Array.isArray(arr)) return [];
-      return arr.filter((r) => r && typeof r === "object").map((r) => ({
-        on: r.on !== false,
-        name: String(r.name ?? ""),
-        strength: num(r.strength, 1)
-      }));
+      return normalizeRows(arr);
+    }
+    function loadRows() {
+      const stored = props.node?.properties?.[ORDER_KEY];
+      if (Array.isArray(stored) && stored.length) return normalizeRows(stored);
+      return parseRows(props.widget?.value);
     }
     async function ensureLoras() {
       const [ls, fs] = await Promise.all([listLoras(), getFavorites()]);
@@ -8644,6 +10780,12 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       for (const l of ls) if (l.has_preview) previewable.add(l.name);
       listLoaded.value = true;
     }
+    const known = computed(() => new Set(loras.value.map((l) => l.name)));
+    function isMissing(name) {
+      const n = String(name);
+      return listLoaded.value && !!n && !known.value.has(n);
+    }
+    if (rows.value.some((r) => r.name)) void ensureLoras();
     const items = computed(
       () => loras.value.map((l) => ({ value: l.name, label: short(l.name), keywords: l.name }))
     );
@@ -8707,11 +10849,14 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       img.style.display = "none";
     }
     function commit() {
+      if (props.node?.properties) {
+        props.node.properties[ORDER_KEY] = rows.value.map((r) => ({ ...r }));
+      }
       if (props.widget) {
-        const snapshot = rows.value.map((r) => ({ ...r }));
-        props.widget.value = snapshot;
+        const value = rows.value.map((r) => ({ on: r.on, name: r.name, strength: r.strength })).sort((a, b) => a.name.localeCompare(b.name) || a.strength - b.strength || +a.on - +b.on);
+        props.widget.value = value;
         try {
-          props.widget.callback?.(snapshot);
+          props.widget.callback?.(value);
         } catch {
         }
       }
@@ -8736,7 +10881,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       }
     }
     function addRow(name = "") {
-      rows.value.push({ on: true, name, strength: 1 });
+      rows.value.push({ id: nextId(), on: true, name, strength: 1 });
       commit();
     }
     function removeRow(i) {
@@ -8746,6 +10891,34 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     function clearAll() {
       rows.value = [];
       commit();
+    }
+    function startReorder(i, e) {
+      dragIndex.value = i;
+      if (e.dataTransfer) {
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", String(i));
+      }
+    }
+    function onRowDragOver(i, e) {
+      if (dragIndex.value < 0) return;
+      e.stopPropagation();
+      dropIndex.value = i;
+    }
+    function onRowDrop(to, e) {
+      if (dragIndex.value < 0) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const from = dragIndex.value;
+      endReorder();
+      if (from === to) return;
+      const moved = rows.value.splice(from, 1)[0];
+      if (!moved) return;
+      rows.value.splice(to, 0, moved);
+      commit();
+    }
+    function endReorder() {
+      dragIndex.value = -1;
+      dropIndex.value = -1;
     }
     function enterFolder(name) {
       bpath.value = bpath.value ? bpath.value + "/" + name : name;
@@ -8771,9 +10944,20 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
           rows.value.length ? (openBlock(), createElementBlock("div", _hoisted_3, [
             (openBlock(true), createElementBlock(Fragment, null, renderList(rows.value, (row, i) => {
               return openBlock(), createElementBlock("div", {
-                key: i,
-                class: normalizeClass(["ls-row", { off: !row.on }])
+                key: row.id,
+                class: normalizeClass(["ls-row", { off: !row.on, dragging: dragIndex.value === i, over: dropIndex.value === i && dragIndex.value !== i }]),
+                onDragover: withModifiers(($event) => onRowDragOver(i, $event), ["prevent"]),
+                onDrop: ($event) => onRowDrop(i, $event),
+                onDragend: endReorder
               }, [
+                createBaseVNode("div", {
+                  class: "ls-grip",
+                  draggable: "true",
+                  title: "Drag to reorder",
+                  onDragstart: ($event) => startReorder(i, $event)
+                }, [..._cache2[7] || (_cache2[7] = [
+                  createBaseVNode("i", { class: "mdi mdi-drag-vertical" }, null, -1)
+                ])], 40, _hoisted_5),
                 createVNode(unref(ZenSwitch), {
                   "model-value": row.on,
                   title: "Enable",
@@ -8792,15 +10976,21 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
                   onOpen: ensureLoras
                 }, {
                   selected: withCtx(() => [
-                    createBaseVNode("span", _hoisted_4, [
-                      row.name && selThumb(row.name) ? (openBlock(), createElementBlock("img", {
+                    createBaseVNode("span", {
+                      class: normalizeClass(["ls-sel", { missing: isMissing(row.name) }])
+                    }, [
+                      isMissing(row.name) ? (openBlock(), createElementBlock("i", {
                         key: 0,
+                        class: "mdi mdi-alert ls-thumb sm warn",
+                        title: `LoRA not found on disk: ${row.name}`
+                      }, null, 8, _hoisted_6)) : row.name && selThumb(row.name) ? (openBlock(), createElementBlock("img", {
+                        key: 1,
                         class: "ls-thumb sm",
                         src: preview(row.name),
                         onError: ($event) => onSelErr(row.name)
-                      }, null, 40, _hoisted_5)) : (openBlock(), createElementBlock("i", _hoisted_6)),
-                      createBaseVNode("span", _hoisted_7, toDisplayString(row.name ? short(row.name) : "Select a LoRA…"), 1)
-                    ])
+                      }, null, 40, _hoisted_7)) : (openBlock(), createElementBlock("i", _hoisted_8)),
+                      createBaseVNode("span", _hoisted_9, toDisplayString(row.name ? short(row.name) : "Select a LoRA…"), 1)
+                    ], 2)
                   ]),
                   option: withCtx(({ item }) => [
                     hasPreview(item.value) ? (openBlock(), createElementBlock("img", {
@@ -8809,10 +10999,10 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
                       src: preview(item.value),
                       loading: "lazy",
                       onError: onImgErr
-                    }, null, 40, _hoisted_8)) : (openBlock(), createElementBlock("i", _hoisted_9)),
-                    createBaseVNode("span", _hoisted_10, [
-                      createBaseVNode("span", _hoisted_11, toDisplayString(short(item.value)), 1),
-                      folder(item.value) ? (openBlock(), createElementBlock("span", _hoisted_12, toDisplayString(folder(item.value)), 1)) : createCommentVNode("", true)
+                    }, null, 40, _hoisted_10)) : (openBlock(), createElementBlock("i", _hoisted_11)),
+                    createBaseVNode("span", _hoisted_12, [
+                      createBaseVNode("span", _hoisted_13, toDisplayString(short(item.value)), 1),
+                      folder(item.value) ? (openBlock(), createElementBlock("span", _hoisted_14, toDisplayString(folder(item.value)), 1)) : createCommentVNode("", true)
                     ]),
                     createBaseVNode("button", {
                       class: normalizeClass(["ls-star", { on: isFav(item.value) }]),
@@ -8822,7 +11012,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
                       createBaseVNode("i", {
                         class: normalizeClass(["mdi", isFav(item.value) ? "mdi-star" : "mdi-star-outline"])
                       }, null, 2)
-                    ], 10, _hoisted_13)
+                    ], 10, _hoisted_15)
                   ]),
                   footer: withCtx(({ close }) => [
                     createVNode(unref(ZenButton), {
@@ -8853,21 +11043,21 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
                   title: "Remove",
                   onClick: ($event) => removeRow(i)
                 }, null, 8, ["onClick"])
-              ], 2);
+              ], 42, _hoisted_4);
             }), 128))
-          ])) : (openBlock(), createElementBlock("div", _hoisted_14, [..._cache2[7] || (_cache2[7] = [
+          ])) : (openBlock(), createElementBlock("div", _hoisted_16, [..._cache2[8] || (_cache2[8] = [
             createBaseVNode("i", { class: "mdi mdi-layers-triple-outline" }, null, -1),
             createBaseVNode("span", null, "No LoRAs in this stack yet", -1)
           ])]))
         ]),
-        createBaseVNode("div", _hoisted_15, [
+        createBaseVNode("div", _hoisted_17, [
           createBaseVNode("button", {
             class: "ls-add",
             onClick: _cache2[0] || (_cache2[0] = ($event) => addRow())
           }, [
-            _cache2[8] || (_cache2[8] = createBaseVNode("i", { class: "mdi mdi-plus" }, null, -1)),
-            _cache2[9] || (_cache2[9] = createTextVNode(" Add LoRA", -1)),
-            rows.value.length ? (openBlock(), createElementBlock("span", _hoisted_16, toDisplayString(rows.value.length), 1)) : createCommentVNode("", true)
+            _cache2[9] || (_cache2[9] = createBaseVNode("i", { class: "mdi mdi-plus" }, null, -1)),
+            _cache2[10] || (_cache2[10] = createTextVNode(" Add LoRA", -1)),
+            rows.value.length ? (openBlock(), createElementBlock("span", _hoisted_18, toDisplayString(rows.value.length), 1)) : createCommentVNode("", true)
           ]),
           createVNode(unref(ZenIconButton), {
             icon: "mdi mdi-view-grid-outline",
@@ -8882,7 +11072,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
             onClick: clearAll
           })) : createCommentVNode("", true)
         ]),
-        createVNode(unref(_sfc_main$2), {
+        createVNode(unref(_sfc_main$5), {
           open: browse.value,
           "onUpdate:open": _cache2[6] || (_cache2[6] = ($event) => browse.value = $event),
           title: "LoRA browser",
@@ -8890,7 +11080,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
           height: "78vh"
         }, {
           header: withCtx(() => [
-            createBaseVNode("span", _hoisted_17, [
+            createBaseVNode("span", _hoisted_19, [
               createVNode(unref(ZenInput), {
                 modelValue: bq.value,
                 "onUpdate:modelValue": _cache2[2] || (_cache2[2] = ($event) => bq.value = $event),
@@ -8910,39 +11100,39 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
             }, null, 8, ["modelValue"])
           ]),
           default: withCtx(() => [
-            folderActive.value ? (openBlock(), createElementBlock("div", _hoisted_18, [
+            folderActive.value ? (openBlock(), createElementBlock("div", _hoisted_20, [
               createBaseVNode("button", {
                 class: normalizeClass(["ls-crumb", { on: !bpath.value }]),
                 onClick: _cache2[5] || (_cache2[5] = ($event) => bpath.value = "")
               }, "all", 2),
               (openBlock(true), createElementBlock(Fragment, null, renderList(crumbSegs.value, (seg, i) => {
                 return openBlock(), createElementBlock(Fragment, { key: i }, [
-                  _cache2[10] || (_cache2[10] = createBaseVNode("i", { class: "mdi mdi-chevron-right" }, null, -1)),
+                  _cache2[11] || (_cache2[11] = createBaseVNode("i", { class: "mdi mdi-chevron-right" }, null, -1)),
                   createBaseVNode("button", {
                     class: normalizeClass(["ls-crumb", { on: i === crumbSegs.value.length - 1 }]),
                     onClick: ($event) => bpath.value = crumbSegs.value.slice(0, i + 1).join("/")
-                  }, toDisplayString(seg), 11, _hoisted_19)
+                  }, toDisplayString(seg), 11, _hoisted_21)
                 ], 64);
               }), 128))
             ])) : createCommentVNode("", true),
-            createBaseVNode("div", _hoisted_20, [
+            createBaseVNode("div", _hoisted_22, [
               (openBlock(true), createElementBlock(Fragment, null, renderList(gridFolders.value, (f) => {
                 return openBlock(), createElementBlock("button", {
                   key: "d:" + f,
                   class: "ls-card ls-folder",
                   onClick: ($event) => enterFolder(f)
                 }, [
-                  _cache2[12] || (_cache2[12] = createBaseVNode("div", { class: "ls-card-img" }, [
+                  _cache2[13] || (_cache2[13] = createBaseVNode("div", { class: "ls-card-img" }, [
                     createBaseVNode("i", { class: "mdi mdi-folder" })
                   ], -1)),
-                  createBaseVNode("div", _hoisted_22, [
+                  createBaseVNode("div", _hoisted_24, [
                     createBaseVNode("span", {
                       class: "ls-card-name",
                       title: f
-                    }, toDisplayString(f), 9, _hoisted_23),
-                    _cache2[11] || (_cache2[11] = createBaseVNode("span", { class: "ls-card-dir" }, "folder", -1))
+                    }, toDisplayString(f), 9, _hoisted_25),
+                    _cache2[12] || (_cache2[12] = createBaseVNode("span", { class: "ls-card-dir" }, "folder", -1))
                   ])
-                ], 8, _hoisted_21);
+                ], 8, _hoisted_23);
               }), 128)),
               (openBlock(true), createElementBlock(Fragment, null, renderList(gridFiles.value, (it) => {
                 return openBlock(), createElementBlock("button", {
@@ -8950,13 +11140,13 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
                   class: normalizeClass(["ls-card", { sel: browseTarget.value >= 0 && rows.value[browseTarget.value]?.name === it.name }]),
                   onClick: ($event) => pickFromBrowse(it.name)
                 }, [
-                  createBaseVNode("div", _hoisted_25, [
+                  createBaseVNode("div", _hoisted_27, [
                     it.has_preview ? (openBlock(), createElementBlock("img", {
                       key: 0,
                       src: preview(it.name),
                       loading: "lazy",
                       onError: onImgErr
-                    }, null, 40, _hoisted_26)) : (openBlock(), createElementBlock("i", _hoisted_27)),
+                    }, null, 40, _hoisted_28)) : (openBlock(), createElementBlock("i", _hoisted_29)),
                     createBaseVNode("span", {
                       class: normalizeClass(["ls-card-star", { on: isFav(it.name) }]),
                       onClick: withModifiers(($event) => toggleFav(it.name), ["stop"])
@@ -8964,18 +11154,18 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
                       createBaseVNode("i", {
                         class: normalizeClass(["mdi", isFav(it.name) ? "mdi-star" : "mdi-star-outline"])
                       }, null, 2)
-                    ], 10, _hoisted_28)
+                    ], 10, _hoisted_30)
                   ]),
-                  createBaseVNode("div", _hoisted_29, [
+                  createBaseVNode("div", _hoisted_31, [
                     createBaseVNode("span", {
                       class: "ls-card-name",
                       title: it.name
-                    }, toDisplayString(short(it.name)), 9, _hoisted_30),
-                    createBaseVNode("span", _hoisted_31, toDisplayString(folderActive.value ? "—" : folder(it.name) || "—"), 1)
+                    }, toDisplayString(short(it.name)), 9, _hoisted_32),
+                    createBaseVNode("span", _hoisted_33, toDisplayString(folderActive.value ? "—" : folder(it.name) || "—"), 1)
                   ])
-                ], 10, _hoisted_24);
+                ], 10, _hoisted_26);
               }), 128)),
-              !gridFolders.value.length && !gridFiles.value.length ? (openBlock(), createElementBlock("p", _hoisted_32, toDisplayString(folderActive.value ? "Empty folder." : "No matches."), 1)) : createCommentVNode("", true)
+              !gridFolders.value.length && !gridFiles.value.length ? (openBlock(), createElementBlock("p", _hoisted_34, toDisplayString(folderActive.value ? "Empty folder." : "No matches."), 1)) : createCommentVNode("", true)
             ])
           ]),
           _: 1
@@ -8984,7 +11174,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const LoraStack = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-da184183"]]);
+const LoraStack = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-eb7918f8"]]);
 const loraNode = defineNode({
   is: [
     "nynxz.experimental.NynxzLoraLoader",
@@ -9102,14 +11292,34 @@ const S = {
   baseBrightness: 0.25,
   saturation: 0.7,
   lightness: 0.55,
-  vignette: 1
+  vignette: 1,
+  // Blob trail: the droplet is a tapered poly-line of recent positions, so it curves along the
+  // actual path (a comet/teardrop) instead of a rigid ellipse. These are the fixed knobs; tail
+  // length + pointiness come from the "Blob flow" slider (see flowParams).
+  trailSample: 5,
+  // CSS px — min spacing between stored trail points
+  trailMax: 20,
+  // hard cap on stored points (must be ≤ MAX_TRAIL in the shader)
+  headRadius: 200,
+  // graph units — influence radius at the head (matches mouseRadius)
+  tailFade: 0.55
+  // brightness multiplier at the tail tip (thinning/fading water)
 };
+function speedToTau(v) {
+  const s = Math.min(100, Math.max(1, v));
+  return 0.34 * (1 - s / 110);
+}
+function flowParams(v) {
+  const n = Math.min(100, Math.max(0, v)) / 100;
+  return { ttl: 140 + n * 300, tailRadius: 60 - n * 42 };
+}
 const VERT = `#version 300 es
 const vec2 V[3] = vec2[3](vec2(-1.0,-1.0), vec2(3.0,-1.0), vec2(-1.0,3.0));
 void main(){ gl_Position = vec4(V[gl_VertexID], 0.0, 1.0); }
 `;
 const FRAG = `#version 300 es
 precision highp float;
+#define MAX_TRAIL 20
 out vec4 fragColor;
 uniform vec2  u_res;
 uniform float u_dpr;
@@ -9131,6 +11341,10 @@ uniform float u_rainbow;
 uniform vec3  u_dotColor;
 uniform vec3  u_bgColor;
 uniform float u_vignette;
+uniform float u_tailFade;         // brightness at the tail tip (< 1 ⇒ fades out)
+uniform int   u_trailN;           // number of active trail points (0/1 ⇒ plain circle at u_mouse)
+uniform vec2  u_trail[MAX_TRAIL];  // recent cursor path, head→tail, graph space
+uniform float u_trailR[MAX_TRAIL]; // per-point influence radius, tapering head→tail
 vec3 hsl2rgb(float h, float s, float l){
   h = mod(h, 360.0) / 60.0;
   float c = (1.0 - abs(2.0*l - 1.0)) * s;
@@ -9145,6 +11359,12 @@ vec3 hsl2rgb(float h, float s, float l){
   return rgb + (l - c/2.0);
 }
 float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+// Distance from p to segment a→b; returns the clamped projection param in t.
+float segDist(vec2 p, vec2 a, vec2 b, out float t){
+  vec2 ab = b - a;
+  t = clamp(dot(p - a, ab) / max(dot(ab, ab), 1e-4), 0.0, 1.0);
+  return length(p - (a + t * ab));
+}
 void main(){
   vec2 dev = vec2(gl_FragCoord.x, u_res.y - gl_FragCoord.y);
   vec2 g = dev / (u_dpr * u_scale) - u_offset;
@@ -9156,7 +11376,27 @@ void main(){
       vec2 cell = baseCell + vec2(float(ox), float(oy));
       vec2 dotPos = cell * u_spacing;
       float dist = length(g - dotPos);
-      float prox = u_over > 0.5 ? max(0.0, 1.0 - length(dotPos - u_mouse) / u_mouseRadius) : 0.0;
+      // Cursor proximity. With a trail (blob), light dots by distance to the tapered poly-line of
+      // recent cursor positions: a tube that is fat + bright at the head and thins + fades toward
+      // the tail, and — crucially — curves along the path actually travelled. Otherwise (snap/
+      // follow, u_trailN < 2) it's a plain circle around the single follow point u_mouse.
+      float prox = 0.0;
+      if (u_over > 0.5) {
+        if (u_trailN >= 2) {
+          for (int i = 0; i < MAX_TRAIL - 1; i++) {
+            if (i >= u_trailN - 1) break;
+            float t;
+            float d = segDist(dotPos, u_trail[i], u_trail[i + 1], t);
+            float rr = mix(u_trailR[i], u_trailR[i + 1], t);       // radius along the segment
+            float f = (float(i) + t) / float(u_trailN - 1);         // 0 head → 1 tail
+            float p = (1.0 - d / max(rr, 1e-3)) * mix(1.0, u_tailFade, f);
+            prox = max(prox, p);
+          }
+        } else {
+          prox = 1.0 - length(dotPos - u_mouse) / u_mouseRadius;
+        }
+        prox = max(0.0, prox);
+      }
       float h = hash(cell);
       float pulse = sin(u_time * (0.2 + h * 0.4) + h * 6.2831) * 0.5 + 0.5;
       float baseAlpha = u_restAlpha + h * 0.08;
@@ -9209,7 +11449,11 @@ const UNIFORMS = [
   "u_rainbow",
   "u_dotColor",
   "u_bgColor",
-  "u_vignette"
+  "u_vignette",
+  "u_tailFade",
+  "u_trailN",
+  "u_trail",
+  "u_trailR"
 ];
 function compile(gl, type, src) {
   const sh = gl.createShader(type);
@@ -9271,6 +11515,12 @@ function renderGL(host2, st) {
   gl.uniform3f(u.u_dotColor, dot[0], dot[1], dot[2]);
   gl.uniform3f(u.u_bgColor, bg[0], bg[1], bg[2]);
   gl.uniform1f(u.u_vignette, S.vignette);
+  gl.uniform1f(u.u_tailFade, S.tailFade);
+  gl.uniform1i(u.u_trailN, host2.trail.n);
+  if (host2.trail.n > 0) {
+    gl.uniform2fv(u.u_trail, host2.trail.pts);
+    gl.uniform1fv(u.u_trailR, host2.trail.radii);
+  }
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 }
 function render2D(host2, st) {
@@ -9321,8 +11571,8 @@ const grid = {
     st.gl?.gl.getExtension("WEBGL_lose_context")?.loseContext();
   }
 };
-const registry = /* @__PURE__ */ new Map();
-registry.set(grid.id, grid);
+const registry$1 = /* @__PURE__ */ new Map();
+registry$1.set(grid.id, grid);
 let desiredId = "grid";
 class Host {
   layer = null;
@@ -9333,6 +11583,32 @@ class Host {
   started = false;
   ptr = { x: 0, y: 0, over: false };
   saved = {};
+  // Cursor-follow state (see setBackgroundFollow* below). Defaults keep the classic snap look;
+  // flow params are pre-seeded so 'blob' works even before the sliders are first touched.
+  followMode = "snap";
+  followTau = speedToTau(45);
+  // smoothing time-constant, seconds
+  trailTtl = flowParams(55).ttl;
+  // ms a trail point survives ⇒ tail length ∝ speed × ttl
+  tailRadius = flowParams(55).tailRadius;
+  // graph-unit influence at the tail tip
+  follow = { x: 0, y: 0, has: false };
+  // eased pointer, canvas-local CSS px
+  trail = [];
+  // recent path, head first, CSS px + ms
+  setFollowMode(m) {
+    this.followMode = m === "follow" || m === "blob" ? m : "snap";
+    this.follow.has = false;
+    this.trail.length = 0;
+  }
+  setFollowSpeed(v) {
+    this.followTau = speedToTau(v);
+  }
+  setBlobFlow(v) {
+    const p2 = flowParams(v);
+    this.trailTtl = p2.ttl;
+    this.tailRadius = p2.tailRadius;
+  }
   mount() {
     if (this.started) return;
     this.started = true;
@@ -9390,29 +11666,68 @@ class Host {
   }
   buildCtx(lg, now) {
     const c = this.layer;
-    const dpr = window.devicePixelRatio || 1;
     const off = lg.ds?.offset || [0, 0];
+    const scale = lg.ds?.scale ?? 1;
+    const r = lg.canvas.getBoundingClientRect();
+    const dpr = r.width > 0 ? c.width / r.width : window.devicePixelRatio || 1;
+    const dt = this.last ? now - this.last : 16;
     let mx = -1e6, my = -1e6, over = false;
-    if (this.ptr.over) {
-      const r = lg.canvas.getBoundingClientRect();
-      if (this.ptr.x >= r.left && this.ptr.x <= r.right && this.ptr.y >= r.top && this.ptr.y <= r.bottom) {
-        over = true;
-        mx = (this.ptr.x - r.left) / (lg.ds?.scale ?? 1) - off[0];
-        my = (this.ptr.y - r.top) / (lg.ds?.scale ?? 1) - off[1];
+    const inside = this.ptr.over && this.ptr.x >= r.left && this.ptr.x <= r.right && this.ptr.y >= r.top && this.ptr.y <= r.bottom;
+    if (inside) {
+      over = true;
+      const tx = this.ptr.x - r.left;
+      const ty = this.ptr.y - r.top;
+      if (this.followMode === "snap" || !this.follow.has) {
+        this.follow.x = tx;
+        this.follow.y = ty;
+        this.follow.has = true;
       }
+      const a = this.followMode === "snap" ? 1 : 1 - Math.exp(-(dt / 1e3) / Math.max(1e-3, this.followTau));
+      this.follow.x += (tx - this.follow.x) * a;
+      this.follow.y += (ty - this.follow.y) * a;
+      mx = this.follow.x / scale - off[0];
+      my = this.follow.y / scale - off[1];
+      if (this.followMode === "blob") this.updateTrail(now);
+      else this.trail.length = 0;
+    } else {
+      this.follow.has = false;
+      this.trail.length = 0;
+    }
+    const pts = [];
+    const radii = [];
+    const n = this.trail.length;
+    for (let i = 0; i < n; i++) {
+      const p2 = this.trail[i];
+      pts.push(p2.x / scale - off[0], p2.y / scale - off[1]);
+      radii.push(S.headRadius + (this.tailRadius - S.headRadius) * (n > 1 ? i / (n - 1) : 0));
     }
     return {
       layer: c,
       w: c.width,
       h: c.height,
       dpr,
-      scale: lg.ds?.scale ?? 1,
+      scale,
       offset: { x: off[0], y: off[1] },
       mouse: { x: mx, y: my, over },
+      trail: { pts, radii, n },
       time: now,
-      dt: this.last ? now - this.last : 16,
+      dt,
       color: (v, fb = "#888888") => cssColor(v, fb)
     };
+  }
+  // Append the current follow point to the head of the trail (or nudge the head if barely moved),
+  // then expire points older than the tail lifetime so the tail retracts as the cursor slows.
+  updateTrail(now) {
+    const head = this.trail[0];
+    if (!head || Math.hypot(this.follow.x - head.x, this.follow.y - head.y) >= S.trailSample) {
+      this.trail.unshift({ x: this.follow.x, y: this.follow.y, t: now });
+    } else {
+      head.x = this.follow.x;
+      head.y = this.follow.y;
+      head.t = now;
+    }
+    while (this.trail.length > 1 && now - this.trail[this.trail.length - 1].t > this.trailTtl) this.trail.pop();
+    if (this.trail.length > S.trailMax) this.trail.length = S.trailMax;
   }
   setActive(id) {
     desiredId = id;
@@ -9434,7 +11749,7 @@ class Host {
     this.state = null;
     this.layer?.remove();
     this.layer = null;
-    const def2 = targetId ? registry.get(targetId) : void 0;
+    const def2 = targetId ? registry$1.get(targetId) : void 0;
     if (!def2) {
       this.restore(lg);
       lg.setDirty?.(true, true);
@@ -9489,13 +11804,25 @@ function setBackgroundEnabled(on) {
     host.setActive(desiredId);
   }
 }
-const SETTING_ID = "nynxz.experimental.interactiveBackground";
+function setBackgroundFollow(mode) {
+  host.setFollowMode(mode);
+}
+function setBackgroundFollowSpeed(v) {
+  host.setFollowSpeed(v);
+}
+function setBackgroundBlobFlow(v) {
+  host.setBlobFlow(v);
+}
+const SETTING_ID$1 = "nynxz.experimental.interactiveBackground";
+const FOLLOW_ID = "nynxz.experimental.backgroundFollow";
+const FOLLOW_SPEED_ID = "nynxz.experimental.backgroundFollowSpeed";
+const BLOB_FLOW_ID = "nynxz.experimental.backgroundBlobFlow";
 function registerBackground() {
   app.registerExtension({
     name: "nynxz.experimental.background",
     settings: [
       {
-        id: SETTING_ID,
+        id: SETTING_ID$1,
         name: "Interactive background",
         category: ["Nynxz Experimental", "Canvas", "Interactive background"],
         type: "boolean",
@@ -9505,18 +11832,646 @@ function registerBackground() {
         onChange(value) {
           setBackgroundEnabled(!!value);
         }
+      },
+      {
+        id: FOLLOW_ID,
+        name: "Cursor follow",
+        category: ["Nynxz Experimental", "Canvas", "Cursor follow"],
+        type: "combo",
+        defaultValue: "snap",
+        options: [
+          { text: "Snap (1:1)", value: "snap" },
+          { text: "Follow (eased)", value: "follow" },
+          { text: "Blob (droplet)", value: "blob" }
+        ],
+        experimental: true,
+        tooltip: "How the glow tracks your cursor. Snap sits exactly on it; Follow eases in behind it; Blob trails a tapered droplet that curves along the path you draw, like water being dragged.",
+        onChange(value) {
+          setBackgroundFollow(String(value));
+        }
+      },
+      {
+        id: FOLLOW_SPEED_ID,
+        name: "Follow speed",
+        category: ["Nynxz Experimental", "Canvas", "Follow speed"],
+        type: "slider",
+        defaultValue: 45,
+        attrs: { min: 1, max: 100, step: 1 },
+        experimental: true,
+        tooltip: "How quickly the glow catches up in Follow/Blob modes. Higher = snappier, lower = a longer, lazier trail.",
+        onChange(value) {
+          setBackgroundFollowSpeed(Number(value));
+        }
+      },
+      {
+        id: BLOB_FLOW_ID,
+        name: "Blob flow",
+        category: ["Nynxz Experimental", "Canvas", "Blob flow"],
+        type: "slider",
+        defaultValue: 55,
+        attrs: { min: 0, max: 100, step: 1 },
+        experimental: true,
+        tooltip: "Length and pointiness of the Blob droplet tail. Low = a short rounded blob; high = a long tapered comet tail.",
+        onChange(value) {
+          setBackgroundBlobFlow(Number(value));
+        }
       }
     ],
-    // Fallback: if this build of ComfyUI doesn't fire onChange on load, apply the stored value
-    // once at startup. setBackgroundEnabled is idempotent, so a double-apply is harmless.
+    // Fallback: if this build of ComfyUI doesn't fire onChange on load, apply the stored values
+    // once at startup. The setters are idempotent, so a double-apply is harmless.
     async setup() {
       try {
-        const on = app.extensionManager?.setting?.get(SETTING_ID);
+        const s = app.extensionManager?.setting;
+        const on = s?.get(SETTING_ID$1);
         if (on !== void 0) setBackgroundEnabled(!!on);
+        const follow = s?.get(FOLLOW_ID);
+        if (follow !== void 0) setBackgroundFollow(String(follow));
+        const speed = s?.get(FOLLOW_SPEED_ID);
+        if (speed !== void 0) setBackgroundFollowSpeed(Number(speed));
+        const flow = s?.get(BLOB_FLOW_ID);
+        if (flow !== void 0) setBackgroundBlobFlow(Number(flow));
       } catch {
       }
     }
   });
 }
-registerNodes("nynxz.experimental", [fusionNode, loraNode]);
+function ensureStyle(id, content) {
+  let el = document.getElementById(id);
+  if (!el) {
+    el = document.createElement("style");
+    el.id = id;
+    document.head.appendChild(el);
+  }
+  if (el.textContent !== content) el.textContent = content;
+}
+const MODES = ["light", "dark"];
+function parsePack(data) {
+  if (!data || typeof data !== "object") return null;
+  const d = data;
+  if (typeof d.id !== "string" || typeof d.name !== "string") return null;
+  if (!d.tokens || typeof d.tokens !== "object") return null;
+  const raw = d.tokens;
+  const tokens = {};
+  for (const mode of MODES) {
+    const set = raw[mode];
+    if (!set || typeof set !== "object") continue;
+    const out = {};
+    for (const [k, v] of Object.entries(set)) {
+      if (typeof v === "string") out[k] = v;
+    }
+    if (Object.keys(out).length) tokens[mode] = out;
+  }
+  if (!tokens.light && !tokens.dark) return null;
+  const modes = Array.isArray(d.modes) ? d.modes.filter((m) => m === "light" || m === "dark") : void 0;
+  const css = typeof d.css === "string" && d.css.trim() ? d.css : void 0;
+  const regions = parseRegions(d.regions);
+  return {
+    id: d.id,
+    name: d.name,
+    ...modes && modes.length ? { modes } : {},
+    tokens,
+    ...regions ? { regions } : {},
+    ...css ? { css } : {}
+  };
+}
+function parseRegions(data) {
+  if (!data || typeof data !== "object") return void 0;
+  const out = {};
+  for (const [region, style] of Object.entries(data)) {
+    if (!style || typeof style !== "object") continue;
+    const decls = {};
+    for (const [prop, value] of Object.entries(style)) {
+      if (typeof value === "string" && value.trim()) decls[prop] = value;
+    }
+    if (Object.keys(decls).length) out[region] = decls;
+  }
+  return Object.keys(out).length ? out : void 0;
+}
+const registry = /* @__PURE__ */ new Map();
+function registerPacks(list) {
+  const out = [];
+  for (const p2 of list) {
+    const valid = parsePack(p2);
+    if (valid) {
+      registry.set(valid.id, valid);
+      out.push(valid);
+    }
+  }
+  return out;
+}
+function themePacks() {
+  return [...registry.values()];
+}
+const TOKEN_FALLBACKS = {
+  "--background": ["--base-background", "--bg-color", "--content-bg"],
+  "--foreground": ["--base-foreground", "--fg-color", "--content-fg"],
+  "--primary": ["--primary-background", "--brand-blue", "--accent-primary"],
+  "--primary-foreground": ["--button-surface-contrast", "--base-foreground"],
+  "--secondary": ["--secondary-background", "--component-node-widget-background"],
+  "--secondary-foreground": ["--component-node-foreground", "--foreground"],
+  "--muted": ["--muted-background", "--component-node-widget-background"],
+  "--muted-foreground": ["--text-secondary", "--component-node-foreground-secondary"],
+  "--accent": ["--accent-background", "--component-node-surface"],
+  "--accent-foreground": ["--component-node-foreground", "--foreground"],
+  "--border": ["--border-default", "--node-component-border"],
+  "--input": ["--input-surface", "--component-node-widget-background"],
+  "--card": ["--component-node-background", "--node-component-surface"],
+  "--card-foreground": ["--component-node-foreground", "--foreground"]
+};
+const COMFY_MAPPINGS = [
+  ["--component-node-background", ["--card", "--background"]],
+  ["--component-node-border", ["--border", "--node-component-border"]],
+  ["--component-node-foreground", ["--card-foreground", "--foreground"]],
+  ["--component-node-foreground-secondary", ["--muted-foreground"]],
+  ["--component-node-surface", ["--card", "--background"]],
+  ["--component-node-widget-background", ["--secondary", "--input"]],
+  ["--component-node-widget-background-hovered", ["--accent", "--secondary"]],
+  ["--component-node-widget-background-selected", ["--accent", "--primary"]],
+  ["--component-node-widget-background-highlighted", ["--ring", "--primary"]],
+  ["--component-node-widget-advanced", ["--primary", "--accent"]],
+  ["--node-component-header-surface", ["--card", "--background"]],
+  ["--node-component-header", ["--foreground"]],
+  ["--node-component-slot-text", ["--muted-foreground", "--foreground"]],
+  ["--node-component-border", ["--border"]],
+  ["--node-component-surface", ["--card", "--background"]],
+  ["--node-component-ring", ["--ring", "--primary"]],
+  ["--base-background", ["--background"]],
+  ["--base-foreground", ["--foreground"]],
+  ["--primary-background", ["--primary"]],
+  ["--primary-background-hover", ["--accent", "--primary"]],
+  ["--primary-foreground", ["--primary-foreground", "--foreground"]],
+  ["--secondary-background", ["--secondary"]],
+  ["--secondary-background-hover", ["--accent", "--secondary"]],
+  ["--secondary-background-selected", ["--accent", "--primary"]],
+  ["--input-surface", ["--input", "--secondary"]],
+  ["--text-primary", ["--foreground"]],
+  ["--text-secondary", ["--muted-foreground", "--foreground"]],
+  ["--border-default", ["--border"]],
+  ["--bg-color", ["--background"]],
+  ["--fg-color", ["--foreground"]],
+  ["--content-bg", ["--card", "--background"]],
+  ["--comfy-menu-bg", ["--card", "--background"]],
+  ["--comfy-menu-secondary-bg", ["--secondary", "--card"]],
+  ["--comfy-input-bg", ["--input", "--secondary"]],
+  ["--border-color", ["--border"]],
+  ["--input-text", ["--foreground"]],
+  ["--descrip-text", ["--muted-foreground"]],
+  ["--p-primary-color", ["--primary"]],
+  ["--p-primary-hover-color", ["--primary-background-hover", "--accent", "--primary"]],
+  ["--p-primary-active-color", ["--primary-background-hover", "--accent", "--primary"]],
+  ["--p-primary-contrast-color", ["--primary-foreground", "--foreground"]],
+  ["--p-surface-0", ["--background"]],
+  ["--p-surface-50", ["--card", "--background"]],
+  ["--p-surface-100", ["--card", "--secondary"]],
+  ["--p-surface-200", ["--secondary"]],
+  ["--p-surface-300", ["--secondary-background-hover", "--accent"]],
+  ["--p-surface-400", ["--secondary-background-selected", "--accent"]],
+  ["--p-surface-500", ["--muted"]],
+  ["--p-surface-600", ["--secondary-background-hover", "--accent"]],
+  ["--p-surface-700", ["--card", "--background"]],
+  ["--p-surface-800", ["--background"]],
+  ["--p-surface-900", ["--background"]],
+  ["--p-surface-950", ["--background"]],
+  ["--p-content-background", ["--card", "--background"]],
+  ["--p-content-color", ["--foreground"]],
+  ["--p-content-border-color", ["--border"]],
+  ["--p-text-color", ["--foreground"]],
+  ["--p-text-muted-color", ["--muted-foreground"]],
+  ["--p-button-primary-background", ["--primary"]],
+  ["--p-button-primary-hover-background", ["--primary-background-hover", "--accent", "--primary"]],
+  ["--p-button-primary-active-background", ["--primary-background-hover", "--accent", "--primary"]],
+  ["--p-button-primary-border-color", ["--primary"]],
+  ["--p-button-primary-hover-border-color", ["--primary-background-hover", "--accent", "--primary"]],
+  ["--p-button-primary-color", ["--primary-foreground", "--foreground"]],
+  ["--p-button-primary-hover-color", ["--primary-foreground", "--foreground"]],
+  // ComfyUI's own .comfyui-button.primary (Run/Queue) uses --primary-bg/-fg, NOT the PrimeVue
+  // vars — without these a light --primary keeps ComfyUI's default white text → unreadable.
+  ["--primary-bg", ["--primary"]],
+  ["--primary-fg", ["--primary-foreground", "--foreground"]],
+  ["--primary-hover-bg", ["--primary-background-hover", "--accent", "--primary"]],
+  ["--primary-hover-fg", ["--primary-foreground", "--foreground"]],
+  ["--p-button-secondary-background", ["--secondary"]],
+  ["--p-button-secondary-hover-background", ["--accent", "--secondary"]],
+  ["--p-button-secondary-border-color", ["--border"]],
+  ["--p-button-secondary-color", ["--secondary-foreground", "--foreground"]],
+  ["--p-togglebutton-background", ["--secondary", "--input"]],
+  ["--p-togglebutton-border-color", ["--border"]],
+  ["--p-togglebutton-color", ["--foreground"]],
+  ["--p-togglebutton-checked-background", ["--primary-background-hover", "--accent", "--primary"]],
+  ["--p-togglebutton-checked-border-color", ["--primary-background-hover", "--accent", "--primary"]],
+  ["--p-togglebutton-checked-color", ["--foreground"]],
+  ["--p-form-field-background", ["--input", "--secondary"]],
+  ["--p-form-field-color", ["--foreground"]],
+  ["--p-form-field-border-color", ["--border"]],
+  ["--p-form-field-placeholder-color", ["--muted-foreground"]],
+  ["--p-tooltip-background", ["--popover", "--card", "--background"]],
+  ["--p-tooltip-color", ["--popover-foreground", "--card-foreground", "--foreground"]],
+  ["--p-slider-track-background", ["--input", "--secondary", "--border"]],
+  ["--p-slider-track-active-background", ["--primary"]],
+  ["--p-slider-range-background", ["--primary"]],
+  ["--p-slider-handle-background", ["--primary"]],
+  ["--p-slider-handle-content-background", ["--primary-foreground", "--background"]],
+  // ComfyUI 1.44.9 (Tailwind-era) semantic vars the chrome actually reads.
+  ["--button-surface", ["--secondary", "--card", "--input"]],
+  ["--button-hover-surface", ["--accent", "--secondary"]],
+  ["--button-active-surface", ["--accent", "--primary"]],
+  ["--button-icon", ["--muted-foreground", "--foreground"]],
+  ["--button-surface-contrast", ["--primary-foreground", "--foreground"]],
+  ["--accent-primary", ["--primary", "--accent"]],
+  ["--accent-background", ["--accent", "--secondary"]],
+  ["--nav-background", ["--card", "--background"]],
+  ["--interface-menu-surface", ["--popover", "--card", "--background"]],
+  ["--interface-menu-component-surface-hovered", ["--accent", "--secondary"]],
+  ["--interface-menu-component-surface-selected", ["--accent", "--primary"]],
+  ["--interface-menu-stroke", ["--border"]],
+  ["--interface-panel-surface", ["--card", "--background"]],
+  // A prominent default makes the cursor/tool button look permanently "selected" — keep it a
+  // subtle elevation, not the accent.
+  ["--interface-panel-selected-surface", ["--secondary", "--card"]],
+  ["--interface-stroke", ["--border"]],
+  ["--dialog-surface", ["--popover", "--card", "--background"]],
+  ["--modal-panel-background", ["--card", "--background"]],
+  ["--backdrop", ["--background"]],
+  ["--destructive-background", ["--destructive"]],
+  ["--destructive-background-hover", ["--destructive"]],
+  ["--node-component-surface-hovered", ["--accent", "--secondary"]],
+  ["--node-component-surface-selected", ["--accent", "--primary"]],
+  ["--node-divider", ["--border"]],
+  ["--node-stroke", ["--border"]],
+  ["--node-border", ["--border"]],
+  ["--node-stroke-selected", ["--ring", "--primary"]],
+  // The "blue" — PrimeVue primary palette (set at runtime) + ComfyUI's brand blue.
+  ["--p-primary-400", ["--primary"]],
+  ["--p-primary-500", ["--primary"]],
+  ["--p-primary-600", ["--primary"]],
+  ["--brand-blue", ["--primary", "--accent"]]
+];
+function selectTokenValue(map, keys) {
+  for (const k of keys) {
+    const v = map[k];
+    if (typeof v === "string" && v.trim()) return v;
+  }
+  return void 0;
+}
+function resolveThemeTokens(pack, mode) {
+  const raw = (mode === "dark" ? pack.tokens.dark : pack.tokens.light) || pack.tokens.light || pack.tokens.dark || {};
+  const withFallbacks = { ...raw };
+  for (const [target, keys] of Object.entries(TOKEN_FALLBACKS)) {
+    if (withFallbacks[target]) continue;
+    const r = selectTokenValue(withFallbacks, keys);
+    if (r) withFallbacks[target] = r;
+  }
+  const translated = {};
+  for (const [target, keys] of COMFY_MAPPINGS) {
+    const r = selectTokenValue(withFallbacks, keys);
+    if (r) translated[target] = r;
+  }
+  return { ...translated, ...withFallbacks };
+}
+function parseRgb(c) {
+  const s = (c || "").trim();
+  let m = s.match(/^#([0-9a-f]{3})$/i);
+  if (m) {
+    const h = m[1];
+    return [0, 1, 2].map((i) => parseInt(h[i] + h[i], 16));
+  }
+  m = s.match(/^#([0-9a-f]{6})$/i);
+  if (m) {
+    const h = m[1];
+    return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
+  }
+  m = s.match(/^rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)/i);
+  if (m) return [+m[1], +m[2], +m[3]];
+  return null;
+}
+function readableText(bg) {
+  const rgb = parseRgb(bg);
+  if (!rgb) return null;
+  const lin = (v) => {
+    const c = v / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  };
+  const L = 0.2126 * lin(rgb[0]) + 0.7152 * lin(rgb[1]) + 0.0722 * lin(rgb[2]);
+  return 1.05 / (L + 0.05) >= (L + 0.05) / 0.05 ? "#ffffff" : "#15151a";
+}
+function jobProgressDefaults(map) {
+  const out = {};
+  const primary = selectTokenValue(map, ["--primary", "--accent"]);
+  if (primary) {
+    out["--color-interface-panel-job-progress-primary"] = primary;
+    out["--color-interface-panel-job-progress-secondary"] = `color-mix(in srgb, ${primary} 35%, transparent)`;
+  }
+  const fg = selectTokenValue(map, ["--foreground"]);
+  if (fg) out["--color-interface-panel-job-progress-border"] = fg;
+  return out;
+}
+function zenDerived(map) {
+  const g = (...k) => selectTokenValue(map, k);
+  const out = {};
+  const set = (k, v) => {
+    if (v) out[k] = v;
+  };
+  set("--zen-bg", g("--background"));
+  set("--zen-surface", g("--card", "--background"));
+  set("--zen-surface-2", g("--secondary", "--muted", "--card"));
+  set("--zen-input", g("--input", "--secondary"));
+  set("--zen-text", g("--foreground"));
+  set("--zen-muted", g("--muted-foreground", "--foreground"));
+  set("--zen-border", g("--border", "--input"));
+  const accent = g("--primary", "--accent");
+  set("--zen-accent", accent);
+  set("--zen-accent-text", accent && readableText(accent) || g("--primary-foreground", "--background"));
+  set("--zen-radius", g("--radius"));
+  return out;
+}
+function radiusScale(r) {
+  return {
+    "--radius": r,
+    "--radius-sm": `calc(${r} * 0.5)`,
+    "--radius-md": `calc(${r} * 0.75)`,
+    "--radius-lg": r,
+    "--radius-xl": `calc(${r} * 1.5)`,
+    "--radius-2xl": `calc(${r} * 2)`,
+    "--radius-3xl": `calc(${r} * 3)`,
+    "--radius-4xl": `calc(${r} * 4)`,
+    "--radius-5xl": `calc(${r} * 5)`
+  };
+}
+const ATTR = "data-nynxz-theme";
+const BRIDGE_RULES = `
+html[${ATTR}] { --zen-node-radius: var(--radius, 10px); --radius-2xl: var(--zen-node-radius); }
+html[${ATTR}] .bg-primary-background,
+html[${ATTR}] .bg-primary-background *,
+html[${ATTR}] [data-testid='queue-button'],
+html[${ATTR}] [data-testid='queue-button'] * { color: var(--primary-foreground) !important; }
+html[${ATTR}] .lg-node,
+html[${ATTR}] .comfy-menu,
+html[${ATTR}] .comfyui-body-top,
+html[${ATTR}] .comfyui-body-bottom {
+  background: var(--component-node-background, var(--card, var(--background))) !important;
+  color: var(--component-node-foreground, var(--foreground)) !important;
+  border-color: var(--component-node-border, var(--border)) !important;
+}
+html[${ATTR}] .lg-node { border-radius: var(--zen-node-radius) !important; }
+html[${ATTR}] [data-testid="node-inner-wrapper"] { border-radius: var(--zen-node-radius) !important; }
+html[${ATTR}] [data-testid="node-inner-wrapper"]::before { border-radius: inherit !important; }
+html[${ATTR}] .lg-node > .pointer-events-none.absolute.border.border-solid.border-component-node-border { border-radius: var(--zen-node-radius) !important; }
+html[${ATTR}] .lg-node-header {
+  background: var(--node-component-header-surface, var(--component-node-background, var(--card))) !important;
+  color: var(--node-component-slot-text, var(--foreground)) !important;
+  border-color: var(--component-node-border, var(--border)) !important;
+  border-radius: var(--zen-node-radius) var(--zen-node-radius) 0 0 !important;
+}
+html[${ATTR}] .lg-node > [data-testid^="node-body-"] {
+  background: var(--component-node-background, var(--card, var(--background))) !important;
+  border-radius: 0 0 var(--zen-node-radius) var(--zen-node-radius) !important;
+}
+/* Node bottom-edge elements hardcode their bottom radius — pin them to our node radius. */
+html[${ATTR}] .lg-node .rounded-b-2xl,
+html[${ATTR}] [data-testid="node-inner-wrapper"] .rounded-b-2xl,
+html[${ATTR}] .lg-node .rounded-b-\\[20px\\],
+html[${ATTR}] [data-testid="node-inner-wrapper"] .rounded-b-\\[20px\\],
+html[${ATTR}] .lg-node .bg-destructive-background,
+html[${ATTR}] [data-testid="node-inner-wrapper"] .bg-destructive-background {
+  border-bottom-left-radius: var(--zen-node-radius) !important;
+  border-bottom-right-radius: var(--zen-node-radius) !important;
+}
+/* A folded/collapsed node is header-only, so the header's bottom must round too. */
+html[${ATTR}] .lg-node.collapsed .lg-node-header,
+html[${ATTR}] .lg-node[data-collapsed="true"] .lg-node-header,
+html[${ATTR}] .lg-node:not(:has([data-testid^="node-body-"])) .lg-node-header {
+  border-radius: var(--zen-node-radius) !important;
+}
+html[${ATTR}] [data-testid="node-state-outline-overlay"] {
+  border-color: var(--primary-background, var(--primary)) !important;
+  border-radius: calc(var(--zen-node-radius) + 3px) !important;
+}
+html[${ATTR}] .text-node-component-slot-text,
+html[${ATTR}] .node-title,
+html[${ATTR}] .comfy-menu button,
+html[${ATTR}] .comfy-menu label {
+  color: var(--node-component-slot-text, var(--foreground)) !important;
+}
+html[${ATTR}] .p-button.p-button-primary,
+html[${ATTR}] .p-splitbutton .p-button-primary {
+  background: var(--p-button-primary-background, var(--primary-background, var(--primary))) !important;
+  border-color: var(--p-button-primary-border-color, var(--primary-background, var(--primary))) !important;
+  color: var(--p-button-primary-color, var(--primary-foreground, var(--foreground))) !important;
+}
+html[${ATTR}] .p-button.p-button-primary:hover,
+html[${ATTR}] .p-splitbutton .p-button-primary:hover {
+  background: var(--p-button-primary-hover-background, var(--primary-background-hover, var(--primary))) !important;
+  border-color: var(--p-button-primary-hover-border-color, var(--primary-background-hover, var(--primary))) !important;
+}
+html[${ATTR}] .p-togglebutton,
+html[${ATTR}] .p-togglebutton .p-togglebutton-content { color: var(--p-togglebutton-color, var(--foreground)) !important; }
+html[${ATTR}] .p-togglebutton.p-togglebutton-checked,
+html[${ATTR}] .p-togglebutton.p-togglebutton-checked:hover {
+  background: var(--p-togglebutton-checked-background, var(--primary-background-hover, var(--accent, var(--primary)))) !important;
+  border-color: var(--p-togglebutton-checked-border-color, var(--primary-background-hover, var(--accent, var(--primary)))) !important;
+}
+/* The checked toggle sits on the accent — its label AND icon must contrast THAT. */
+html[${ATTR}] .p-togglebutton.p-togglebutton-checked,
+html[${ATTR}] .p-togglebutton.p-togglebutton-checked * {
+  color: var(--accent-foreground, var(--primary-foreground, var(--foreground))) !important;
+  fill: var(--accent-foreground, var(--primary-foreground, var(--foreground))) !important;
+}
+html[${ATTR}] .p-inputtext,
+html[${ATTR}] .p-select,
+html[${ATTR}] .p-inputnumber-input {
+  background: var(--p-form-field-background, var(--input-surface, var(--input))) !important;
+  border-color: var(--p-form-field-border-color, var(--border)) !important;
+  color: var(--p-form-field-color, var(--foreground)) !important;
+}
+/* Pin every Nodes-2.0 inline widget control (and its value text) to the readable node
+   foreground the multiline textarea already uses, so values don't render ~white on a light
+   theme. Field <label>s keep their muted colour, preserving the name/value hierarchy. */
+html[${ATTR}] [data-testid^="widget-"],
+html[${ATTR}] [data-testid^="widget-"] *,
+html[${ATTR}] [data-testid$="-trigger"][role="combobox"],
+html[${ATTR}] [data-testid$="-trigger"][role="combobox"] *,
+html[${ATTR}] .lg-node input,
+html[${ATTR}] .lg-node select,
+html[${ATTR}] [data-testid="node-inner-wrapper"] input,
+html[${ATTR}] [data-testid="node-inner-wrapper"] select {
+  color: var(--component-node-foreground, var(--foreground)) !important;
+}
+html[${ATTR}] .litegraph-minimap { border-radius: var(--radius, 10px) !important; overflow: hidden !important; }
+/* Pin PrimeVue / ComfyUI overlay menus to the theme radius (they keep a fixed one otherwise). */
+html[${ATTR}] {
+  --p-border-radius-md: var(--zen-radius, 10px);
+  --p-border-radius-lg: var(--zen-radius, 10px);
+  --p-border-radius-xl: var(--zen-radius, 10px);
+}
+html[${ATTR}] .p-tieredmenu,
+html[${ATTR}] .p-tieredmenu-overlay,
+html[${ATTR}] .p-menu,
+html[${ATTR}] .p-menu-overlay,
+html[${ATTR}] .p-contextmenu,
+html[${ATTR}] .p-popover,
+html[${ATTR}] .p-overlaypanel,
+html[${ATTR}] .p-select-overlay,
+html[${ATTR}] .p-autocomplete-overlay,
+html[${ATTR}] .p-multiselect-overlay,
+html[${ATTR}] .comfy-command-menu { border-radius: var(--zen-radius, 10px) !important; }
+html[${ATTR}] [data-testid="queue-inline-progress"],
+html[${ATTR}] [data-testid="queue-inline-progress"] * { border-radius: var(--zen-radius, 7px) !important; }
+/* Replace the ComfyUI tree-row hover (bg-comfy-input, unreliable contrast) with a subtle tint. */
+html[${ATTR}] [class~="group/tree-node"]:hover,
+html[${ATTR}] .p-tree-node-content:hover,
+html[${ATTR}] .p-tree-node-selectable:not(.p-tree-node-selected):hover {
+  background: color-mix(in srgb, var(--zen-text, #fff) 10%, transparent) !important;
+  color: var(--zen-text, var(--foreground)) !important;
+}
+/* Selected sidebar tab surface is a subtle elevation, not the accent — colour its icon+label
+   with the accent (readable highlight), excluding the count badge so its number stays visible. */
+html[${ATTR}] .side-bar-button-selected,
+html[${ATTR}] .side-bar-button-selected *:not(.sidebar-icon-badge):not(.sidebar-icon-badge *) {
+  color: var(--primary, var(--accent, var(--foreground))) !important;
+}
+/* A genuinely accent-FILLED highlight (PrimeVue p-highlight) does need contrast text. */
+html[${ATTR}] .side-tool-bar-container .p-button.p-highlight,
+html[${ATTR}] .side-tool-bar-container .p-button.p-highlight * {
+  color: var(--primary-foreground, var(--foreground)) !important;
+}
+/* The drag-select marquee (Nodes 2.0) is a Tailwind blue box — recolour to the accent. */
+html[${ATTR}] .z-9999.border-blue-400 {
+  border-color: var(--zen-accent, var(--primary, #3b82f6)) !important;
+  background: color-mix(in srgb, var(--zen-accent, var(--primary, #3b82f6)) 18%, transparent) !important;
+  border-radius: var(--radius, 8px) !important;
+}
+/* Minimap viewport indicator (the "view cone") is white by default — use the accent. */
+html[${ATTR}] .minimap-viewport {
+  border-color: var(--zen-accent, var(--primary, #3b82f6)) !important;
+  outline-color: var(--zen-accent, var(--primary, #3b82f6)) !important;
+  background: color-mix(in srgb, var(--zen-accent, var(--primary, #3b82f6)) 14%, transparent) !important;
+}
+`;
+function tokenCss(map) {
+  let body = "";
+  for (const k of Object.keys(map)) body += `${k}:${map[k]} !important;`;
+  return `html[${ATTR}],body[${ATTR}]{${body}}`;
+}
+const REGION_SELECTORS = {
+  sideToolbar: ".side-tool-bar-container",
+  topBar: ".comfyui-body-top",
+  bottomBar: ".comfyui-body-bottom",
+  menuBar: ".comfy-menu",
+  nodeHeader: ".lg-node-header",
+  node: ".lg-node",
+  minimap: ".litegraph-minimap"
+};
+function resolveAssetUrls(value, id) {
+  return value.replace(/url\(\s*(['"]?)([^'")]+)\1\s*\)/gi, (m, _q, ref2) => {
+    const r = String(ref2).trim();
+    if (!r || r.includes("/") || r.startsWith("data:") || r.startsWith("http")) return m;
+    return `url('/nynxz/experimental/theme_asset?id=${encodeURIComponent(id)}&file=${encodeURIComponent(r)}')`;
+  });
+}
+function buildRegionCss(pack) {
+  if (!pack.regions) return "";
+  let out = "";
+  for (const [region, style] of Object.entries(pack.regions)) {
+    const sel = REGION_SELECTORS[region];
+    if (!sel) continue;
+    let decls = "";
+    for (const [prop, value] of Object.entries(style)) {
+      decls += `${prop}:${resolveAssetUrls(value, pack.id)} !important;`;
+    }
+    if (decls) out += `html[${ATTR}="${pack.id}"] ${sel},body[${ATTR}="${pack.id}"] ${sel}{${decls}}`;
+  }
+  return out;
+}
+let bridgeReady = false;
+const roots = () => [document.documentElement, document.body];
+function applyTheme(id, mode) {
+  if (!bridgeReady) {
+    ensureStyle("nynxz-theme-bridge", BRIDGE_RULES);
+    bridgeReady = true;
+  }
+  const pack = id === "comfy" ? null : registry.get(id);
+  if (!pack) {
+    ensureStyle("nynxz-theme-tokens", "");
+    ensureStyle("nynxz-theme-css", "");
+    ensureStyle("nynxz-theme-regions", "");
+    for (const el of roots()) el.removeAttribute(ATTR);
+    return;
+  }
+  const resolved = resolveThemeTokens(pack, mode);
+  const r = resolved["--radius"];
+  ensureStyle(
+    "nynxz-theme-tokens",
+    tokenCss({ ...jobProgressDefaults(resolved), ...resolved, ...zenDerived(resolved), ...r ? radiusScale(r) : {} })
+  );
+  ensureStyle("nynxz-theme-css", pack.css || "");
+  ensureStyle("nynxz-theme-regions", buildRegionCss(pack));
+  for (const el of roots()) el.setAttribute(ATTR, id);
+}
+async function fetchThemes() {
+  try {
+    const res = await fetch("/nynxz/experimental/themes");
+    const d = await res.json();
+    return Array.isArray(d.themes) ? d.themes : [];
+  } catch {
+    return [];
+  }
+}
+const SETTING_ID = "nynxz.experimental.theme";
+let currentId = "comfy";
+function currentMode() {
+  return document.body.classList.contains("dark-theme") ? "dark" : "light";
+}
+function setTheme(id) {
+  currentId = id;
+  applyTheme(id, currentMode());
+}
+function watchMode() {
+  let mode = currentMode();
+  const obs = new MutationObserver(() => {
+    const next = currentMode();
+    if (next === mode) return;
+    mode = next;
+    if (currentId !== "comfy") applyTheme(currentId, next);
+  });
+  obs.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+}
+function registerTheme() {
+  app.registerExtension({
+    name: "nynxz.experimental.theme",
+    async setup() {
+      registerPacks(await fetchThemes());
+      const options = [
+        { text: "Comfy (default)", value: "comfy" },
+        ...themePacks().map((p2) => ({ text: p2.name, value: p2.id }))
+      ];
+      let initial = "comfy";
+      try {
+        const settings = app.ui?.settings;
+        const added = settings?.addSetting({
+          id: SETTING_ID,
+          name: "Theme",
+          category: ["Nynxz Experimental", "Appearance", "Theme"],
+          type: "combo",
+          options,
+          defaultValue: "comfy",
+          tooltip: `Recolour the whole ComfyUI interface from a theme pack. "Comfy (default)" leaves ComfyUI's own theme untouched. Themes are JSON files in this pack's themes/ folder, discovered at load — drop one in and reload to add it.`,
+          onChange(value) {
+            setTheme(String(value || "comfy"));
+          }
+        });
+        if (added && added.value != null) initial = String(added.value);
+      } catch {
+      }
+      try {
+        const stored = app.extensionManager?.setting?.get(SETTING_ID);
+        if (stored != null) initial = String(stored);
+      } catch {
+      }
+      setTheme(initial);
+      watchMode();
+    }
+  });
+}
+registerNodes("nynxz.experimental", [...fusionNodes, loraNode]);
 registerBackground();
+registerTheme();
