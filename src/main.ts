@@ -12,7 +12,9 @@ import fusionNodes from '@/fusion/node'
 import loraNode from '@/lora/node'
 import conditioningNodes from '@/conditioning/node'
 import { registerBackground } from '@/background/register'
+import { registerTheme } from '@/theme/register'
 import '@zenkit/ui/comfy-bridge.css'
 
 registerNodes('nynxz.experimental', [...fusionNodes, loraNode, ...conditioningNodes])
 registerBackground()
+registerTheme()
