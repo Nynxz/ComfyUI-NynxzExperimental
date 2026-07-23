@@ -1,9 +1,10 @@
 """Fusion Regions Preview — draw each source's regions on it, so you can see what got selected.
 
 Takes a fusion_input (typically straight off Qwen3-VL Ground, or any node that attaches regions)
-and renders each source image with its region boxes + labels overlaid, batched into one IMAGE you
-can drop a Preview Image on. A source with no regions is shown dimmed — that's the "whole image,
-full-frame background" case, which is exactly what a passthrough looks like.
+and renders each source image with its region boxes + labels overlaid, output as a list of images
+— one per source, each at its own native size — you can drop a Preview Image on. A source with no
+regions is shown dimmed — that's the "whole image, full-frame background" case, which is exactly
+what a passthrough looks like.
 
 This reads regions in each source's own 0..1 frame (`region_pixel_box`), the frame grounding boxes
 are defined in — so the overlay is honest about what the encode will pick up. It's a debug/inspect
@@ -63,13 +64,10 @@ def _draw(image: torch.Tensor, regions, dim_if_empty=True) -> Image.Image:
     return pil
 
 
-def _pad_to(pil: Image.Image, width: int, height: int) -> Image.Image:
-    """Top-left paste onto a black (width, height) canvas so mixed-size sources can batch."""
-    if pil.size == (width, height):
-        return pil
-    canvas = Image.new("RGB", (width, height), (0, 0, 0))
-    canvas.paste(pil, (0, 0))
-    return canvas
+def _to_tensor(pil: Image.Image) -> torch.Tensor:
+    """RGB PIL -> a single-image [1, H, W, 3] float tensor, keeping its own size."""
+    arr = np.asarray(pil).astype(np.float32) / 255.0
+    return torch.from_numpy(arr)[None, ...]
 
 
 class FusionRegionsPreview(NynxzNode):
@@ -84,23 +82,19 @@ class FusionRegionsPreview(NynxzNode):
             "what a grounding/region node selected. Wire a fusion_input in and a Preview Image on "
             "the output. Sources with no region are dimmed (they blend as a full-frame background).",
             inputs=[NynxzFusionInputData.Input("fusion_input")],
-            outputs=[io.Image.Output(display_name="preview")],
+            outputs=[io.Image.Output(display_name="preview", is_output_list=True)],
         )
 
     @classmethod
     def execute(cls, fusion_input) -> io.NodeOutput:
         entries = list(fusion_input or [])
-        rendered = [
-            _draw(entry["image"], entry.get("regions")) for entry in entries if "image" in entry
-        ]
-        if not rendered:
-            return io.NodeOutput(torch.zeros((1, 64, 64, 3), dtype=torch.float32))
-
-        # Batch requires a common size; pad every source onto the largest canvas.
-        canvas_w = max(pil.width for pil in rendered)
-        canvas_h = max(pil.height for pil in rendered)
         frames = [
-            torch.from_numpy(np.array(_pad_to(pil, canvas_w, canvas_h)).astype(np.float32) / 255.0)
-            for pil in rendered
+            _to_tensor(_draw(entry["image"], entry.get("regions")))
+            for entry in entries
+            if "image" in entry
         ]
-        return io.NodeOutput(torch.stack(frames, dim=0))
+        # A list output (is_output_list) keeps every source at its own size — Preview Image
+        # renders one per source, instead of padding them all onto a shared black canvas.
+        if not frames:
+            frames = [torch.zeros((1, 64, 64, 3), dtype=torch.float32)]
+        return io.NodeOutput(frames)
